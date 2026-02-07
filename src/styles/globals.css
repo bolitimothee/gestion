@@ -1,0 +1,345 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f7fa;
+  color: #333;
+}
+
+:root {
+  --primary-color: #5e72e4;
+  --primary-dark: #4c63d2;
+  --secondary-color: #1e88e5;
+  --success-color: #2dce89;
+  --warning-color: #fb6340;
+  --danger-color: #f5365c;
+  --dark-bg: #343a40;
+  --light-bg: #f8f9fa;
+  --border-color: #dee2e6;
+  --shadow: 0 0.5rem 1rem rgba(50, 50, 89, 0.15);
+  --shadow-lg: 0 1.5rem 3rem rgba(50, 50, 89, 0.18);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* RESPONSIVE LAYOUT */
+.layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.layout-container {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
+}
+
+.main-content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  width: 100%;
+}
+
+/* RESPONSIVE MEDIA QUERIES */
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .layout-container {
+    flex-direction: column;
+  }
+
+  .main-content {
+    padding: 16px;
+    min-height: calc(100vh - 60px);
+  }
+
+  .page-header {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .page-header h1 {
+    font-size: 24px !important;
+  }
+
+  .page-header button {
+    width: 100% !important;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .products-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  table {
+    font-size: 12px !important;
+  }
+
+  th, td {
+    padding: 8px !important;
+  }
+
+  .btn {
+    padding: 10px 16px !important;
+    font-size: 14px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 14px;
+  }
+
+  .main-content {
+    padding: 16px;
+    min-height: calc(100vh - 60px);
+  }
+
+  .page-header {
+    flex-direction: column !important;
+    gap: 16px !important;
+    margin-bottom: 24px !important;
+  }
+
+  .page-header h1 {
+    font-size: 28px !important;
+    font-weight: 700 !important;
+  }
+
+  .page-header p {
+    font-size: 13px !important;
+  }
+
+  .page-header button {
+    width: 100% !important;
+    padding: 12px 16px !important;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  .form-group {
+    margin-bottom: 12px !important;
+  }
+
+  .form-group label {
+    font-size: 14px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    font-size: 16px !important;
+    padding: 12px !important;
+  }
+
+  .form-hint {
+    font-size: 12px !important;
+    margin-top: 6px !important;
+  }
+
+  .form-actions {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .form-actions button {
+    width: 100% !important;
+    padding: 14px 16px !important;
+    font-size: 15px !important;
+  }
+
+  .btn {
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+    min-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .btn-sm {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .btn-sm svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .alert {
+    padding: 14px !important;
+    font-size: 14px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .alert h3,
+  .alert h4 {
+    font-size: 15px !important;
+    margin-bottom: 8px !important;
+  }
+
+  table {
+    font-size: 13px !important;
+  }
+
+  thead {
+    display: none !important;
+  }
+
+  tbody tr {
+    display: flex !important;
+    flex-direction: column !important;
+    border-bottom: 2px solid var(--border-color) !important;
+    margin-bottom: 16px !important;
+    padding: 12px 0 !important;
+  }
+
+  td {
+    padding: 12px 0 !important;
+    border: none !important;
+    text-align: left !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+  }
+
+  td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #666;
+    flex: 0 0 40%;
+  }
+
+  .products-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    margin-top: 20px !important;
+  }
+
+  .product-card {
+    padding: 16px !important;
+  }
+
+  .product-header {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .product-header h3 {
+    font-size: 16px !important;
+  }
+
+  .actions-cell {
+    flex-direction: row !important;
+    gap: 8px !important;
+    justify-content: flex-end !important;
+  }
+
+  .export-actions {
+    flex-direction: column !important;
+    gap: 12px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .export-actions button {
+    width: 100% !important;
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+  }
+
+  .modal {
+    padding: 16px !important;
+    margin: 16px !important;
+    max-height: calc(100vh - 32px) !important;
+  }
+
+  .modal-header {
+    margin-bottom: 16px !important;
+  }
+
+  .modal-header h2 {
+    font-size: 20px !important;
+  }
+
+  .modal-content {
+    max-height: calc(100vh - 150px) !important;
+  }
+
+  .expenses-container,
+  .form-card {
+    padding: 16px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .expenses-container h2,
+  .form-card h2 {
+    font-size: 18px !important;
+    margin-bottom: 16px !important;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="date"],
+  select,
+  textarea {
+    width: 100% !important;
+    padding: 12px !important;
+    font-size: 16px !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 6px !important;
+  }
+
+  textarea {
+    min-height: 100px !important;
+  }
+}

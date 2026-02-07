@@ -1,0 +1,345 @@
+.expenses-container {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+  margin-top: 30px;
+}
+
+.expenses-container h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.expenses-table {
+  overflow-x: auto;
+}
+
+.expenses-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.expenses-table thead {
+  background: var(--light-bg);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.expenses-table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #666;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.expenses-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--border-color);
+  color: #333;
+  font-size: 14px;
+}
+
+.expenses-table tr:hover {
+  background: var(--light-bg);
+}
+
+.expenses-table .amount {
+  font-weight: 600;
+  color: var(--danger-color);
+}
+
+.empty-message {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+}
+
+.form-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+  margin-bottom: 30px;
+}
+
+.form-card h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  width: 100%;
+}
+
+.form-hint {
+  font-size: 12px;
+  color: #999;
+  font-style: italic;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .expenses-table th,
+  .expenses-table td {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+
+  .expenses-container {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-header {
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .page-header h1 {
+    font-size: 22px;
+    margin-bottom: 0;
+  }
+
+  .page-header button {
+    width: 100%;
+    padding: 12px 16px;
+  }
+
+  .expenses-container {
+    padding: 16px;
+    margin-top: 20px;
+    border-radius: 8px;
+    background: white;
+  }
+
+  .expenses-container h2 {
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+
+  .form-card {
+    padding: 16px;
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+
+  .form-card h2 {
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    width: 100%;
+    font-family: inherit;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(94, 114, 228, 0.1);
+  }
+
+  .form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .form-hint {
+    font-size: 12px;
+    color: #999;
+    font-style: italic;
+  }
+
+  .form-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .form-actions button {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 15px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .expenses-table {
+    overflow-x: auto;
+  }
+
+  .expenses-table table {
+    font-size: 13px;
+    width: 100%;
+  }
+
+  .expenses-table thead {
+    display: none;
+  }
+
+  .expenses-table tbody tr {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 2px solid var(--border-color);
+    margin-bottom: 12px;
+    padding: 12px 0;
+  }
+
+  .expenses-table td {
+    padding: 10px 0;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+  }
+
+  .expenses-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #666;
+    flex: 0 0 40%;
+  }
+
+  .expenses-table .amount {
+    color: var(--danger-color);
+    font-weight: 600;
+  }
+
+  .actions-cell {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    padding-top: 8px;
+    margin-top: 8px;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .actions-cell button {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-sm {
+    min-width: 44px;
+    min-height: 44px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  select {
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    width: 100%;
+  }
+
+  .empty-message {
+    text-align: center;
+    padding: 30px 16px;
+    color: #999;
+    font-size: 14px;
+  }
+
+  .alert {
+    padding: 12px;
+    margin-bottom: 16px;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+}
