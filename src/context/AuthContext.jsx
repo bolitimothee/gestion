@@ -9,17 +9,24 @@ export function AuthProvider({ children }) {
   const [account, setAccount] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAuthReady, setIsAuthReady] = useState(false);
+  const [userCurrency, setUserCurrencyState] = useState('USD');
   const sessionCheckRef = useRef(false);
 
   const loadAccountDetails = useCallback(async (userId) => {
     if (!userId) {
       setAccount(null);
+      setUserCurrencyState('USD');
       return null;
     }
     try {
       const { data } = await authService.getAccountDetails(userId);
       if (data) {
         setAccount(data);
+        // Charger la devise préférée du compte
+        const preferredCurrency = data.preferred_currency || 'USD';
+        setUserCurrencyState(preferredCurrency);
+        // Synchroniser aussi dans localStorage
+        localStorage.setItem('userCurrency', preferredCurrency);
         return data;
       }
     } catch (err) {
@@ -73,6 +80,30 @@ export function AuthProvider({ children }) {
     account,
     loading,
     isAuthReady,
+    userCurrency,
+    updateUserCurrency: async (currency) => {
+      if (!user) return { error: 'No user logged in' };
+      try {
+        // Mettre à jour dans Supabase
+        const { error } = await supabase
+          .from('accounts')
+          .update({ preferred_currency: currency })
+          .eq('user_id', user.id);
+
+        if (error) return { error };
+
+        // Mettre à jour localement
+        setUserCurrencyState(currency);
+        localStorage.setItem('userCurrency', currency);
+        
+        // Recharger les détails du compte pour synchroniser
+        await loadAccountDetails(user.id);
+        
+        return { error: null };
+      } catch (err) {
+        return { error: err };
+      }
+    },
     signUp: async (email, password, accountName, validityDate) => {
       try {
         const result = await authService.signUp(email, password, accountName, validityDate);

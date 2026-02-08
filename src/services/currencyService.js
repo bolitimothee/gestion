@@ -185,3 +185,84 @@ export const getCurrencySymbol = (currency = DEFAULT_CURRENCY) => {
 export const getCurrencyName = (currency = DEFAULT_CURRENCY) => {
   return CURRENCY_NAMES[currency] || currency;
 };
+
+/**
+ * Convertit les données de produits vers une devise cible
+ * @param {array} products - Tableau de produits
+ * @param {string} targetCurrency - La devise cible
+ * @returns {array} - Produits convertis
+ */
+export const convertProductsData = (products = [], targetCurrency = DEFAULT_CURRENCY) => {
+  return products.map(product => ({
+    ...product,
+    purchase_price: convertCurrency(product.purchase_price || 0, 'USD', targetCurrency),
+    selling_price: convertCurrency(product.selling_price || 0, 'USD', targetCurrency),
+    base_purchase_price: convertCurrency(product.base_purchase_price || product.purchase_price || 0, 'USD', targetCurrency),
+    base_selling_price: convertCurrency(product.base_selling_price || product.selling_price || 0, 'USD', targetCurrency),
+    currency_code: targetCurrency,
+  }));
+};
+
+/**
+ * Convertit les données de ventes vers une devise cible
+ * @param {array} sales - Tableau de ventes
+ * @param {string} targetCurrency - La devise cible
+ * @returns {array} - Ventes converties
+ */
+export const convertSalesData = (sales = [], targetCurrency = DEFAULT_CURRENCY) => {
+  return sales.map(sale => ({
+    ...sale,
+    unit_price: convertCurrency(sale.unit_price || 0, 'USD', targetCurrency),
+    total_amount: convertCurrency(sale.total_amount || 0, 'USD', targetCurrency),
+    currency_code: targetCurrency,
+  }));
+};
+
+/**
+ * Convertit les données de dépenses vers une devise cible
+ * @param {array} expenses - Tableau de dépenses
+ * @param {string} targetCurrency - La devise cible
+ * @returns {array} - Dépenses converties
+ */
+export const convertExpensesData = (expenses = [], targetCurrency = DEFAULT_CURRENCY) => {
+  return expenses.map(expense => ({
+    ...expense,
+    amount: convertCurrency(expense.amount || 0, 'USD', targetCurrency),
+    currency_code: targetCurrency,
+  }));
+};
+
+/**
+ * Convertit un produit individuel
+ */
+export const convertProduct = (product, targetCurrency = DEFAULT_CURRENCY) => {
+  return {
+    ...product,
+    purchase_price: convertCurrency(product.purchase_price || 0, 'USD', targetCurrency),
+    selling_price: convertCurrency(product.selling_price || 0, 'USD', targetCurrency),
+    currency_code: targetCurrency,
+  };
+};
+
+/**
+ * Convertit une vente individuelle
+ */
+export const convertSale = (sale, targetCurrency = DEFAULT_CURRENCY) => {
+  return {
+    ...sale,
+    unit_price: convertCurrency(sale.unit_price || 0, 'USD', targetCurrency),
+    total_amount: convertCurrency(sale.total_amount || 0, 'USD', targetCurrency),
+    currency_code: targetCurrency,
+  };
+};
+
+/**
+ * Convertit une dépense individuelle
+ */
+export const convertExpense = (expense, targetCurrency = DEFAULT_CURRENCY) => {
+  return {
+    ...expense,
+    amount: convertCurrency(expense.amount || 0, 'USD', targetCurrency),
+    currency_code: targetCurrency,
+  };
+};

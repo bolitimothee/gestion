@@ -19,11 +19,12 @@ import './Dashboard.css';
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const { user: authUser, account, updateUserCurrency, userCurrency } = useAuth();
   const [stats, setStats] = useState(null);
   const [recentSales, setRecentSales] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currency, setCurrency] = useState(getUserCurrency());
+  const [currency, setCurrency] = useState(userCurrency || getUserCurrency());
   const [originalStats, setOriginalStats] = useState(null);
 
   const loadDashboardData = useCallback(async () => {
@@ -93,9 +94,13 @@ export default function Dashboard() {
     }
   }, [user, loadDashboardData]);
 
-  const handleCurrencyChange = (newCurrency) => {
+  const handleCurrencyChange = async (newCurrency) => {
+    // Mettre à jour localement
     setCurrency(newCurrency);
     setUserCurrency(newCurrency);
+    
+    // Mettre à jour dans Supabase via le contexte
+    await updateUserCurrency(newCurrency);
     
     // Convertir les statistiques
     if (originalStats) {
