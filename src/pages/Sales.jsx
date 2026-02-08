@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { salesService } from '../services/salesService';
 import { stockService } from '../services/stockService';
+import { useSalesSync } from '../hooks/useRealtimeSync';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import { Plus, Edit2, Trash2, AlertCircle, Download, Mail, Share2 } from 'lucide-react';
@@ -44,6 +45,9 @@ export default function Sales() {
       loadData();
     }
   }, [user, loadData]);
+
+  // Synchroniser les ventes en temps réel
+  useSalesSync(user?.id, setSales);
 
   async function handleSubmit(e) {
     e.preventDefault();

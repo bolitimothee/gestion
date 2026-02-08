@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { financeService } from '../services/financeService';
 import { salesService } from '../services/salesService';
 import { stockService } from '../services/stockService';
+import { useAccountSync } from '../hooks/useRealtimeSync';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import StatCard from '../components/StatCard';
@@ -93,6 +94,13 @@ export default function Dashboard() {
       loadDashboardData();
     }
   }, [user, loadDashboardData]);
+
+  // Synchroniser le compte en temps réel pour les changements de devise
+  useAccountSync(user?.id, (account) => {
+    if (account?.preferred_currency) {
+      setCurrency(account.preferred_currency);
+    }
+  });
 
   const handleCurrencyChange = async (newCurrency) => {
     // Mettre à jour localement

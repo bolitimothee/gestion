@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { stockService } from '../services/stockService';
+import { useProductsSync } from '../hooks/useRealtimeSync';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import { Plus, Edit2, Trash2, AlertCircle } from 'lucide-react';
@@ -46,6 +47,9 @@ export default function Stock() {
       loadProducts();
     }
   }, [user, loadProducts]);
+
+  // Synchroniser les produits en temps réel
+  useProductsSync(user?.id, setProducts);
 
   async function handleSubmit(e) {
     e.preventDefault();

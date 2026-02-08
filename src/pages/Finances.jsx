@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { financeService } from '../services/financeService';
+import { useExpensesSync } from '../hooks/useRealtimeSync';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import StatCard from '../components/StatCard';
@@ -42,6 +43,9 @@ export default function Finances() {
       loadData();
     }
   }, [user, loadData]);
+
+  // Synchroniser les dépenses en temps réel
+  useExpensesSync(user?.id, setExpenses);
 
   async function handleSubmit(e) {
     e.preventDefault();
