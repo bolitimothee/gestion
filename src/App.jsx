@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Stock from './pages/Stock';
 import Sales from './pages/Sales';
 import Finances from './pages/Finances';
+import Diagnostic from './pages/Diagnostic';
 import './styles/globals.css';
 import './styles/components.css';
 
@@ -18,6 +19,7 @@ function App() {
         <SidebarProvider>
           <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/diagnostic" element={<Diagnostic />} />
           <Route
             path="/dashboard"
             element={
