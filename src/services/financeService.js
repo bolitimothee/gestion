@@ -28,7 +28,7 @@ export const financeService = {
             category: expense.category,
             date: expense.date,
             notes: expense.notes,
-            created_at: new Date().toISOString(),
+            currency_code: 'USD',
           },
         ])
         .select();

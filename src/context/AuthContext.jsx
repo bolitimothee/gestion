@@ -104,9 +104,9 @@ export function AuthProvider({ children }) {
         return { error: err };
       }
     },
-    signUp: async (email, password, accountName, validityDate) => {
+    signUp: async (email, password, businessName) => {
       try {
-        const result = await authService.signUp(email, password, accountName, validityDate);
+        const result = await authService.signUp(email, password, businessName);
         if (result.error) {
           return { data: null, error: result.error };
         }

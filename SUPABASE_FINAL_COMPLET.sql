@@ -20,10 +20,10 @@ CREATE TABLE IF NOT EXISTS accounts (
   address TEXT,
   city VARCHAR(100),
   country VARCHAR(100),
-  preferred_currency VARCHAR(3) DEFAULT 'USD' COMMENT 'Devise préférée de l''utilisateur (USD, EUR, XAF, MAD, etc.)',
+  preferred_currency VARCHAR(3) DEFAULT 'USD',
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
-) COMMENT 'Comptes utilisateurs avec préférence de devise';
+);
 
 -- ========================================
 -- 2. TABLE PRODUCTS (Produits/Stocks)
@@ -36,14 +36,14 @@ CREATE TABLE IF NOT EXISTS products (
   category VARCHAR(100),
   sku VARCHAR(100),
   quantity INTEGER NOT NULL DEFAULT 0,
-  purchase_price DECIMAL(12, 2) NOT NULL COMMENT 'Prix d''achat dans la devise configurée',
-  selling_price DECIMAL(12, 2) NOT NULL COMMENT 'Prix de vente dans la devise configurée',
-  base_purchase_price DECIMAL(12, 2) COMMENT 'Prix d''achat en USD (pour reconversion)',
-  base_selling_price DECIMAL(12, 2) COMMENT 'Prix de vente en USD (pour reconversion)',
-  currency_code VARCHAR(3) DEFAULT 'USD' COMMENT 'Devise du produit',
+  purchase_price DECIMAL(12, 2) NOT NULL,
+  selling_price DECIMAL(12, 2) NOT NULL,
+  base_purchase_price DECIMAL(12, 2),
+  base_selling_price DECIMAL(12, 2),
+  currency_code VARCHAR(3) DEFAULT 'USD',
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
-) COMMENT 'Stock de produits avec support multi-devise';
+);
 
 -- ========================================
 -- 3. TABLE SALES (Ventes)
@@ -54,15 +54,15 @@ CREATE TABLE IF NOT EXISTS sales (
   product_id UUID NOT NULL REFERENCES products(id) ON DELETE SET NULL,
   customer_name VARCHAR(255) NOT NULL,
   quantity INTEGER NOT NULL,
-  unit_price DECIMAL(12, 2) NOT NULL COMMENT 'Prix unitaire au moment de la vente',
-  total_amount DECIMAL(12, 2) NOT NULL COMMENT 'Montant total (quantity × unit_price)',
+  unit_price DECIMAL(12, 2) NOT NULL,
+  total_amount DECIMAL(12, 2) NOT NULL,
   sale_date DATE NOT NULL,
   sale_time TIME,
-  currency_code VARCHAR(3) DEFAULT 'USD' COMMENT 'Devise de la vente',
+  currency_code VARCHAR(3) DEFAULT 'USD',
   notes TEXT,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
-) COMMENT 'Transactions de vente avec support multi-devise';
+);
 
 -- ========================================
 -- 4. TABLE EXPENSES (Dépenses/Frais)
@@ -71,14 +71,14 @@ CREATE TABLE IF NOT EXISTS expenses (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   description VARCHAR(255) NOT NULL,
-  amount DECIMAL(12, 2) NOT NULL COMMENT 'Montant de la dépense',
+  amount DECIMAL(12, 2) NOT NULL,
   category VARCHAR(100),
   date DATE NOT NULL,
-  currency_code VARCHAR(3) DEFAULT 'USD' COMMENT 'Devise de la dépense',
+  currency_code VARCHAR(3) DEFAULT 'USD',
   notes TEXT,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
-) COMMENT 'Dépenses/frais avec support multi-devise';
+);
 
 -- ========================================
 -- 5. TABLE CUSTOMERS (Clients) - FUTURE
@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS customers (
   total_purchases DECIMAL(12, 2) DEFAULT 0,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
-) COMMENT 'Base de données clients (préparé pour future expansion)';
+);
 
 -- ========================================
 -- 6. INDICES POUR PERFORMANCE

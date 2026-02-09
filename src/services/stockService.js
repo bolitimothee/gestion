@@ -30,7 +30,7 @@ export const stockService = {
             selling_price: product.selling_price,
             category: product.category,
             sku: product.sku,
-            created_at: new Date().toISOString(),
+            currency_code: 'USD',
           },
         ])
         .select();
