@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Mail, Lock, Building2, AlertCircle } from 'lucide-react';
+import { Mail, Lock, Building2, Calendar, AlertCircle } from 'lucide-react';
 import './Auth.css';
 
 export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [businessName, setBusinessName] = useState('');
+  const [accountName, setAccountName] = useState('');
+  const [validityDate, setValidityDate] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -25,19 +26,20 @@ export default function Register() {
     setError('');
     setLoading(true);
 
-    if (!email || !password || !businessName) {
+    if (!email || !password || !accountName || !validityDate) {
       setError('Tous les champs sont obligatoires');
       setLoading(false);
       return;
     }
 
     try {
-      const result = await signUp(email, password, businessName);
+      const result = await signUp(email, password, accountName, validityDate);
       if (result.error) {
         setError(result.error.message || 'Erreur lors de l\'inscription');
         setLoading(false);
       } else {
         // Attendre que le state se mette à jour avant de naviguer
+        // Le useEffect ci-dessus va gérer la redirection
         await new Promise(resolve => setTimeout(resolve, 200));
       }
     } catch (err) {
@@ -48,7 +50,7 @@ export default function Register() {
 
   return (
     <div className="auth-container">
-      <div className="auth-card">
+      <div className="auth-card auth-card-large">
         <div className="auth-header">
           <h1>S'inscrire</h1>
           <p>Créer un nouveau compte</p>
@@ -63,15 +65,15 @@ export default function Register() {
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label htmlFor="businessName">Nom du Commerce</label>
+            <label htmlFor="accountName">Nom du Commerce</label>
             <div className="input-wrapper">
               <Building2 size={20} className="input-icon" />
               <input
-                id="businessName"
+                id="accountName"
                 type="text"
-                value={businessName}
-                onChange={(e) => setBusinessName(e.target.value)}
-                placeholder="Ex: Ma Boutique"
+                value={accountName}
+                onChange={(e) => setAccountName(e.target.value)}
+                placeholder="Ex: Ma Boutique SARL"
                 required
               />
             </div>
@@ -102,6 +104,20 @@ export default function Register() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Min. 8 caracteres"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="validityDate">Date de validité du compte</label>
+            <div className="input-wrapper">
+              <Calendar size={20} className="input-icon" />
+              <input
+                id="validityDate"
+                type="date"
+                value={validityDate}
+                onChange={(e) => setValidityDate(e.target.value)}
                 required
               />
             </div>

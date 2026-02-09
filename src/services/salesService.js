@@ -31,7 +31,7 @@ export const salesService = {
             sale_date: sale.sale_date,
             sale_time: sale.sale_time,
             notes: sale.notes,
-            currency_code: 'USD',
+            created_at: new Date().toISOString(),
           },
         ])
         .select();
