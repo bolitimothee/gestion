@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { stockService } from '../services/stockService';
 import { useProductsSync } from '../hooks/useRealtimeSync';
+import { convertProductsData } from '../services/currencyService';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import { Plus, Edit2, Trash2, AlertCircle } from 'lucide-react';
@@ -10,8 +11,9 @@ import { formatCurrency } from '../utils/formatters';
 import './Stock.css';
 
 export default function Stock() {
-  const { user } = useAuth();
+  const { user, userCurrency } = useAuth();
   const [products, setProducts] = useState([]);
+  const [convertedProducts, setConvertedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -50,6 +52,16 @@ export default function Stock() {
 
   // Synchroniser les produits en temps réel
   useProductsSync(user?.id, setProducts);
+
+  // Convertir les produits selon la devise sélectionnée
+  useEffect(() => {
+    if (products.length > 0 && userCurrency) {
+      const converted = convertProductsData(products, userCurrency);
+      setConvertedProducts(converted);
+    } else {
+      setConvertedProducts(products);
+    }
+  }, [products, userCurrency]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -268,7 +280,7 @@ export default function Stock() {
             <div className="loading">Chargement des produits...</div>
           ) : (
             <div className="products-grid">
-              {products.map((product) => (
+              {convertedProducts.map((product) => (
                 <div key={product.id} className="product-card">
                   <div className="product-header">
                     <h3>{product.name}</h3>

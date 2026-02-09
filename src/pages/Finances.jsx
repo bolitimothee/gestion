@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { financeService } from '../services/financeService';
 import { useExpensesSync } from '../hooks/useRealtimeSync';
+import { convertExpensesData, convertFinancialData } from '../services/currencyService';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import StatCard from '../components/StatCard';
@@ -12,9 +13,11 @@ import { DollarSign, TrendingDown, TrendingUp } from 'lucide-react';
 import './Finances.css';
 
 export default function Finances() {
-  const { user } = useAuth();
+  const { user, userCurrency } = useAuth();
   const [expenses, setExpenses] = useState([]);
+  const [convertedExpenses, setConvertedExpenses] = useState([]);
   const [summary, setSummary] = useState(null);
+  const [convertedSummary, setConvertedSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState('');
@@ -46,6 +49,26 @@ export default function Finances() {
 
   // Synchroniser les dépenses en temps réel
   useExpensesSync(user?.id, setExpenses);
+
+  // Convertir les dépenses selon la devise sélectionnée
+  useEffect(() => {
+    if (expenses.length > 0 && userCurrency) {
+      const converted = convertExpensesData(expenses, userCurrency);
+      setConvertedExpenses(converted);
+    } else {
+      setConvertedExpenses(expenses);
+    }
+  }, [expenses, userCurrency]);
+
+  // Convertir le résumé financier selon la devise
+  useEffect(() => {
+    if (summary && userCurrency) {
+      const converted = convertFinancialData(summary, userCurrency);
+      setConvertedSummary(converted);
+    } else {
+      setConvertedSummary(summary);
+    }
+  }, [summary, userCurrency]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -88,25 +111,25 @@ export default function Finances() {
             </button>
           </div>
 
-          {!loading && summary && (
+          {!loading && convertedSummary && (
             <div className="stats-grid">
               <StatCard
                 title="Chiffre d'Affaires"
-                value={formatCurrency(summary.totalRevenue)}
+                value={formatCurrency(convertedSummary.totalRevenue)}
                 icon={TrendingUp}
                 color="blue"
               />
               <StatCard
                 title="Dépenses Totales"
-                value={formatCurrency(summary.totalExpenses)}
+                value={formatCurrency(convertedSummary.totalExpenses)}
                 icon={TrendingDown}
                 color="orange"
               />
               <StatCard
                 title="Bénéfice Net"
-                value={formatCurrency(summary.netProfit)}
+                value={formatCurrency(convertedSummary.netProfit)}
                 icon={DollarSign}
-                color={summary.netProfit >= 0 ? 'green' : 'purple'}
+                color={convertedSummary.netProfit >= 0 ? 'green' : 'purple'}
               />
             </div>
           )}
@@ -192,7 +215,7 @@ export default function Finances() {
                       </tr>
                     </thead>
                     <tbody>
-                      {expenses.map((expense) => (
+                      {convertedExpenses.map((expense) => (
                         <tr key={expense.id}>
                           <td>{formatDate(expense.date)}</td>
                           <td>{expense.description}</td>

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { supabase } from '../services/supabaseClient';
 
 /**
@@ -6,35 +6,58 @@ import { supabase } from '../services/supabaseClient';
  * @param {string} table - Nom de la table Supabase
  * @param {string} userId - ID de l'utilisateur
  * @param {function} onDataChange - Callback quand les données changent
- * @param {array} dependencies - Dépendances pour le useEffect
  */
-export function useRealtimeSync(table, userId, onDataChange, dependencies = []) {
+export function useRealtimeSync(table, userId, onDataChange) {
+  const callbackRef = useRef(onDataChange);
+  
   useEffect(() => {
-    if (!userId || !table || !onDataChange) return;
+    callbackRef.current = onDataChange;
+  }, [onDataChange]);
 
-    // S'abonner aux changements real-time
-    const subscription = supabase
-      .channel(`${table}-${userId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*', // Écouter INSERT, UPDATE, DELETE
-          schema: 'public',
-          table: table,
-          filter: `user_id=eq.${userId}`, // Filtrer par utilisateur
-        },
-        (payload) => {
-          // Appeler la fonction de rappel avec les changements
-          onDataChange(payload);
-        }
-      )
-      .subscribe();
+  useEffect(() => {
+    if (!userId || !table) return;
+
+    let subscription;
+    
+    const subscribe = async () => {
+      // S'abonner aux changements real-time
+      subscription = supabase
+        .channel(`${table}-${userId}`)
+        .on(
+          'postgres_changes',
+          {
+            event: '*', // Écouter INSERT, UPDATE, DELETE
+            schema: 'public',
+            table: table,
+            filter: `user_id=eq.${userId}`, // Filtrer par utilisateur
+          },
+          (payload) => {
+            // Appeler la fonction de rappel avec les changements
+            if (callbackRef.current) {
+              callbackRef.current(payload);
+            }
+          }
+        )
+        .subscribe((status) => {
+          if (status === 'SUBSCRIBED') {
+            console.log(`✅ Souscription à ${table} activée`);
+          } else if (status === 'CLOSED' || status === 'CHANNEL_ERROR') {
+            console.warn(`⚠️ Problème souscription ${table}:`, status);
+          }
+        });
+    };
+
+    subscribe().catch(err => {
+      console.error(`Erreur souscription ${table}:`, err);
+    });
 
     // Nettoyer l'abonnement au démontage
     return () => {
-      supabase.removeChannel(subscription);
+      if (subscription) {
+        supabase.removeChannel(subscription);
+      }
     };
-  }, [table, userId, onDataChange, ...dependencies]);
+  }, [table, userId]);
 }
 
 /**

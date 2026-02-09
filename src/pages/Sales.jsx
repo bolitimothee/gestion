@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { salesService } from '../services/salesService';
 import { stockService } from '../services/stockService';
 import { useSalesSync } from '../hooks/useRealtimeSync';
+import { convertSalesData } from '../services/currencyService';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import { Plus, Edit2, Trash2, AlertCircle, Download, Mail, Share2 } from 'lucide-react';
@@ -11,8 +12,9 @@ import { formatCurrency, formatDate } from '../utils/formatters';
 import './Sales.css';
 
 export default function Sales() {
-  const { user, account } = useAuth();
+  const { user, account, userCurrency } = useAuth();
   const [sales, setSales] = useState([]);
+  const [convertedSales, setConvertedSales] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -48,6 +50,16 @@ export default function Sales() {
 
   // Synchroniser les ventes en temps réel
   useSalesSync(user?.id, setSales);
+
+  // Convertir les ventes selon la devise sélectionnée
+  useEffect(() => {
+    if (sales.length > 0 && userCurrency) {
+      const converted = convertSalesData(sales, userCurrency);
+      setConvertedSales(converted);
+    } else {
+      setConvertedSales(sales);
+    }
+  }, [sales, userCurrency]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -227,7 +239,7 @@ export default function Sales() {
                             </tr>
                           </thead>
                           <tbody>
-                            {sales.map((sale) => {
+                            {convertedSales.map((sale) => {
                               const product = products.find(p => p.id === sale.product_id);
                               return (
                                 <tr key={sale.id}>

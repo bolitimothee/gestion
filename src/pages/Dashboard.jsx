@@ -19,8 +19,7 @@ import {
 import './Dashboard.css';
 
 export default function Dashboard() {
-  const { user } = useAuth();
-  const { user: authUser, account, updateUserCurrency, userCurrency } = useAuth();
+  const { user, account, updateUserCurrency, userCurrency } = useAuth();
   const [stats, setStats] = useState(null);
   const [recentSales, setRecentSales] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -61,12 +60,12 @@ export default function Dashboard() {
         
         setOriginalStats(originalData);
         
-        // Convertir en devise sélectionnée
+        // Convertir immédiatement avec la devise actuelle
         const convertedData = convertFinancialData({
           totalRevenue: originalData.revenue,
           netProfit: originalData.netProfit,
           stockValue: originalData.stockValue,
-          totalExpenses: financeRes.data.totalExpenses || 0,
+          totalExpenses: originalData.totalExpenses,
         }, currency);
         
         setStats({
@@ -95,12 +94,31 @@ export default function Dashboard() {
     }
   }, [user, loadDashboardData]);
 
-  // Synchroniser le compte en temps réel pour les changements de devise
-  useAccountSync(user?.id, (account) => {
-    if (account?.preferred_currency) {
-      setCurrency(account.preferred_currency);
+  // Mettre à jour localement quand userCurrency change (depuis AuthContext)
+  useEffect(() => {
+    if (userCurrency && userCurrency !== currency) {
+      setCurrency(userCurrency);
     }
-  });
+  }, [userCurrency]);
+
+  // Convertir les données quand la devise change
+  useEffect(() => {
+    if (originalStats) {
+      const convertedData = convertFinancialData({
+        totalRevenue: originalStats.revenue,
+        netProfit: originalStats.netProfit,
+        stockValue: originalStats.stockValue,
+        totalExpenses: originalStats.totalExpenses || 0,
+      }, currency);
+      
+      setStats({
+        revenue: convertedData.totalRevenue,
+        netProfit: convertedData.netProfit,
+        stockValue: convertedData.stockValue,
+        salesCount: originalStats.salesCount,
+      });
+    }
+  }, [currency, originalStats]);
 
   const handleCurrencyChange = async (newCurrency) => {
     // Mettre à jour localement
