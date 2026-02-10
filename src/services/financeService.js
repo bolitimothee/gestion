@@ -28,7 +28,6 @@ export const financeService = {
             category: expense.category,
             date: expense.date,
             notes: expense.notes,
-            created_at: new Date().toISOString(),
           },
         ])
         .select();
@@ -64,7 +63,10 @@ export const financeService = {
         .select('total_amount')
         .eq('user_id', userId);
 
-      const totalRevenue = salesData?.reduce((sum, sale) => sum + sale.total_amount, 0) || 0;
+      const totalRevenue = salesData?.reduce((sum, sale) => {
+        const amount = parseFloat(sale.total_amount) || 0;
+        return sum + amount;
+      }, 0) || 0;
 
       // Récupérer les dépenses
       const { data: expensesData } = await supabase
@@ -72,7 +74,10 @@ export const financeService = {
         .select('amount')
         .eq('user_id', userId);
 
-      const expenseExpenses = expensesData?.reduce((sum, expense) => sum + expense.amount, 0) || 0;
+      const totalExpensesAmount = expensesData?.reduce((sum, expense) => {
+        const amount = parseFloat(expense.amount) || 0;
+        return sum + amount;
+      }, 0) || 0;
 
       // Récupérer le coût d'achat des produits en stock
       const { data: productsData } = await supabase
@@ -81,26 +86,29 @@ export const financeService = {
         .eq('user_id', userId);
 
       const productCosts = productsData?.reduce((sum, product) => {
-        return sum + (product.quantity * product.purchase_price);
+        const qty = parseFloat(product.quantity) || 0;
+        const price = parseFloat(product.purchase_price) || 0;
+        return sum + (qty * price);
       }, 0) || 0;
 
       const stockValue = productsData?.reduce((sum, product) => {
-        return sum + (product.quantity * product.selling_price);
+        const qty = parseFloat(product.quantity) || 0;
+        const price = parseFloat(product.selling_price) || 0;
+        return sum + (qty * price);
       }, 0) || 0;
 
       // Les dépenses totales incluent les dépenses enregistrées + le coût d'achat des produits
-      const totalExpenses = expenseExpenses + productCosts;
+      const totalExpenses = totalExpensesAmount + productCosts;
 
       const netProfit = totalRevenue - totalExpenses;
 
       return {
         data: {
-          totalRevenue,
-          totalExpenses,
-          netProfit,
-          stockValue,
-          productCosts,
-          expenseExpenses,
+          totalRevenue: isFinite(totalRevenue) ? totalRevenue : 0,
+          totalExpenses: isFinite(totalExpenses) ? totalExpenses : 0,
+          netProfit: isFinite(netProfit) ? netProfit : 0,
+          stockValue: isFinite(stockValue) ? stockValue : 0,
+          productCosts: isFinite(productCosts) ? productCosts : 0,
         },
         error: null,
       };

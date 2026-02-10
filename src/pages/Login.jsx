@@ -27,11 +27,15 @@ export default function Login() {
     try {
       const result = await signIn(email, password);
       if (result.error) {
-        setError(result.error.message || 'Erreur de connexion');
-        setLoading(false);
+        // Gérer les différents types d'erreur
+        if (result.error === 'ACCOUNT_EXPIRED') {
+          navigate('/account-expired', { replace: true });
+        } else {
+          setError(result.error.message || result.error || 'Erreur de connexion');
+          setLoading(false);
+        }
       } else {
         // Attendre que le state se mette à jour avant de naviguer
-        // Le useEffect ci-dessus va gérer la redirection
         await new Promise(resolve => setTimeout(resolve, 200));
       }
     } catch (err) {

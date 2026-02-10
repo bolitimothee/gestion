@@ -3,21 +3,23 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { financeService } from '../services/financeService';
 import { useExpensesSync } from '../hooks/useRealtimeSync';
-import { convertExpensesData, convertFinancialData } from '../services/currencyService';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import StatCard from '../components/StatCard';
 import { Plus, Trash2, AlertCircle } from 'lucide-react';
-import { formatCurrency, formatDate } from '../utils/formatters';
+import { formatDate } from '../utils/formatters';
 import { DollarSign, TrendingDown, TrendingUp } from 'lucide-react';
 import './Finances.css';
 
+const formatFCFA = (amount) => {
+  if (!isFinite(amount)) return '0 FCFA';
+  return new Intl.NumberFormat('fr-FR').format(Math.round(amount)) + ' FCFA';
+};
+
 export default function Finances() {
-  const { user, userCurrency } = useAuth();
+  const { user } = useAuth();
   const [expenses, setExpenses] = useState([]);
-  const [convertedExpenses, setConvertedExpenses] = useState([]);
   const [summary, setSummary] = useState(null);
-  const [convertedSummary, setConvertedSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState('');
@@ -49,26 +51,6 @@ export default function Finances() {
 
   // Synchroniser les dépenses en temps réel
   useExpensesSync(user?.id, setExpenses);
-
-  // Convertir les dépenses selon la devise sélectionnée
-  useEffect(() => {
-    if (expenses.length > 0 && userCurrency) {
-      const converted = convertExpensesData(expenses, userCurrency);
-      setConvertedExpenses(converted);
-    } else {
-      setConvertedExpenses(expenses);
-    }
-  }, [expenses, userCurrency]);
-
-  // Convertir le résumé financier selon la devise
-  useEffect(() => {
-    if (summary && userCurrency) {
-      const converted = convertFinancialData(summary, userCurrency);
-      setConvertedSummary(converted);
-    } else {
-      setConvertedSummary(summary);
-    }
-  }, [summary, userCurrency]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -111,25 +93,25 @@ export default function Finances() {
             </button>
           </div>
 
-          {!loading && convertedSummary && (
+          {!loading && summary && (
             <div className="stats-grid">
               <StatCard
                 title="Chiffre d'Affaires"
-                value={formatCurrency(convertedSummary.totalRevenue)}
+                value={formatFCFA(summary.totalRevenue)}
                 icon={TrendingUp}
                 color="blue"
               />
               <StatCard
                 title="Dépenses Totales"
-                value={formatCurrency(convertedSummary.totalExpenses)}
+                value={formatFCFA(summary.totalExpenses)}
                 icon={TrendingDown}
                 color="orange"
               />
               <StatCard
                 title="Bénéfice Net"
-                value={formatCurrency(convertedSummary.netProfit)}
+                value={formatFCFA(summary.netProfit)}
                 icon={DollarSign}
-                color={convertedSummary.netProfit >= 0 ? 'green' : 'purple'}
+                color={summary.netProfit >= 0 ? 'green' : 'purple'}
               />
             </div>
           )}
@@ -215,12 +197,12 @@ export default function Finances() {
                       </tr>
                     </thead>
                     <tbody>
-                      {convertedExpenses.map((expense) => (
+                      {expenses.map((expense) => (
                         <tr key={expense.id}>
                           <td>{formatDate(expense.date)}</td>
                           <td>{expense.description}</td>
                           <td>{expense.category}</td>
-                          <td className="amount">{formatCurrency(expense.amount)}</td>
+                          <td className="amount">{formatFCFA(expense.amount)}</td>
                           <td>
                             <button
                               onClick={() => handleDelete(expense.id)}

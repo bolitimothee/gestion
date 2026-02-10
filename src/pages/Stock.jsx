@@ -3,17 +3,19 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { stockService } from '../services/stockService';
 import { useProductsSync } from '../hooks/useRealtimeSync';
-import { convertProductsData } from '../services/currencyService';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import { Plus, Edit2, Trash2, AlertCircle } from 'lucide-react';
-import { formatCurrency } from '../utils/formatters';
 import './Stock.css';
 
+const formatFCFA = (amount) => {
+  if (!isFinite(amount)) return '0 FCFA';
+  return new Intl.NumberFormat('fr-FR').format(Math.round(amount)) + ' FCFA';
+};
+
 export default function Stock() {
-  const { user, userCurrency } = useAuth();
+  const { user } = useAuth();
   const [products, setProducts] = useState([]);
-  const [convertedProducts, setConvertedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -34,7 +36,7 @@ export default function Stock() {
     const { data, error } = await stockService.getProducts(user.id);
     if (error) {
       console.error('Erreur stockService:', error);
-      setError('Erreur lors du chargement des produits. Vérifiez que la table "products" existe dans Supabase.');
+      setError('Erreur lors du chargement des produits.');
       setProducts([]);
     } else if (data) {
       setProducts(data || []);
@@ -52,16 +54,6 @@ export default function Stock() {
 
   // Synchroniser les produits en temps réel
   useProductsSync(user?.id, setProducts);
-
-  // Convertir les produits selon la devise sélectionnée
-  useEffect(() => {
-    if (products.length > 0 && userCurrency) {
-      const converted = convertProductsData(products, userCurrency);
-      setConvertedProducts(converted);
-    } else {
-      setConvertedProducts(products);
-    }
-  }, [products, userCurrency]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -280,7 +272,7 @@ export default function Stock() {
             <div className="loading">Chargement des produits...</div>
           ) : (
             <div className="products-grid">
-              {convertedProducts.map((product) => (
+              {products.map((product) => (
                 <div key={product.id} className="product-card">
                   <div className="product-header">
                     <h3>{product.name}</h3>
@@ -292,19 +284,19 @@ export default function Stock() {
                   <p className="product-category">Catégorie: {product.category}</p>
                   <div className="product-price">
                     <span className="label">Prix d'achat:</span>
-                    <span className="price">{formatCurrency(product.purchase_price)}</span>
+                    <span className="price">{formatFCFA(product.purchase_price)}</span>
                   </div>
                   <div className="product-price">
                     <span className="label">Prix de revente:</span>
-                    <span className="price">{formatCurrency(product.selling_price)}</span>
+                    <span className="price">{formatFCFA(product.selling_price)}</span>
                   </div>
                   <div className="product-margin">
                     <span className="label">Marge:</span>
-                    <span className="margin">{formatCurrency(product.selling_price - product.purchase_price)} ({Math.round(((product.selling_price - product.purchase_price) / product.purchase_price) * 100)}%)</span>
+                    <span className="margin">{formatFCFA(product.selling_price - product.purchase_price)} ({Math.round(((product.selling_price - product.purchase_price) / product.purchase_price) * 100)}%)</span>
                   </div>
                   <div className="product-total">
                     <span className="label">Total:</span>
-                    <span className="total">{formatCurrency(product.quantity * product.unit_price)}</span>
+                    <span className="total">{formatFCFA(product.quantity * product.selling_price)}</span>
                   </div>
                   <p className="product-description">{product.description}</p>
                   <div className="product-actions">

@@ -4,17 +4,20 @@ import { useAuth } from '../context/AuthContext';
 import { salesService } from '../services/salesService';
 import { stockService } from '../services/stockService';
 import { useSalesSync } from '../hooks/useRealtimeSync';
-import { convertSalesData } from '../services/currencyService';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import { Plus, Edit2, Trash2, AlertCircle, Download, Mail, Share2 } from 'lucide-react';
-import { formatCurrency, formatDate } from '../utils/formatters';
+import { formatDate } from '../utils/formatters';
 import './Sales.css';
 
+const formatFCFA = (amount) => {
+  if (!isFinite(amount)) return '0 FCFA';
+  return new Intl.NumberFormat('fr-FR').format(Math.round(amount)) + ' FCFA';
+};
+
 export default function Sales() {
-  const { user, account, userCurrency } = useAuth();
+  const { user, account } = useAuth();
   const [sales, setSales] = useState([]);
-  const [convertedSales, setConvertedSales] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -50,16 +53,6 @@ export default function Sales() {
 
   // Synchroniser les ventes en temps réel
   useSalesSync(user?.id, setSales);
-
-  // Convertir les ventes selon la devise sélectionnée
-  useEffect(() => {
-    if (sales.length > 0 && userCurrency) {
-      const converted = convertSalesData(sales, userCurrency);
-      setConvertedSales(converted);
-    } else {
-      setConvertedSales(sales);
-    }
-  }, [sales, userCurrency]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -153,14 +146,14 @@ export default function Sales() {
       text += `Client: ${sale.customer_name}\n`;
       text += `Produit: ${product?.name || 'Produit supprimé'}\n`;
       text += `Quantité: ${sale.quantity}\n`;
-      text += `Montant: ${formatCurrency(sale.total_amount)}\n`;
+      text += `Montant: ${formatFCFA(sale.total_amount)}\n`;
       text += `Notes: ${sale.notes || 'Aucune'}\n`;
       text += `${'-'.repeat(80)}\n\n`;
     });
 
     text += `${'='.repeat(80)}\n`;
     text += `Total ventes: ${sales.length}\n`;
-    text += `Montant total: ${formatCurrency(sales.reduce((sum, s) => sum + s.total_amount, 0))}\n`;
+    text += `Montant total: ${formatFCFA(sales.reduce((sum, s) => sum + s.total_amount, 0))}\n`;
 
     return text;
   }
@@ -239,7 +232,7 @@ export default function Sales() {
                             </tr>
                           </thead>
                           <tbody>
-                            {convertedSales.map((sale) => {
+                            {sales.map((sale) => {
                               const product = products.find(p => p.id === sale.product_id);
                               return (
                                 <tr key={sale.id}>
@@ -248,7 +241,7 @@ export default function Sales() {
                                   <td data-label="Client">{sale.customer_name}</td>
                                   <td data-label="Produit">{product?.name || 'Produit supprimé'}</td>
                                   <td data-label="Quantité" className="quantity">{sale.quantity}</td>
-                                  <td data-label="Montant" className="amount">{formatCurrency(sale.total_amount)}</td>
+                                  <td data-label="Montant" className="amount">{formatFCFA(sale.total_amount)}</td>
                                   <td className="actions-cell" data-label="Actions">
                                     <button
                                       onClick={() => handleEdit(sale)}
@@ -303,7 +296,7 @@ export default function Sales() {
                             <option value="">Sélectionner un produit</option>
                             {products.map((product) => (
                               <option key={product.id} value={product.id}>
-                                {product.name} - {formatCurrency(product.selling_price)}
+                                {product.name} - {formatFCFA(product.selling_price)}
                               </option>
                             ))}
                           </select>

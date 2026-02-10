@@ -4,28 +4,24 @@ import { useAuth } from '../context/AuthContext';
 import { financeService } from '../services/financeService';
 import { salesService } from '../services/salesService';
 import { stockService } from '../services/stockService';
-import { useAccountSync } from '../hooks/useRealtimeSync';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import StatCard from '../components/StatCard';
-import { DollarSign, TrendingUp, Package, ShoppingCart, Globe } from 'lucide-react';
-import { 
-  getUserCurrency, 
-  setUserCurrency, 
-  getAvailableCurrencies,
-  convertFinancialData,
-  formatCurrencyAmount 
-} from '../services/currencyService';
+import { DollarSign, TrendingUp, Package, ShoppingCart } from 'lucide-react';
 import './Dashboard.css';
 
+// Formater les montants en FCFA
+const formatFCFA = (amount) => {
+  if (!isFinite(amount)) return '0 FCFA';
+  return new Intl.NumberFormat('fr-FR').format(Math.round(amount)) + ' FCFA';
+};
+
 export default function Dashboard() {
-  const { user, account, updateUserCurrency, userCurrency } = useAuth();
+  const { user } = useAuth();
   const [stats, setStats] = useState(null);
   const [recentSales, setRecentSales] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currency, setCurrency] = useState(userCurrency || getUserCurrency());
-  const [originalStats, setOriginalStats] = useState(null);
 
   const loadDashboardData = useCallback(async () => {
     setLoading(true);
@@ -44,35 +40,16 @@ export default function Dashboard() {
           sales: salesRes.error,
           stock: stockRes.error,
         });
-        setError('Erreur lors du chargement des données. Vérifiez que les tables Supabase sont créées.');
+        setError('Erreur lors du chargement des données.');
         return;
       }
 
       if (financeRes.data && salesRes.data !== null && stockRes.data !== null) {
-        const originalData = {
+        setStats({
           revenue: financeRes.data.totalRevenue || 0,
           netProfit: financeRes.data.netProfit || 0,
           stockValue: stockRes.data || 0,
           salesCount: salesRes.data || 0,
-          totalRevenue: financeRes.data.totalRevenue || 0,
-          totalExpenses: financeRes.data.totalExpenses || 0,
-        };
-        
-        setOriginalStats(originalData);
-        
-        // Convertir immédiatement avec la devise actuelle
-        const convertedData = convertFinancialData({
-          totalRevenue: originalData.revenue,
-          netProfit: originalData.netProfit,
-          stockValue: originalData.stockValue,
-          totalExpenses: originalData.totalExpenses,
-        }, currency);
-        
-        setStats({
-          revenue: convertedData.totalRevenue,
-          netProfit: convertedData.netProfit,
-          stockValue: convertedData.stockValue,
-          salesCount: originalData.salesCount,
         });
       }
 
@@ -86,67 +63,13 @@ export default function Dashboard() {
       setError('Erreur système lors du chargement des données.');
     }
     setLoading(false);
-  }, [user, currency]);
+  }, [user]);
 
   useEffect(() => {
     if (user) {
       loadDashboardData();
     }
   }, [user, loadDashboardData]);
-
-  // Mettre à jour localement quand userCurrency change (depuis AuthContext)
-  useEffect(() => {
-    if (userCurrency && userCurrency !== currency) {
-      setCurrency(userCurrency);
-    }
-  }, [userCurrency]);
-
-  // Convertir les données quand la devise change
-  useEffect(() => {
-    if (originalStats) {
-      const convertedData = convertFinancialData({
-        totalRevenue: originalStats.revenue,
-        netProfit: originalStats.netProfit,
-        stockValue: originalStats.stockValue,
-        totalExpenses: originalStats.totalExpenses || 0,
-      }, currency);
-      
-      setStats({
-        revenue: convertedData.totalRevenue,
-        netProfit: convertedData.netProfit,
-        stockValue: convertedData.stockValue,
-        salesCount: originalStats.salesCount,
-      });
-    }
-  }, [currency, originalStats]);
-
-  const handleCurrencyChange = async (newCurrency) => {
-    // Mettre à jour localement
-    setCurrency(newCurrency);
-    setUserCurrency(newCurrency);
-    
-    // Mettre à jour dans Supabase via le contexte
-    await updateUserCurrency(newCurrency);
-    
-    // Convertir les statistiques
-    if (originalStats) {
-      const convertedData = convertFinancialData({
-        totalRevenue: originalStats.revenue,
-        netProfit: originalStats.netProfit,
-        stockValue: originalStats.stockValue,
-        totalExpenses: originalStats.totalExpenses || 0,
-      }, newCurrency);
-      
-      setStats({
-        revenue: convertedData.totalRevenue,
-        netProfit: convertedData.netProfit,
-        stockValue: convertedData.stockValue,
-        salesCount: originalStats.salesCount,
-      });
-    }
-  };
-
-  const currencies = getAvailableCurrencies();
 
   return (
     <div className="layout">
@@ -157,7 +80,7 @@ export default function Dashboard() {
           <div className="page-header">
             <div style={{ flex: 1 }}>
               <h1>Tableau de Bord</h1>
-              <p>Système de gestion des stocks et finances</p>
+              <p>Gestion des stocks et finances en FCFA</p>
             </div>
           </div>
 
@@ -167,44 +90,25 @@ export default function Dashboard() {
             <div className="error-container" style={{ padding: '20px', backgroundColor: '#fee', borderRadius: '8px', color: '#c33', marginTop: '20px' }}>
               <h3>⚠️ Erreur lors du chargement</h3>
               <p>{error}</p>
-              <small>Vérifiez la console (F12) pour plus de détails.</small>
             </div>
           ) : stats ? (
             <>
-              <div className="currency-selector">
-                <label htmlFor="currency-select">
-                  <Globe size={16} style={{ display: 'inline-block', marginRight: '8px', verticalAlign: 'middle' }} />
-                  Choisir la devise
-                </label>
-                <select
-                  id="currency-select"
-                  value={currency}
-                  onChange={(e) => handleCurrencyChange(e.target.value)}
-                >
-                  {currencies.map((curr) => (
-                    <option key={curr.code} value={curr.code}>
-                      {curr.code} - {curr.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
               <div className="stats-grid">
                 <StatCard
                   title="Chiffre d'Affaires"
-                  value={formatCurrencyAmount(stats.revenue, currency)}
+                  value={formatFCFA(stats.revenue)}
                   icon={DollarSign}
                   color="blue"
                 />
                 <StatCard
                   title="Bénéfice Net"
-                  value={formatCurrencyAmount(stats.netProfit, currency)}
+                  value={formatFCFA(stats.netProfit)}
                   icon={TrendingUp}
                   color="green"
                 />
                 <StatCard
                   title="Valeur du Stock"
-                  value={formatCurrencyAmount(stats.stockValue, currency)}
+                  value={formatFCFA(stats.stockValue)}
                   icon={Package}
                   color="orange"
                 />
@@ -233,7 +137,7 @@ export default function Dashboard() {
                         {recentSales.map((sale) => (
                           <tr key={sale.id}>
                             <td data-label="Client">{sale.customer_name}</td>
-                            <td className="amount" data-label="Montant">{formatCurrencyAmount(sale.total_amount, currency)}</td>
+                            <td className="amount" data-label="Montant">{formatFCFA(sale.total_amount)}</td>
                             <td data-label="Date">{new Date(sale.sale_date).toLocaleDateString('fr-FR')}</td>
                             <td data-label="Quantité">{sale.quantity}</td>
                           </tr>

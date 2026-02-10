@@ -18,11 +18,10 @@ export const authService = {
           .insert([
             {
               user_id: data.user.id,
-              account_name: accountName,
+              business_name: accountName,
               email,
-              validity_date: validityDate,
+              validity_date: validityDate || null,
               is_active: true,
-              created_at: new Date().toISOString(),
             },
           ]);
 
@@ -44,35 +43,43 @@ export const authService = {
 
       if (error) throw error;
 
-      // Vérifier si le compte est actif et valide (optionnel si table n'existe pas)
+      // Vérifier la validité du compte
       if (data.user) {
         try {
           const { data: accountData, error: accountError } = await supabase
             .from('accounts')
-            .select('*')
+            .select('validity_date, is_active')
             .eq('user_id', data.user.id)
             .maybeSingle();
 
           if (!accountError && accountData) {
+            // Vérifier si le compte est actif
+            if (!accountData.is_active) {
+              await supabase.auth.signOut();
+              return { 
+                data: null, 
+                error: 'Votre compte a été désactivé. Veuillez contacter l\'administrateur.' 
+              };
+            }
+
             // Vérifier la date de validité
             if (accountData.validity_date) {
               const validityDate = new Date(accountData.validity_date);
               const today = new Date();
+              today.setHours(0, 0, 0, 0);
+              validityDate.setHours(0, 0, 0, 0);
+              
               if (today > validityDate) {
-                throw new Error('Votre compte a expiré. Veuillez contacter l\'administrateur.');
+                await supabase.auth.signOut();
+                return { 
+                  data: null, 
+                  error: 'ACCOUNT_EXPIRED' 
+                };
               }
             }
-
-            if (!accountData.is_active) {
-              throw new Error('Votre compte est désactivé.');
-            }
-          } else if (accountError) {
-            console.warn('Avertissement: Impossible de vérifier le compte:', accountError.message);
-            // Ne pas bloquer la connexion si la table n'existe pas
           }
         } catch (accError) {
           console.warn('Erreur lors de la vérification du compte:', accError.message);
-          // Continuer quand même - la table peut ne pas exister encore
         }
       }
 
@@ -110,21 +117,54 @@ export const authService = {
         .eq('user_id', userId)
         .maybeSingle();
 
-      // Si table n'existe pas ou erreur, retourner objet vide
       if (error) {
         console.warn('Impossible de charger les détails du compte:', error.message);
-        return { data: { user_id: userId, account_name: 'Utilisateur', email: '' }, error: null };
+        return { data: { user_id: userId, business_name: 'Utilisateur', email: '', validity_date: null, is_active: true }, error: null };
       }
       
-      // Si pas de données, retourner objet fallback
       if (!data) {
-        return { data: { user_id: userId, account_name: 'Utilisateur', email: '' }, error: null };
+        return { data: { user_id: userId, business_name: 'Utilisateur', email: '', validity_date: null, is_active: true }, error: null };
       }
       
       return { data, error: null };
     } catch (err) {
       console.warn('Erreur getAccountDetails:', err);
-      return { data: { user_id: userId, account_name: 'Utilisateur', email: '' }, error: null };
+      return { data: { user_id: userId, business_name: 'Utilisateur', email: '', validity_date: null, is_active: true }, error: null };
+    }
+  },
+
+  async checkAccountValidity(userId) {
+    try {
+      const { data, error } = await supabase
+        .from('accounts')
+        .select('validity_date, is_active')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      if (error) throw error;
+      if (!data) return { valid: true, reason: null };
+
+      // Vérifier si le compte est actif
+      if (!data.is_active) {
+        return { valid: false, reason: 'ACCOUNT_DISABLED' };
+      }
+
+      // Vérifier la date de validité
+      if (data.validity_date) {
+        const validityDate = new Date(data.validity_date);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        validityDate.setHours(0, 0, 0, 0);
+        
+        if (today > validityDate) {
+          return { valid: false, reason: 'ACCOUNT_EXPIRED' };
+        }
+      }
+
+      return { valid: true, reason: null };
+    } catch (err) {
+      console.error('Erreur checkAccountValidity:', err);
+      return { valid: true, reason: null };
     }
   },
 };

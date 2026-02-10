@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export function ProtectedRoute({ children }) {
-  const { user, loading } = useAuth();
+  const { user, loading, accountValid } = useAuth();
 
   if (loading) {
     return (
@@ -39,6 +39,11 @@ export function ProtectedRoute({ children }) {
     return <Navigate to="/login" replace />;
   }
 
-  // L'utilisateur est connecté, afficher le contenu
+  // Vérifier si le compte est valide
+  if (!accountValid) {
+    return <Navigate to="/account-expired" replace />;
+  }
+
+  // L'utilisateur est connecté et le compte est valide, afficher le contenu
   return children;
 }

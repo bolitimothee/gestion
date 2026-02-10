@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import { SidebarProvider } from './context/SidebarContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import Login from './pages/Login';
+import AccountExpired from './pages/AccountExpired';
 import Dashboard from './pages/Dashboard';
 import Stock from './pages/Stock';
 import Sales from './pages/Sales';
@@ -18,6 +19,7 @@ function App() {
         <SidebarProvider>
           <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/account-expired" element={<AccountExpired />} />
           <Route
             path="/dashboard"
             element={
