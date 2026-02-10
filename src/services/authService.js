@@ -1,9 +1,9 @@
 import { supabase } from './supabaseClient';
 
 export const authService = {
-  async signUp(email, password, accountName, validityDate) {
+  async signUp(email, password, businessName = 'Mon Entreprise') {
     try {
-      // Créer l'utilisateur
+      // Créer l'utilisateur dans auth.users
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -11,22 +11,25 @@ export const authService = {
 
       if (error) throw error;
 
-      // Créer le compte dans la table accounts
+      // Créer le compte dans la table accounts (nouveau schéma)
       if (data.user) {
         const { error: accountError } = await supabase
           .from('accounts')
           .insert([
             {
               user_id: data.user.id,
-              account_name: accountName,
               email,
-              validity_date: validityDate,
-              is_active: true,
-              created_at: new Date().toISOString(),
+              business_name: businessName,
+              username: email.split('@')[0],
+              preferred_currency: 'USD',
+              // Les autres champs sont NULL par défaut
             },
           ]);
 
-        if (accountError) throw accountError;
+        if (accountError) {
+          // Ne pas bloquer si la table n'existe pas
+          console.warn('⚠️ Impossible créer compte:', accountError.message);
+        }
       }
 
       return { data, error: null };
@@ -44,7 +47,8 @@ export const authService = {
 
       if (error) throw error;
 
-      // Vérifier si le compte est actif et valide (optionnel si table n'existe pas)
+      // Optionnel: Vérifier le compte dans la table accounts
+      // Mais ne pas bloquer la connexion si la table n'existe pas
       if (data.user) {
         try {
           const { data: accountData, error: accountError } = await supabase
@@ -53,26 +57,17 @@ export const authService = {
             .eq('user_id', data.user.id)
             .maybeSingle();
 
-          if (!accountError && accountData) {
-            // Vérifier la date de validité
-            if (accountData.validity_date) {
-              const validityDate = new Date(accountData.validity_date);
-              const today = new Date();
-              if (today > validityDate) {
-                throw new Error('Votre compte a expiré. Veuillez contacter l\'administrateur.');
-              }
-            }
-
-            if (!accountData.is_active) {
-              throw new Error('Votre compte est désactivé.');
-            }
-          } else if (accountError) {
-            console.warn('Avertissement: Impossible de vérifier le compte:', accountError.message);
-            // Ne pas bloquer la connexion si la table n'existe pas
+          if (accountError) {
+            console.warn('⚠️ Impossible charger compte:', accountError.message);
+            // Continue quand même
+          }
+          
+          if (accountData) {
+            console.log('✅ Compte trouvé:', accountData);
           }
         } catch (accError) {
-          console.warn('Erreur lors de la vérification du compte:', accError.message);
-          // Continuer quand même - la table peut ne pas exister encore
+          console.warn('❌ Erreur vérif compte:', accError.message);
+          // Continue quand même
         }
       }
 
@@ -110,21 +105,45 @@ export const authService = {
         .eq('user_id', userId)
         .maybeSingle();
 
-      // Si table n'existe pas ou erreur, retourner objet vide
+      // Si erreur ou pas de données, retourner objet fallback
       if (error) {
-        console.warn('Impossible de charger les détails du compte:', error.message);
-        return { data: { user_id: userId, account_name: 'Utilisateur', email: '' }, error: null };
+        console.warn('⚠️ Erreur charger compte:', error.message);
+        return { 
+          data: { 
+            user_id: userId, 
+            business_name: 'Mon Entreprise',
+            preferred_currency: 'USD',
+            email: ''
+          }, 
+          error: null 
+        };
       }
       
       // Si pas de données, retourner objet fallback
       if (!data) {
-        return { data: { user_id: userId, account_name: 'Utilisateur', email: '' }, error: null };
+        return { 
+          data: { 
+            user_id: userId, 
+            business_name: 'Mon Entreprise',
+            preferred_currency: 'USD',
+            email: ''
+          }, 
+          error: null 
+        };
       }
       
       return { data, error: null };
     } catch (err) {
-      console.warn('Erreur getAccountDetails:', err);
-      return { data: { user_id: userId, account_name: 'Utilisateur', email: '' }, error: null };
+      console.warn('❌ Erreur getAccountDetails:', err);
+      return { 
+        data: { 
+          user_id: userId, 
+          business_name: 'Mon Entreprise',
+          preferred_currency: 'USD',
+          email: ''
+        }, 
+        error: null 
+      };
     }
   },
 };

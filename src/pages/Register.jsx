@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Mail, Lock, Building2, Calendar, AlertCircle } from 'lucide-react';
+import { Mail, Lock, Building2, AlertCircle } from 'lucide-react';
 import './Auth.css';
 
 export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [accountName, setAccountName] = useState('');
-  const [validityDate, setValidityDate] = useState('');
+  const [businessName, setBusinessName] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -26,14 +25,20 @@ export default function Register() {
     setError('');
     setLoading(true);
 
-    if (!email || !password || !accountName || !validityDate) {
+    if (!email || !password || !businessName) {
       setError('Tous les champs sont obligatoires');
       setLoading(false);
       return;
     }
 
+    if (password.length < 8) {
+      setError('Le mot de passe doit contenir au moins 8 caractères');
+      setLoading(false);
+      return;
+    }
+
     try {
-      const result = await signUp(email, password, accountName, validityDate);
+      const result = await signUp(email, password, businessName);
       if (result.error) {
         setError(result.error.message || 'Erreur lors de l\'inscription');
         setLoading(false);
@@ -50,7 +55,7 @@ export default function Register() {
 
   return (
     <div className="auth-container">
-      <div className="auth-card auth-card-large">
+      <div className="auth-card">
         <div className="auth-header">
           <h1>S'inscrire</h1>
           <p>Créer un nouveau compte</p>
@@ -65,14 +70,14 @@ export default function Register() {
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label htmlFor="accountName">Nom du Commerce</label>
+            <label htmlFor="businessName">Nom du Commerce</label>
             <div className="input-wrapper">
               <Building2 size={20} className="input-icon" />
               <input
-                id="accountName"
+                id="businessName"
                 type="text"
-                value={accountName}
-                onChange={(e) => setAccountName(e.target.value)}
+                value={businessName}
+                onChange={(e) => setBusinessName(e.target.value)}
                 placeholder="Ex: Ma Boutique SARL"
                 required
               />
@@ -103,21 +108,7 @@ export default function Register() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Min. 8 caracteres"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="validityDate">Date de validité du compte</label>
-            <div className="input-wrapper">
-              <Calendar size={20} className="input-icon" />
-              <input
-                id="validityDate"
-                type="date"
-                value={validityDate}
-                onChange={(e) => setValidityDate(e.target.value)}
+                placeholder="Min. 8 caractères"
                 required
               />
             </div>
