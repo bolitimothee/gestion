@@ -8,8 +8,6 @@ import Dashboard from './pages/Dashboard';
 import Stock from './pages/Stock';
 import Sales from './pages/Sales';
 import Finances from './pages/Finances';
-import TestConnection from './pages/TestConnection';
-import Startup from './pages/Startup';
 import './styles/globals.css';
 import './styles/components.css';
 
@@ -20,7 +18,6 @@ function App() {
         <SidebarProvider>
           <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/test" element={<TestConnection />} />
           <Route
             path="/dashboard"
             element={
@@ -53,7 +50,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/" element={<Startup />} />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </SidebarProvider>
       </AuthProvider>

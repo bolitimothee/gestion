@@ -19,17 +19,7 @@ export function AuthProvider({ children }) {
       return null;
     }
     try {
-      const { data, error } = await authService.getAccountDetails(userId);
-      
-      // Si la table n'existe pas ou RLS refuse l'accès
-      if (error) {
-        console.warn('⚠️ Impossible charger compte:', error.message);
-        // Ne pas bloquer - utiliser les valeurs par défaut
-        setAccount(null);
-        setUserCurrencyState('USD');
-        return null;
-      }
-      
+      const { data } = await authService.getAccountDetails(userId);
       if (data) {
         setAccount(data);
         // Charger la devise préférée du compte
@@ -40,10 +30,7 @@ export function AuthProvider({ children }) {
         return data;
       }
     } catch (err) {
-      console.warn('⚠️ Erreur chargement compte:', err.message);
-      // Ne pas lancer d'erreur - utiliser les valeurs par défaut
-      setAccount(null);
-      setUserCurrencyState('USD');
+      console.warn('Erreur chargement compte:', err);
     }
     return null;
   }, []);
@@ -117,9 +104,9 @@ export function AuthProvider({ children }) {
         return { error: err };
       }
     },
-    signUp: async (email, password, businessName = 'Mon Entreprise') => {
+    signUp: async (email, password, accountName, validityDate) => {
       try {
-        const result = await authService.signUp(email, password, businessName);
+        const result = await authService.signUp(email, password, accountName, validityDate);
         if (result.error) {
           return { data: null, error: result.error };
         }
