@@ -6,7 +6,7 @@ import { useExpensesSync } from '../hooks/useRealtimeSync';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import StatCard from '../components/StatCard';
-import { Plus, Trash2, AlertCircle } from 'lucide-react';
+import { Plus, Trash2, AlertCircle, Download, Share2, Mail } from 'lucide-react';
 import { formatDate } from '../utils/formatters';
 import { DollarSign, TrendingDown, TrendingUp } from 'lucide-react';
 import './Finances.css';
@@ -73,10 +73,69 @@ export default function Finances() {
     }
   }
 
-  async function handleDelete() {
+  async function handleDelete(expenseId) {
     if (confirm('Êtes-vous sûr de vouloir supprimer cette dépense?')) {
-      await loadData();
+      try {
+        const result = await financeService.deleteExpense(expenseId);
+        if (result.error) throw result.error;
+        await loadData();
+      } catch (err) {
+        console.error('Erreur suppression:', err);
+        setError('Erreur lors de la suppression de la dépense');
+      }
     }
+  }
+
+  function downloadHistorique() {
+    const content = generateHistoriqueDepensesText();
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+    element.setAttribute('download', `historique_depenses_${new Date().toISOString().split('T')[0]}.txt`);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  }
+
+  function generateHistoriqueDepensesText() {
+    let text = `HISTORIQUE DES DÉPENSES\n`;
+    text += `Entreprise: ${user?.email || 'Commerce'}\n`;
+    text += `Date d'export: ${new Date().toLocaleString('fr-FR')}\n`;
+    text += `${'='.repeat(80)}\n\n`;
+
+    expenses.forEach((expense) => {
+      text += `Date: ${formatDate(expense.date)}\n`;
+      text += `Description: ${expense.description}\n`;
+      text += `Catégorie: ${expense.category}\n`;
+      text += `Montant: ${formatFCFA(expense.amount)}\n`;
+      text += `Remarques: ${expense.notes || 'Aucune'}\n`;
+      text += `${'-'.repeat(80)}\n\n`;
+    });
+
+    text += `${'='.repeat(80)}\n`;
+    text += `Total dépenses: ${expenses.length}\n`;
+    text += `Montant total: ${formatFCFA(expenses.reduce((sum, e) => sum + parseFloat(e.amount), 0))}\n`;
+    if (summary) {
+      text += `\nRÉSUMÉ FINANCIER:\n`;
+      text += `Chiffre d'Affaires: ${formatFCFA(summary.totalRevenue)}\n`;
+      text += `Dépenses Totales: ${formatFCFA(summary.totalExpenses)}\n`;
+      text += `Bénéfice Net: ${formatFCFA(summary.netProfit)}\n`;
+    }
+
+    return text;
+  }
+
+  function shareViaWhatsApp() {
+    const text = generateHistoriqueDepensesText();
+    const encodedText = encodeURIComponent(text);
+    window.open(`https://wa.me/?text=${encodedText}`, '_blank');
+  }
+
+  function shareViaMail() {
+    const text = generateHistoriqueDepensesText();
+    const subject = `Historique des dépenses - ${new Date().toISOString().split('T')[0]}`;
+    const body = encodeURIComponent(text);
+    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${body}`;
   }
 
   return (
@@ -183,7 +242,25 @@ export default function Finances() {
             <div className="loading">Chargement des données financières...</div>
           ) : (
             <div className="expenses-container">
-              <h2>Historique des Dépenses</h2>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                <h2>Historique des Dépenses</h2>
+                {expenses.length > 0 && (
+                  <div className="export-actions" style={{ display: 'flex', gap: '10px' }}>
+                    <button onClick={downloadHistorique} className="btn btn-secondary btn-sm" title="Télécharger l'historique">
+                      <Download size={20} />
+                      Télécharger
+                    </button>
+                    <button onClick={shareViaWhatsApp} className="btn btn-secondary btn-sm" title="Partager via WhatsApp">
+                      <Share2 size={20} />
+                      WhatsApp
+                    </button>
+                    <button onClick={shareViaMail} className="btn btn-secondary btn-sm" title="Envoyer par e-mail">
+                      <Mail size={20} />
+                      Email
+                    </button>
+                  </div>
+                )}
+              </div>
               <div className="expenses-table">
                 {expenses.length > 0 ? (
                   <table>
