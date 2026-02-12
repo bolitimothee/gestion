@@ -182,121 +182,142 @@ export default function Finances() {
             </div>
           )}
 
-          {showForm && (
-            <div className="form-card">
-              <h2>Enregistrer une nouvelle dépense</h2>
-              <form onSubmit={handleSubmit}>
-                <div className="form-grid">
-                  <input
-                    type="text"
-                    placeholder="Description"
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    required
-                  />
-                  <input
-                    type="text"
-                    placeholder="Catégorie"
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    required
-                  />
-                  <input
-                    type="number"
-                    placeholder="Montant"
-                    value={formData.amount}
-                    onChange={(e) => setFormData({ ...formData, amount: Number(e.target.value) })}
-                    step="0.01"
-                    required
-                  />
-                  <input
-                    type="date"
-                    value={formData.date}
-                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                    required
-                  />
-                </div>
-                <textarea
-                  placeholder="Remarques (optionnel)"
-                  value={formData.notes}
-                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                  rows="3"
-                />
-                <div className="form-actions">
-                  <button type="submit" className="btn btn-primary">
-                    Enregistrer la dépense
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setShowForm(false)}
-                    className="btn btn-secondary"
-                  >
-                    Annuler
-                  </button>
-                </div>
-              </form>
-            </div>
-          )}
-
           {loading ? (
             <div className="loading">Chargement des données financières...</div>
           ) : (
-            <div className="expenses-container">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                <h2>Historique des Dépenses</h2>
-                {expenses.length > 0 && (
-                  <div className="export-actions" style={{ display: 'flex', gap: '10px' }}>
-                    <button onClick={downloadHistorique} className="btn btn-secondary btn-sm" title="Télécharger l'historique">
-                      <Download size={20} />
-                      Télécharger
-                    </button>
-                    <button onClick={shareViaWhatsApp} className="btn btn-secondary btn-sm" title="Partager via WhatsApp">
-                      <Share2 size={20} />
-                      WhatsApp
-                    </button>
-                    <button onClick={shareViaMail} className="btn btn-secondary btn-sm" title="Envoyer par e-mail">
-                      <Mail size={20} />
-                      Email
-                    </button>
+            <div className="finances-layout">
+              {/* HISTORIQUE À GAUCHE */}
+              <div className="expenses-history-section">
+                <div className="expenses-container">
+                  {expenses.length > 0 && (
+                    <div className="export-actions">
+                      <button onClick={downloadHistorique} className="btn btn-secondary btn-sm" title="Télécharger l'historique">
+                        <Download size={20} />
+                        Télécharger
+                      </button>
+                      <button onClick={shareViaWhatsApp} className="btn btn-secondary btn-sm" title="Partager via WhatsApp">
+                        <Share2 size={20} />
+                        WhatsApp
+                      </button>
+                      <button onClick={shareViaMail} className="btn btn-secondary btn-sm" title="Envoyer par e-mail">
+                        <Mail size={20} />
+                        Email
+                      </button>
+                    </div>
+                  )}
+
+                  <div className="expenses-table">
+                    {expenses.length > 0 ? (
+                      <div className="table-responsive">
+                        <table>
+                          <thead>
+                            <tr>
+                              <th>Date</th>
+                              <th>Description</th>
+                              <th>Catégorie</th>
+                              <th>Montant</th>
+                              <th>Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {expenses.map((expense) => (
+                              <tr key={expense.id}>
+                                <td data-label="Date">{formatDate(expense.date)}</td>
+                                <td data-label="Description">{expense.description}</td>
+                                <td data-label="Catégorie">{expense.category}</td>
+                                <td data-label="Montant" className="amount">{formatFCFA(expense.amount)}</td>
+                                <td className="actions-cell" data-label="Actions">
+                                  <button
+                                    onClick={() => handleDelete(expense.id)}
+                                    className="btn btn-sm btn-delete"
+                                    title="Supprimer"
+                                  >
+                                    <Trash2 size={16} />
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    ) : (
+                      <p className="empty-message">Aucune dépense enregistrée</p>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
-              <div className="expenses-table">
-                {expenses.length > 0 ? (
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Date</th>
-                        <th>Description</th>
-                        <th>Catégorie</th>
-                        <th>Montant</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {expenses.map((expense) => (
-                        <tr key={expense.id}>
-                          <td>{formatDate(expense.date)}</td>
-                          <td>{expense.description}</td>
-                          <td>{expense.category}</td>
-                          <td className="amount">{formatFCFA(expense.amount)}</td>
-                          <td>
-                            <button
-                              onClick={() => handleDelete(expense.id)}
-                              className="btn btn-sm btn-delete"
-                              title="Supprimer"
-                            >
-                              <Trash2 size={16} />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                ) : (
-                  <p className="empty-message">Aucune dépense enregistrée</p>
-                )}
-              </div>
+
+              {/* FORMULAIRE À DROITE */}
+              {showForm && (
+                <div className="expenses-form-section">
+                  <div className="form-card">
+                    <h2>Ajouter une dépense</h2>
+                    <form onSubmit={handleSubmit}>
+                      <div className="form-group">
+                        <label>Description</label>
+                        <input
+                          type="text"
+                          placeholder="Description de la dépense"
+                          value={formData.description}
+                          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Catégorie</label>
+                        <input
+                          type="text"
+                          placeholder="Ex: Fournitures, Transport..."
+                          value={formData.category}
+                          onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Montant (FCFA)</label>
+                        <input
+                          type="number"
+                          placeholder="0.00"
+                          value={formData.amount}
+                          onChange={(e) => setFormData({ ...formData, amount: Number(e.target.value) })}
+                          step="0.01"
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Date</label>
+                        <input
+                          type="date"
+                          value={formData.date}
+                          onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Remarques</label>
+                        <textarea
+                          placeholder="Remarques optionnelles"
+                          value={formData.notes}
+                          onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                          rows="4"
+                        />
+                      </div>
+                      <div className="form-actions">
+                        <button type="submit" className="btn btn-primary">
+                          Enregistrer
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setShowForm(false)}
+                          className="btn btn-secondary"
+                        >
+                          Annuler
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </main>

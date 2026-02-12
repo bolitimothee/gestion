@@ -1,3 +1,42 @@
+/* Layout principal côte à côte */
+.finances-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-top: 30px;
+}
+
+/* Section historique à gauche */
+.expenses-history-section {
+  flex: 1;
+  width: 100%;
+}
+
+/* Section formulaire à droite */
+.expenses-form-section {
+  flex: 1;
+  width: 100%;
+}
+
+/* Layout desktop : côte à côte */
+@media (min-width: 769px) {
+  .finances-layout {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 30px;
+  }
+  
+  .expenses-history-section {
+    flex: 1;
+    order: 1; /* Historique à gauche */
+  }
+  
+  .expenses-form-section {
+    flex: 1;
+    order: 2; /* Formulaire à droite */
+  }
+}
+
 .expenses-container {
   background: white;
   border-radius: 12px;
@@ -56,6 +95,25 @@
   text-align: center;
   padding: 40px;
   color: #999;
+}
+
+.export-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.export-actions button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  font-size: 13px;
+}
+
+.table-responsive {
+  overflow-x: auto;
 }
 
 .form-card {
