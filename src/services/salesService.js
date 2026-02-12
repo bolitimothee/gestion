@@ -18,19 +18,28 @@ export const salesService = {
 
   async addSale(userId, sale) {
     try {
+      // Valider les données
+      const quantity = parseFloat(sale.quantity) || 0;
+      const unitPrice = parseFloat(sale.unit_price) || 0;
+      const totalAmount = quantity * unitPrice;
+
+      if (!isFinite(totalAmount)) {
+        throw new Error('Montant total invalide');
+      }
+
       const { data, error } = await supabase
         .from('sales')
         .insert([
           {
             user_id: userId,
-            product_id: sale.product_id,
-            quantity: sale.quantity,
-            unit_price: sale.unit_price,
-            total_amount: sale.quantity * sale.unit_price,
+            product_id: sale.product_id || null,
+            quantity: quantity,
+            unit_price: unitPrice,
+            total_amount: totalAmount,
             customer_name: sale.customer_name,
             sale_date: sale.sale_date,
-            sale_time: sale.sale_time,
-            notes: sale.notes,
+            sale_time: sale.sale_time || null,
+            notes: sale.notes || null,
           },
         ])
         .select();
@@ -38,6 +47,7 @@ export const salesService = {
       if (error) throw error;
       return { data, error: null };
     } catch (error) {
+      console.error('Erreur addSale:', error);
       return { data: null, error };
     }
   },
@@ -51,8 +61,11 @@ export const salesService = {
 
       if (error) throw error;
 
-      const totalSales = data.reduce((sum, sale) => sum + sale.total_amount, 0);
-      return { data: totalSales, error: null };
+      const totalSales = data?.reduce((sum, sale) => {
+        const amount = parseFloat(sale.total_amount) || 0;
+        return sum + amount;
+      }, 0) || 0;
+      return { data: isFinite(totalSales) ? totalSales : 0, error: null };
     } catch (error) {
       return { data: null, error };
     }
@@ -90,18 +103,25 @@ export const salesService = {
 
   async updateSale(saleId, updates) {
     try {
-      const totalAmount = updates.quantity * updates.unit_price;
+      const quantity = parseFloat(updates.quantity) || 0;
+      const unitPrice = parseFloat(updates.unit_price) || 0;
+      const totalAmount = quantity * unitPrice;
+
+      if (!isFinite(totalAmount)) {
+        throw new Error('Montant total invalide');
+      }
+
       const { data, error } = await supabase
         .from('sales')
         .update({
-          product_id: updates.product_id,
-          quantity: updates.quantity,
-          unit_price: updates.unit_price,
+          product_id: updates.product_id || null,
+          quantity: quantity,
+          unit_price: unitPrice,
           total_amount: totalAmount,
           customer_name: updates.customer_name,
           sale_date: updates.sale_date,
-          sale_time: updates.sale_time,
-          notes: updates.notes,
+          sale_time: updates.sale_time || null,
+          notes: updates.notes || null,
         })
         .eq('id', saleId)
         .select();
@@ -109,6 +129,7 @@ export const salesService = {
       if (error) throw error;
       return { data, error: null };
     } catch (error) {
+      console.error('Erreur updateSale:', error);
       return { data: null, error };
     }
   },

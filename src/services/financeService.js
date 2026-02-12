@@ -18,16 +18,21 @@ export const financeService = {
 
   async addExpense(userId, expense) {
     try {
+      const amount = parseFloat(expense.amount) || 0;
+      if (!isFinite(amount)) {
+        throw new Error('Montant invalide');
+      }
+      
       const { data, error } = await supabase
         .from('expenses')
         .insert([
           {
             user_id: userId,
             description: expense.description,
-            amount: expense.amount,
+            amount: amount,
             category: expense.category,
             date: expense.date,
-            notes: expense.notes,
+            notes: expense.notes || null,
           },
         ])
         .select();
@@ -35,6 +40,7 @@ export const financeService = {
       if (error) throw error;
       return { data, error: null };
     } catch (error) {
+      console.error('Erreur addExpense:', error);
       return { data: null, error };
     }
   },
@@ -48,8 +54,11 @@ export const financeService = {
 
       if (error) throw error;
 
-      const totalExpenses = data.reduce((sum, expense) => sum + expense.amount, 0);
-      return { data: totalExpenses, error: null };
+      const totalExpenses = data?.reduce((sum, expense) => {
+        const amount = parseFloat(expense.amount) || 0;
+        return sum + amount;
+      }, 0) || 0;
+      return { data: isFinite(totalExpenses) ? totalExpenses : 0, error: null };
     } catch (error) {
       return { data: null, error };
     }
@@ -57,10 +66,10 @@ export const financeService = {
 
   async getFinancialSummary(userId) {
     try {
-      // Récupérer les ventes
+      // Récupérer les ventes avec product_id et quantity
       const { data: salesData } = await supabase
         .from('sales')
-        .select('total_amount')
+        .select('product_id, quantity, total_amount')
         .eq('user_id', userId);
 
       const totalRevenue = salesData?.reduce((sum, sale) => {
@@ -68,7 +77,7 @@ export const financeService = {
         return sum + amount;
       }, 0) || 0;
 
-      // Récupérer les dépenses
+      // Récupérer les dépenses enregistrées
       const { data: expensesData } = await supabase
         .from('expenses')
         .select('amount')
@@ -79,40 +88,50 @@ export const financeService = {
         return sum + amount;
       }, 0) || 0;
 
-      // Récupérer le coût d'achat des produits en stock
+      // Récupérer les produits avec leurs prix d'achat
       const { data: productsData } = await supabase
         .from('products')
-        .select('quantity, purchase_price, selling_price')
+        .select('id, quantity, purchase_price, selling_price')
         .eq('user_id', userId);
 
-      const productCosts = productsData?.reduce((sum, product) => {
-        const qty = parseFloat(product.quantity) || 0;
-        const price = parseFloat(product.purchase_price) || 0;
-        return sum + (qty * price);
+      // Calculer le Coût des Marchandises Vendues (COGS) basé sur les ventes
+      const COGS = salesData?.reduce((sum, sale) => {
+        const product = productsData?.find((p) => p.id === sale.product_id);
+        const qty = parseFloat(sale.quantity) || 0;
+        const purchasePrice = parseFloat(product?.purchase_price) || 0;
+        return sum + (qty * purchasePrice);
       }, 0) || 0;
 
+      // Valeur du stock (basée sur le prix de vente)
       const stockValue = productsData?.reduce((sum, product) => {
         const qty = parseFloat(product.quantity) || 0;
         const price = parseFloat(product.selling_price) || 0;
         return sum + (qty * price);
       }, 0) || 0;
 
-      // Les dépenses totales incluent les dépenses enregistrées + le coût d'achat des produits
-      const totalExpenses = totalExpensesAmount + productCosts;
+      // Coût du stock actuel (basé sur le prix d'achat)
+      const stockCost = productsData?.reduce((sum, product) => {
+        const qty = parseFloat(product.quantity) || 0;
+        const price = parseFloat(product.purchase_price) || 0;
+        return sum + (qty * price);
+      }, 0) || 0;
 
-      const netProfit = totalRevenue - totalExpenses;
+      // Profit Net = Revenu - COGS - Dépenses
+      const netProfit = totalRevenue - COGS - totalExpensesAmount;
 
       return {
         data: {
           totalRevenue: isFinite(totalRevenue) ? totalRevenue : 0,
-          totalExpenses: isFinite(totalExpenses) ? totalExpenses : 0,
+          totalExpenses: isFinite(totalExpensesAmount) ? totalExpensesAmount : 0,
+          COGS: isFinite(COGS) ? COGS : 0,
           netProfit: isFinite(netProfit) ? netProfit : 0,
           stockValue: isFinite(stockValue) ? stockValue : 0,
-          productCosts: isFinite(productCosts) ? productCosts : 0,
+          stockCost: isFinite(stockCost) ? stockCost : 0,
         },
         error: null,
       };
     } catch (error) {
+      console.error('Erreur getFinancialSummary:', error);
       return { data: null, error };
     }
   },
@@ -127,11 +146,14 @@ export const financeService = {
       if (error) throw error;
 
       const totalCost = data?.reduce((sum, product) => {
-        return sum + (product.quantity * product.purchase_price);
+        const qty = parseFloat(product.quantity) || 0;
+        const price = parseFloat(product.purchase_price) || 0;
+        return sum + (qty * price);
       }, 0) || 0;
 
-      return { data: { products: data, totalCost }, error: null };
+      return { data: { products: data, totalCost: isFinite(totalCost) ? totalCost : 0 }, error: null };
     } catch (error) {
+      console.error('Erreur getProductCosts:', error);
       return { data: null, error };
     }
   },

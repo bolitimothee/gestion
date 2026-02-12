@@ -74,17 +74,20 @@ export const stockService = {
     try {
       const { data, error } = await supabase
         .from('products')
-        .select('quantity, purchase_price')
+        .select('quantity, selling_price')
         .eq('user_id', userId);
 
       if (error) throw error;
 
-      const totalValue = data.reduce((sum, product) => {
-        return sum + (product.quantity * product.purchase_price);
-      }, 0);
+      const totalValue = data?.reduce((sum, product) => {
+        const qty = parseFloat(product.quantity) || 0;
+        const price = parseFloat(product.selling_price) || 0;
+        return sum + (qty * price);
+      }, 0) || 0;
 
-      return { data: totalValue, error: null };
+      return { data: isFinite(totalValue) ? totalValue : 0, error: null };
     } catch (error) {
+      console.error('Erreur getStockValue:', error);
       return { data: null, error };
     }
   },

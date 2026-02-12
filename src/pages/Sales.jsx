@@ -72,17 +72,39 @@ export default function Sales() {
     }
 
     try {
-      const product = products.find((p) => p.id === formData.product_id);
+      const product = products.find((p) => p.id === parseInt(formData.product_id));
+      
+      if (!product) {
+        setError('Produit non trouvé');
+        return;
+      }
+
+      const quantity = parseFloat(formData.quantity) || 0;
+      const unitPrice = parseFloat(product.selling_price) || 0;
+      
+      if (quantity <= 0) {
+        setError('Quantité invalide');
+        return;
+      }
+      
+      if (unitPrice <= 0) {
+        setError('Prix unitaire invalide');
+        return;
+      }
+
       const saleData = {
         ...formData,
-        unit_price: product.selling_price,
-        quantity: Number(formData.quantity),
+        product_id: parseInt(formData.product_id),
+        unit_price: unitPrice,
+        quantity: quantity,
       };
 
       if (editingId) {
-        await salesService.updateSale(editingId, saleData);
+        const result = await salesService.updateSale(editingId, saleData);
+        if (result.error) throw result.error;
       } else {
-        await salesService.addSale(user.id, saleData);
+        const result = await salesService.addSale(user.id, saleData);
+        if (result.error) throw result.error;
       }
 
       setFormData({
@@ -97,8 +119,9 @@ export default function Sales() {
       setEditingId(null);
       setShowForm(false);
       await loadData();
-    } catch {
-      setError('Erreur lors de l\'ajout de la vente');
+    } catch (err) {
+      console.error('Erreur lors de savegarde:', err);
+      setError(err.message || 'Erreur lors de l\'ajout de la vente');
     }
   }
 
@@ -136,7 +159,7 @@ export default function Sales() {
 
   function generateHistoriqueText() {
     let text = `HISTORIQUE DES VENTES\n`;
-    text += `Entreprise: ${account?.account_name || 'Commerce'}\n`;
+    text += `Entreprise: ${account?.business_name || 'Commerce'}\n`;
     text += `Date d'export: ${new Date().toLocaleString('fr-FR')}\n`;
     text += `${'='.repeat(80)}\n\n`;
 
