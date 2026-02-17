@@ -53,6 +53,7 @@ CREATE TABLE IF NOT EXISTS products (
   category VARCHAR(100),
   sku VARCHAR(100),
   quantity INTEGER NOT NULL DEFAULT 0,
+  initial_quantity INTEGER NOT NULL DEFAULT 0,
   purchase_price NUMERIC(15, 2) NOT NULL,
   selling_price NUMERIC(15, 2) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,

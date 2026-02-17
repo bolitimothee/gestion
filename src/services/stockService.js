@@ -18,6 +18,7 @@ export const stockService = {
 
   async addProduct(userId, product) {
     try {
+      const quantity = parseInt(product.quantity) || 0;
       const { data, error } = await supabase
         .from('products')
         .insert([
@@ -25,7 +26,8 @@ export const stockService = {
             user_id: userId,
             name: product.name,
             description: product.description,
-            quantity: product.quantity,
+            quantity: quantity,
+            initial_quantity: quantity,
             purchase_price: product.purchase_price,
             selling_price: product.selling_price,
             category: product.category,
@@ -37,21 +39,28 @@ export const stockService = {
       if (error) throw error;
       return { data, error: null };
     } catch (error) {
+      console.error('Erreur addProduct:', error);
       return { data: null, error };
     }
   },
 
   async updateProduct(productId, updates) {
     try {
+      // Si on met à jour la quantité, on met à jour aussi initial_quantity en même temps si besoin
+      const updatedData = { ...updates };
+      if (updates.quantity !== undefined && !updates.initial_quantity) {
+        // Ne pas écraser initial_quantity si elle est déjà définie
+      }
       const { data, error } = await supabase
         .from('products')
-        .update(updates)
+        .update(updatedData)
         .eq('id', productId)
         .select();
 
       if (error) throw error;
       return { data, error: null };
     } catch (error) {
+      console.error('Erreur updateProduct:', error);
       return { data: null, error };
     }
   },

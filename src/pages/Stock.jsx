@@ -282,6 +282,10 @@ export default function Stock() {
                   </div>
                   <p className="product-sku">SKU: {product.sku}</p>
                   <p className="product-category">Catégorie: {product.category}</p>
+                  <div className="stock-counter">
+                    <span className="label">Stock:</span>
+                    <span className="counter">{product.quantity} / {product.initial_quantity || product.quantity}</span>
+                  </div>
                   <div className="product-price">
                     <span className="label">Prix d'achat:</span>
                     <span className="price">{formatFCFA(product.purchase_price)}</span>

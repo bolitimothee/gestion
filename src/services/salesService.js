@@ -27,6 +27,7 @@ export const salesService = {
         throw new Error('Montant total invalide');
       }
 
+      // Insérer la vente
       const { data, error } = await supabase
         .from('sales')
         .insert([
@@ -45,6 +46,24 @@ export const salesService = {
         .select();
 
       if (error) throw error;
+
+      // Décrémenter la quantité du produit
+      if (sale.product_id) {
+        const { data: productData } = await supabase
+          .from('products')
+          .select('quantity')
+          .eq('id', sale.product_id)
+          .single();
+
+        if (productData) {
+          const newQuantity = Math.max(0, (productData.quantity || 0) - quantity);
+          await supabase
+            .from('products')
+            .update({ quantity: newQuantity })
+            .eq('id', sale.product_id);
+        }
+      }
+
       return { data, error: null };
     } catch (error) {
       console.error('Erreur addSale:', error);
@@ -111,6 +130,14 @@ export const salesService = {
         throw new Error('Montant total invalide');
       }
 
+      // Récupérer l'ancienne vente
+      const { data: oldSale } = await supabase
+        .from('sales')
+        .select('product_id, quantity')
+        .eq('id', saleId)
+        .single();
+
+      // Mettre à jour la vente
       const { data, error } = await supabase
         .from('sales')
         .update({
@@ -127,6 +154,57 @@ export const salesService = {
         .select();
 
       if (error) throw error;
+
+      // Ajuster les quantités des produits si changement
+      if (oldSale?.product_id && updates.product_id) {
+        const quantityDiff = quantity - (oldSale.quantity || 0);
+        
+        // Mettre à jour l'ancien produit (réincrémenter si on a réduit la vente)
+        if (oldSale.product_id === updates.product_id) {
+          const { data: product } = await supabase
+            .from('products')
+            .select('quantity')
+            .eq('id', oldSale.product_id)
+            .single();
+          
+          if (product) {
+            const newQuantity = (product.quantity || 0) - quantityDiff;
+            await supabase
+              .from('products')
+              .update({ quantity: newQuantity })
+              .eq('id', oldSale.product_id);
+          }
+        } else {
+          // Produit changé: réincrémenter l'ancien, décrémenter le nouveau
+          const { data: oldProduct } = await supabase
+            .from('products')
+            .select('quantity')
+            .eq('id', oldSale.product_id)
+            .single();
+          
+          if (oldProduct) {
+            await supabase
+              .from('products')
+              .update({ quantity: (oldProduct.quantity || 0) + (oldSale.quantity || 0) })
+              .eq('id', oldSale.product_id);
+          }
+          
+          // Décrémenter le nouveau produit
+          const { data: newProduct } = await supabase
+            .from('products')
+            .select('quantity')
+            .eq('id', updates.product_id)
+            .single();
+          
+          if (newProduct) {
+            await supabase
+              .from('products')
+              .update({ quantity: (newProduct.quantity || 0) - quantity })
+              .eq('id', updates.product_id);
+          }
+        }
+      }
+
       return { data, error: null };
     } catch (error) {
       console.error('Erreur updateSale:', error);
@@ -136,14 +214,43 @@ export const salesService = {
 
   async deleteSale(saleId) {
     try {
-      const { error } = await supabase
+      // Récupérer la vente avant de la supprimer pour avoir product_id et quantity
+      const { data: saleData, error: fetchError } = await supabase
+        .from('sales')
+        .select('product_id, quantity')
+        .eq('id', saleId)
+        .single();
+
+      if (fetchError) throw fetchError;
+
+      // Supprimer la vente
+      const { error: deleteError } = await supabase
         .from('sales')
         .delete()
         .eq('id', saleId);
 
-      if (error) throw error;
+      if (deleteError) throw deleteError;
+
+      // Réincrémenter la quantité du produit
+      if (saleData?.product_id) {
+        const { data: product } = await supabase
+          .from('products')
+          .select('quantity')
+          .eq('id', saleData.product_id)
+          .single();
+
+        if (product) {
+          const newQuantity = (product.quantity || 0) + (saleData.quantity || 0);
+          await supabase
+            .from('products')
+            .update({ quantity: newQuantity })
+            .eq('id', saleData.product_id);
+        }
+      }
+
       return { error: null };
     } catch (error) {
+      console.error('Erreur deleteSale:', error);
       return { error };
     }
   },
