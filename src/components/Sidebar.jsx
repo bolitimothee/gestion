@@ -43,7 +43,7 @@ export default function Sidebar({ active }) {
           <div className="sidebar-footer">
             <div className="sidebar-user">
               <div className="user-account">
-                <span className="account-name">{account?.account_name || 'Mon Compte'}</span>
+                <span className="account-name">{account?.business_name || 'Mon Compte'}</span>
                 <span className="account-email">{user?.email}</span>
               </div>
             </div>

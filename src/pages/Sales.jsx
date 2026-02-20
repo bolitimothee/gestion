@@ -120,7 +120,7 @@ export default function Sales() {
       setShowForm(false);
       await loadData();
     } catch (err) {
-      console.error('Erreur lors de savegarde:', err);
+      console.error('Erreur lors de la sauvegarde:', err);
       setError(err.message || 'Erreur lors de l\'ajout de la vente');
     }
   }
