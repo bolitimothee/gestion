@@ -55,34 +55,35 @@ export function AuthProvider({ children }) {
     if (sessionCheckRef.current) return;
     sessionCheckRef.current = true;
 
-    let mounted = true;
+    let isMounted = true;
 
     const checkSession = async () => {
       try {
         const { data } = await supabase.auth.getSession();
-        if (!mounted) return;
+        if (!isMounted) return;
         
-        if (data?.session) {
+        if (data?.session?.user) {
           setUser(data.session.user);
           // Charger les détails du compte
-          try {
-            const { data: accountData } = await authService.getAccountDetails(data.session.user.id);
-            if (mounted && accountData) {
-              setAccount(accountData);
-              // Vérifier la validité
-              const { valid } = await authService.checkAccountValidity(data.session.user.id);
-              if (mounted) {
-                setAccountValid(valid);
-              }
+          const { data: accountData } = await authService.getAccountDetails(data.session.user.id);
+          if (isMounted && accountData) {
+            setAccount(accountData);
+            const { valid } = await authService.checkAccountValidity(data.session.user.id);
+            if (isMounted) {
+              setAccountValid(valid);
             }
-          } catch (err) {
-            console.warn('Erreur chargement compte:', err);
           }
+        } else {
+          setUser(null);
+          setAccount(null);
+          setAccountValid(true);
         }
-      } catch (_err) {
-        console.error('Error checking session:', _err);
+      } catch (err) {
+        if (isMounted) {
+          console.error('Error checking session:', err);
+        }
       } finally {
-        if (mounted) {
+        if (isMounted) {
           setLoading(false);
           setIsAuthReady(true);
         }
@@ -93,35 +94,39 @@ export function AuthProvider({ children }) {
 
     // Écouter les changements d'authentification
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (!mounted) return;
+      if (!isMounted) return;
       
-      if (session?.user) {
-        setUser(session.user);
-        try {
+      try {
+        if (session?.user) {
+          setUser(session.user);
           const { data: accountData } = await authService.getAccountDetails(session.user.id);
-          if (mounted && accountData) {
+          if (isMounted && accountData) {
             setAccount(accountData);
             const { valid } = await authService.checkAccountValidity(session.user.id);
-            if (mounted) {
+            if (isMounted) {
               setAccountValid(valid);
             }
           }
-        } catch (err) {
-          console.warn('Erreur chargement compte (onAuthStateChange):', err);
+        } else {
+          setUser(null);
+          setAccount(null);
+          setAccountValid(true);
         }
-      } else {
-        setUser(null);
-        setAccount(null);
-        setAccountValid(true);
-      }
-      if (mounted) {
-        setLoading(false);
-        setIsAuthReady(true);
+        if (isMounted) {
+          setLoading(false);
+          setIsAuthReady(true);
+        }
+      } catch (err) {
+        if (isMounted) {
+          console.warn('Erreur onAuthStateChange:', err);
+          setLoading(false);
+          setIsAuthReady(true);
+        }
       }
     });
 
     return () => {
-      mounted = false;
+      isMounted = false;
       subscription?.unsubscribe();
     };
   }, []);

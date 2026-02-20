@@ -111,6 +111,10 @@ export const authService = {
 
   async getAccountDetails(userId) {
     try {
+      if (!userId) {
+        return { data: null, error: null };
+      }
+
       const { data, error } = await supabase
         .from('accounts')
         .select('*')
@@ -118,31 +122,41 @@ export const authService = {
         .maybeSingle();
 
       if (error) {
-        console.warn('Impossible de charger les détails du compte:', error.message);
-        return { data: { user_id: userId, business_name: 'Utilisateur', email: '', validity_date: null, is_active: true }, error: null };
+        console.warn('Erreur getAccountDetails:', error.message);
+        return { data: null, error: null };
       }
       
       if (!data) {
-        return { data: { user_id: userId, business_name: 'Utilisateur', email: '', validity_date: null, is_active: true }, error: null };
+        return { data: null, error: null };
       }
       
       return { data, error: null };
     } catch (err) {
-      console.warn('Erreur getAccountDetails:', err);
-      return { data: { user_id: userId, business_name: 'Utilisateur', email: '', validity_date: null, is_active: true }, error: null };
+      console.warn('Erreur try/catch getAccountDetails:', err);
+      return { data: null, error: null };
     }
   },
 
   async checkAccountValidity(userId) {
     try {
+      if (!userId) {
+        return { valid: true, reason: null };
+      }
+
       const { data, error } = await supabase
         .from('accounts')
         .select('validity_date, is_active')
         .eq('user_id', userId)
         .maybeSingle();
 
-      if (error) throw error;
-      if (!data) return { valid: true, reason: null };
+      if (error) {
+        console.warn('Erreur checkAccountValidity:', error.message);
+        return { valid: true, reason: null };
+      }
+
+      if (!data) {
+        return { valid: true, reason: null };
+      }
 
       // Vérifier si le compte est actif
       if (!data.is_active) {
@@ -163,7 +177,7 @@ export const authService = {
 
       return { valid: true, reason: null };
     } catch (err) {
-      console.error('Erreur checkAccountValidity:', err);
+      console.warn('Erreur try/catch checkAccountValidity:', err);
       return { valid: true, reason: null };
     }
   },
