@@ -1,5 +1,4 @@
 import React, { createContext, useState, useEffect, useCallback, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { supabase } from '../services/supabaseClient';
 import { authService } from '../services/authService';
 
@@ -31,49 +30,62 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  const loadAccountDetails = useCallback(async (userId) => {
+  const loadAccountDetailsInline = useCallback(async (userId) => {
     if (!userId) {
       setAccount(null);
       setAccountValid(true);
       return null;
     }
     try {
-      // D'abord vérifier la validité
-      const isValid = await checkAccountValidity(userId);
-      if (!isValid) {
-        setAccount(null);
-        return null;
-      }
-
-      // Puis charger les détails
-      const { data } = await authService.getAccountDetails(userId);
-      if (data) {
-        setAccount(data);
-        return data;
+      const { data: accountData } = await authService.getAccountDetails(userId);
+      if (accountData) {
+        setAccount(accountData);
+        const { valid } = await authService.checkAccountValidity(userId);
+        setAccountValid(valid);
+        return accountData;
       }
     } catch (err) {
       console.warn('Erreur chargement compte:', err);
     }
     return null;
-  }, [checkAccountValidity]);
+  }, []);
 
   useEffect(() => {
     // Vérifier la session au chargement (une seule fois)
     if (sessionCheckRef.current) return;
     sessionCheckRef.current = true;
 
+    let mounted = true;
+
     const checkSession = async () => {
       try {
         const { data } = await supabase.auth.getSession();
+        if (!mounted) return;
+        
         if (data?.session) {
           setUser(data.session.user);
-          await loadAccountDetails(data.session.user.id);
+          // Charger les détails du compte
+          try {
+            const { data: accountData } = await authService.getAccountDetails(data.session.user.id);
+            if (mounted && accountData) {
+              setAccount(accountData);
+              // Vérifier la validité
+              const { valid } = await authService.checkAccountValidity(data.session.user.id);
+              if (mounted) {
+                setAccountValid(valid);
+              }
+            }
+          } catch (err) {
+            console.warn('Erreur chargement compte:', err);
+          }
         }
       } catch (_err) {
         console.error('Error checking session:', _err);
       } finally {
-        setLoading(false);
-        setIsAuthReady(true);
+        if (mounted) {
+          setLoading(false);
+          setIsAuthReady(true);
+        }
       }
     };
 
@@ -81,22 +93,38 @@ export function AuthProvider({ children }) {
 
     // Écouter les changements d'authentification
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (!mounted) return;
+      
       if (session?.user) {
         setUser(session.user);
-        await loadAccountDetails(session.user.id);
+        try {
+          const { data: accountData } = await authService.getAccountDetails(session.user.id);
+          if (mounted && accountData) {
+            setAccount(accountData);
+            const { valid } = await authService.checkAccountValidity(session.user.id);
+            if (mounted) {
+              setAccountValid(valid);
+            }
+          }
+        } catch (err) {
+          console.warn('Erreur chargement compte (onAuthStateChange):', err);
+        }
       } else {
         setUser(null);
         setAccount(null);
         setAccountValid(true);
       }
-      setLoading(false);
-      setIsAuthReady(true);
+      if (mounted) {
+        setLoading(false);
+        setIsAuthReady(true);
+      }
     });
 
     return () => {
+      mounted = false;
       subscription?.unsubscribe();
     };
-  }, [loadAccountDetails]);
+  }, []);
 
   // Vérifier périodiquement la validité du compte (toutes les 30 secondes)
   useEffect(() => {
@@ -108,21 +136,36 @@ export function AuthProvider({ children }) {
       return;
     }
 
+    let mounted = true;
+
     // Vérification immédiate
-    checkAccountValidity(user.id);
+    const checkValidity = async () => {
+      if (!mounted) return;
+      try {
+        const { valid } = await authService.checkAccountValidity(user.id);
+        if (mounted) {
+          setAccountValid(valid);
+        }
+      } catch (err) {
+        console.warn('Erreur vérification validité:', err);
+      }
+    };
+
+    checkValidity();
 
     // Vérifications périodiques
     validityCheckIntervalRef.current = setInterval(() => {
-      checkAccountValidity(user.id);
+      checkValidity();
     }, 30000); // 30 secondes
 
     return () => {
+      mounted = false;
       if (validityCheckIntervalRef.current) {
         clearInterval(validityCheckIntervalRef.current);
         validityCheckIntervalRef.current = null;
       }
     };
-  }, [user, checkAccountValidity]);
+  }, [user]);
 
   const value = {
     user,
@@ -138,13 +181,9 @@ export function AuthProvider({ children }) {
           return { data: null, error: result.error };
         }
 
-        // Mettre à jour les états localement
         if (result.data?.user) {
           setUser(result.data.user);
-          // Charger les détails du compte et attendre
-          await loadAccountDetails(result.data.user.id);
-          // S'assurer que le state est mis à jour
-          await new Promise(resolve => setTimeout(resolve, 100));
+          await loadAccountDetailsInline(result.data.user.id);
         }
 
         return result;
@@ -159,13 +198,9 @@ export function AuthProvider({ children }) {
           return { data: null, error: result.error };
         }
 
-        // Mettre à jour les états localement
         if (result.data?.user) {
           setUser(result.data.user);
-          // Charger les détails du compte et attendre
-          await loadAccountDetails(result.data.user.id);
-          // S'assurer que le state est mis à jour
-          await new Promise(resolve => setTimeout(resolve, 100));
+          await loadAccountDetailsInline(result.data.user.id);
         }
 
         return result;
