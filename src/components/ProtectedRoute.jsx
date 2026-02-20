@@ -2,6 +2,13 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
+const spinnerStyle = `
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+`;
+
 export function ProtectedRoute({ children }) {
   const { user, loading, accountValid } = useAuth();
 
@@ -18,6 +25,7 @@ export function ProtectedRoute({ children }) {
         background: 'linear-gradient(135deg, #5e72e4 0%, #825ee4 100%)',
         color: 'white'
       }}>
+        <style>{spinnerStyle}</style>
         <div style={{
           fontSize: '24px',
           marginBottom: '20px'
