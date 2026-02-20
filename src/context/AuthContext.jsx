@@ -11,24 +11,6 @@ export function AuthProvider({ children }) {
   const [isAuthReady, setIsAuthReady] = useState(false);
   const [accountValid, setAccountValid] = useState(true);
   const sessionCheckRef = useRef(false);
-  const validityCheckIntervalRef = useRef(null);
-
-  const checkAccountValidity = useCallback(async (userId) => {
-    if (!userId) return false;
-    try {
-      const { valid, reason } = await authService.checkAccountValidity(userId);
-      setAccountValid(valid);
-      
-      if (!valid) {
-        console.warn('Compte invalide:', reason);
-        return false;
-      }
-      return true;
-    } catch (err) {
-      console.error('Erreur vérification validité:', err);
-      return true;
-    }
-  }, []);
 
   const loadAccountDetailsInline = useCallback(async (userId) => {
     if (!userId) {
@@ -56,41 +38,23 @@ export function AuthProvider({ children }) {
     sessionCheckRef.current = true;
 
     let isMounted = true;
+    let isInitial = true;
 
-    const checkSession = async () => {
+    const loadAccountData = async (userId) => {
+      if (!userId) return;
       try {
-        const { data } = await supabase.auth.getSession();
-        if (!isMounted) return;
-        
-        if (data?.session?.user) {
-          setUser(data.session.user);
-          // Charger les détails du compte
-          const { data: accountData } = await authService.getAccountDetails(data.session.user.id);
-          if (isMounted && accountData) {
-            setAccount(accountData);
-            const { valid } = await authService.checkAccountValidity(data.session.user.id);
-            if (isMounted) {
-              setAccountValid(valid);
-            }
+        const { data: accountData } = await authService.getAccountDetails(userId);
+        if (isMounted && accountData) {
+          setAccount(accountData);
+          const { valid } = await authService.checkAccountValidity(userId);
+          if (isMounted) {
+            setAccountValid(valid);
           }
-        } else {
-          setUser(null);
-          setAccount(null);
-          setAccountValid(true);
         }
       } catch (err) {
-        if (isMounted) {
-          console.error('Error checking session:', err);
-        }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-          setIsAuthReady(true);
-        }
+        console.warn('Erreur loadAccountData:', err);
       }
     };
-
-    checkSession();
 
     // Écouter les changements d'authentification
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -99,26 +63,16 @@ export function AuthProvider({ children }) {
       try {
         if (session?.user) {
           setUser(session.user);
-          const { data: accountData } = await authService.getAccountDetails(session.user.id);
-          if (isMounted && accountData) {
-            setAccount(accountData);
-            const { valid } = await authService.checkAccountValidity(session.user.id);
-            if (isMounted) {
-              setAccountValid(valid);
-            }
-          }
+          await loadAccountData(session.user.id);
         } else {
           setUser(null);
           setAccount(null);
           setAccountValid(true);
         }
-        if (isMounted) {
-          setLoading(false);
-          setIsAuthReady(true);
-        }
       } catch (err) {
+        console.warn('Erreur onAuthStateChange:', err);
+      } finally {
         if (isMounted) {
-          console.warn('Erreur onAuthStateChange:', err);
           setLoading(false);
           setIsAuthReady(true);
         }
@@ -133,13 +87,7 @@ export function AuthProvider({ children }) {
 
   // Vérifier périodiquement la validité du compte (toutes les 30 secondes)
   useEffect(() => {
-    if (!user) {
-      if (validityCheckIntervalRef.current) {
-        clearInterval(validityCheckIntervalRef.current);
-        validityCheckIntervalRef.current = null;
-      }
-      return;
-    }
+    if (!user) return;
 
     let mounted = true;
 
@@ -158,17 +106,14 @@ export function AuthProvider({ children }) {
 
     checkValidity();
 
-    // Vérifications périodiques
-    validityCheckIntervalRef.current = setInterval(() => {
+    // Vérifications périodiques (30 secondes)
+    const intervalId = setInterval(() => {
       checkValidity();
-    }, 30000); // 30 secondes
+    }, 30000);
 
     return () => {
       mounted = false;
-      if (validityCheckIntervalRef.current) {
-        clearInterval(validityCheckIntervalRef.current);
-        validityCheckIntervalRef.current = null;
-      }
+      clearInterval(intervalId);
     };
   }, [user]);
 
@@ -178,7 +123,6 @@ export function AuthProvider({ children }) {
     loading,
     isAuthReady,
     accountValid,
-    checkAccountValidity,
     signUp: async (email, password, accountName, validityDate) => {
       try {
         const result = await authService.signUp(email, password, accountName, validityDate);
