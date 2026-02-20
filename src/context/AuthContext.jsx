@@ -11,6 +11,7 @@ export function AuthProvider({ children }) {
   const [isAuthReady, setIsAuthReady] = useState(false);
   const [accountValid, setAccountValid] = useState(true);
   const sessionCheckRef = useRef(false);
+  const loadingAccountRef = useRef(false); // Éviter les appels concurrents
 
   // ÉTAPE 1: Initialiser la session une seule fois au montage
   useEffect(() => {
@@ -25,10 +26,15 @@ export function AuthProvider({ children }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (!isMounted) return;
       
+      // Si on est déjà en train de charger le compte, ignorer cet événement
+      if (loadingAccountRef.current) return;
+      
       try {
         if (session?.user) {
           // Utilisateur connecté
+          loadingAccountRef.current = true;
           setUser(session.user);
+          setLoading(true);
           
           // Charger les détails du compte
           const { data: accountData } = await authService.getAccountDetails(session.user.id);
@@ -50,6 +56,7 @@ export function AuthProvider({ children }) {
         console.warn('Erreur lors du traitement onAuthStateChange:', err);
       } finally {
         // Signaler que l'auth est prêt
+        loadingAccountRef.current = false;
         if (isMounted) {
           setLoading(false);
           setIsAuthReady(true);
@@ -66,13 +73,14 @@ export function AuthProvider({ children }) {
 
   // ÉTAPE 2: Vérifier périodiquement la validité du compte (toutes les 30 sec)
   useEffect(() => {
-    // Ne vérifier que s'il y a un utilisateur connecté
-    if (!user) return;
+    // Ne vérifier que s'il y a un utilisateur connecté ET pas en train de charger
+    if (!user || !isAuthReady || loading) return;
 
     let mounted = true;
+    let timeoutId;
 
     const checkValidity = async () => {
-      if (!mounted) return;
+      if (!mounted || !isAuthReady) return;
       try {
         const { valid } = await authService.checkAccountValidity(user.id);
         if (mounted) {
@@ -83,19 +91,26 @@ export function AuthProvider({ children }) {
       }
     };
 
-    // Vérifier immédiatement
-    checkValidity();
+    // Vérifier immédiatement (avec un petit délai pour éviter la concurrence)
+    timeoutId = setTimeout(() => {
+      if (mounted) {
+        checkValidity();
+      }
+    }, 500);
 
     // Puis vérifier tous les 30 secondes
     const intervalId = setInterval(() => {
-      checkValidity();
+      if (mounted) {
+        checkValidity();
+      }
     }, 30000);
 
     return () => {
       mounted = false;
+      clearTimeout(timeoutId);
       clearInterval(intervalId);
     };
-  }, [user]); // Dépend de l'utilisateur
+  }, [user, isAuthReady, loading]);
 
   // Valeur du contexte
   const value = {
