@@ -2,7 +2,15 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './styles/globals.css'
-import './utils/supabaseCheck.js' // Vérification de la configuration Supabase au démarrage
+
+// catch unhandled promise rejections (eg. fetch aborted) to avoid console spam
+if (typeof window !== 'undefined') {
+  window.addEventListener('unhandledrejection', (event) => {
+    console.warn('Unhandled promise rejection:', event.reason);
+    // prevent default logging
+    event.preventDefault();
+  });
+}
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {

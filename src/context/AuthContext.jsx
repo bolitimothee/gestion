@@ -15,58 +15,74 @@ export function AuthProvider({ children }) {
 
   // ÉTAPE 1: Initialiser la session une seule fois au montage
   useEffect(() => {
-    // Vérifier si déjà exécuté
     if (sessionCheckRef.current) return;
     sessionCheckRef.current = true;
 
     let isMounted = true;
 
-    // Écouter les changements d'authentification
-    // Cette fonction gère AUSSI l'initialisation (elle se déclenche immédiatement)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const handleSession = async (session) => {
       if (!isMounted) return;
-      
-      // Si on est déjà en train de charger le compte, ignorer cet événement
       if (loadingAccountRef.current) return;
-      
       try {
         if (session?.user) {
-          // Utilisateur connecté
           loadingAccountRef.current = true;
           setUser(session.user);
           setLoading(true);
-          
-          // Charger les détails du compte
+
           const { data: accountData } = await authService.getAccountDetails(session.user.id);
           if (isMounted && accountData) {
             setAccount(accountData);
-            // Vérifier la validité
             const { valid } = await authService.checkAccountValidity(session.user.id);
-            if (isMounted) {
-              setAccountValid(valid);
-            }
+            if (isMounted) setAccountValid(valid);
           }
         } else {
-          // Utilisateur déconnecté
           setUser(null);
           setAccount(null);
           setAccountValid(true);
         }
       } catch (err) {
-        console.warn('Erreur lors du traitement onAuthStateChange:', err);
+        console.warn('Erreur lors du traitement de la session:', err);
       } finally {
-        // Signaler que l'auth est prêt
         loadingAccountRef.current = false;
         if (isMounted) {
           setLoading(false);
           setIsAuthReady(true);
         }
       }
+    };
+
+    // déclencher manuellement la vérification initiale
+    supabase.auth.getSession()
+      .then(({ data, error }) => {
+        if (error) {
+          console.warn('supabase getSession failed:', error.message);
+        }
+        handleSession(data?.session);
+      })
+      .catch((err) => {
+        console.warn('supabase getSession exception:', err);
+        // même en cas d'échec on laisse l'app se dégripper
+        if (isMounted) {
+          setLoading(false);
+          setIsAuthReady(true);
+        }
+      });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      handleSession(session);
     });
 
-    // Cleanup
+    const timeoutId = setTimeout(() => {
+      if (isMounted && !isAuthReady) {
+        console.warn('Auth initialization timeout, proceeding without session');
+        setLoading(false);
+        setIsAuthReady(true);
+      }
+    }, 10000);
+
     return () => {
       isMounted = false;
+      clearTimeout(timeoutId);
       subscription?.unsubscribe();
     };
   }, []); // Aucune dépendance - exécuté UNE FOIS
