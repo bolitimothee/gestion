@@ -40,7 +40,11 @@ export default function AccountExpired() {
         </div>
 
         <button 
-          onClick={() => navigate('/login')}
+          onClick={async () => {
+            await supabase.auth.signOut();
+            localStorage.removeItem('sb:token');
+            navigate('/login', { replace: true });
+          }}
           className="expired-button"
         >
           Retourner à la Connexion
