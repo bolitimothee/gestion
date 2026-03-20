@@ -120,37 +120,6 @@ const StockGauge = ({ current, initial, threshold = 10 }) => {
   );
 };
 
-const StockStatus = ({ product }) => {
-  const initial = Number(product.initial_quantity ?? product.quantity ?? 0);
-  const current = Number(product.quantity ?? 0);
-  if (initial <= 0) return null;
-  
-  const sold = initial - current;
-  const percentSold = Math.min(Math.max((sold / initial) * 100, 0), 100);
-  let message = null;
-  
-  if (percentSold >= 100) {
-    message = '✅ Vous avez vendu 100% du stock disponible de cet article.';
-  } else if (percentSold >= 70) {
-    message = `⚠️ Attention : plus de ${Math.round(percentSold)}% du stock est vendu. Stock restant : ${current}.`;
-  }
-  
-  return (
-    <>
-      <div className="stock-progress">
-        <div className="progress-track">
-          <div className="progress-fill" style={{ width: `${percentSold}%` }}></div>
-        </div>
-        <div className="progress-label">{Math.round(percentSold)}% vendu</div>
-      </div>
-      {message && (
-        <div className={`stock-warning ${percentSold >= 100 ? 'stock-empty' : 'stock-low'}`}>
-          <AlertCircle size={16} style={{ marginRight: '6px' }} /> {message}
-        </div>
-      )}
-    </>
-  );
-};
 
 export default function Stock() {
   const { user } = useAuth();
@@ -575,7 +544,6 @@ export default function Stock() {
                       initial={product.initial_quantity ?? product.quantity} 
                       threshold={10}
                     />
-                    <StockStatus product={product} />
                     <div className="stock-summary">
                       <div className="stock-item">
                         <span className="stock-label">Disponible:</span>
