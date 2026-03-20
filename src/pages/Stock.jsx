@@ -11,6 +11,71 @@ const formatFCFA = (amount) => {
   return new Intl.NumberFormat('fr-FR').format(Math.round(amount)) + ' FCFA';
 };
 
+// Composant pour les jauges de stock
+const StockGauge = ({ current, initial, threshold = 10 }) => {
+  const percentage = initial > 0 ? Math.max(0, Math.min(100, (current / initial) * 100)) : 0;
+  const stockLevel = current <= threshold ? 'critical' : current <= threshold * 2 ? 'low' : 'good';
+  
+  const getGaugeColor = (level) => {
+    switch (level) {
+      case 'critical': return '#ef4444';
+      case 'low': return '#f59e0b';
+      case 'good': return '#10b981';
+      default: return '#6b7280';
+    }
+  };
+
+  const getGaugeGradient = (level) => {
+    switch (level) {
+      case 'critical': return 'linear-gradient(90deg, #ef4444 0%, #dc2626 100%)';
+      case 'low': return 'linear-gradient(90deg, #f59e0b 0%, #d97706 100%)';
+      case 'good': return 'linear-gradient(90deg, #10b981 0%, #047857 100%)';
+      default: return 'linear-gradient(90deg, #6b7280 0%, #4b5563 100%)';
+    }
+  };
+
+  return (
+    <div className="stock-gauge">
+      <div className="gauge-header">
+        <span className="gauge-title">Niveau de Stock</span>
+        <span className={`gauge-status ${stockLevel}`}>
+          {current}/{initial}
+        </span>
+      </div>
+      
+      <div className="gauge-container">
+        <div className="gauge-track">
+          <div 
+            className="gauge-fill" 
+            style={{ 
+              width: `${percentage}%`,
+              background: getGaugeGradient(stockLevel)
+            }}
+          ></div>
+        </div>
+        <div className="gauge-percentage" style={{ color: getGaugeColor(stockLevel) }}>
+          {Math.round(percentage)}%
+        </div>
+      </div>
+      
+      <div className="gauge-indicators">
+        <div className="indicator-item">
+          <div className="indicator-dot critical"></div>
+          <span>Critique ({`≤${threshold}`})</span>
+        </div>
+        <div className="indicator-item">
+          <div className="indicator-dot low"></div>
+          <span>Bas ({`≤${threshold * 2}`})</span>
+        </div>
+        <div className="indicator-item">
+          <div className="indicator-dot good"></div>
+          <span>Bon ({`>${threshold * 2}`})</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const StockStatus = ({ product }) => {
   const initial = Number(product.initial_quantity ?? product.quantity ?? 0);
   const current = Number(product.quantity ?? 0);
@@ -461,6 +526,11 @@ export default function Stock() {
 
                   {/* Informations de stock avec visuel */}
                   <div className="stock-visual-section">
+                    <StockGauge 
+                      current={product.quantity} 
+                      initial={product.initial_quantity ?? product.quantity} 
+                      threshold={10}
+                    />
                     <StockStatus product={product} />
                     <div className="stock-summary">
                       <div className="stock-item">

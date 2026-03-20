@@ -562,12 +562,12 @@
 }
 
 .action-btn.btn-edit {
-  background: #3b82f6;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
 }
 
 .action-btn.btn-edit:hover {
-  background: #2563eb;
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
   transform: translateY(-1px);
 }
 
@@ -629,6 +629,112 @@
   margin: 0;
   color: #6b7280;
   font-size: 0.875rem;
+}
+
+/* ============================================
+   JAUGES DE STOCK
+   ============================================ */
+
+.stock-gauge {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.gauge-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.gauge-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.gauge-status {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+}
+
+.gauge-status.critical {
+  background: #fef2f2;
+  color: #ef4444;
+}
+
+.gauge-status.low {
+  background: #fffbeb;
+  color: #f59e0b;
+}
+
+.gauge-status.good {
+  background: #f0fdf4;
+  color: #10b981;
+}
+
+.gauge-container {
+  position: relative;
+  margin-bottom: 0.75rem;
+}
+
+.gauge-track {
+  width: 100%;
+  height: 8px;
+  background: #f3f4f6;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.gauge-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.gauge-percentage {
+  position: absolute;
+  right: 0;
+  top: -20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.gauge-indicators {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.625rem;
+  color: #6b7280;
+}
+
+.indicator-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.indicator-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.indicator-dot.critical {
+  background: #ef4444;
+}
+
+.indicator-dot.low {
+  background: #f59e0b;
+}
+
+.indicator-dot.good {
+  background: #10b981;
 }
 
 /* ============================================
