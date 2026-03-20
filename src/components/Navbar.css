@@ -1,11 +1,12 @@
 .navbar {
-  background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   padding: 1rem 0;
-  box-shadow: var(--shadow);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
   z-index: 100;
+  height: 60px;
 }
 
 .navbar-container {
@@ -16,6 +17,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 20px;
+  height: 100%;
 }
 
 .navbar-toggle {
@@ -35,24 +37,34 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
+.navbar-brand {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
 .navbar-brand h1 {
   font-size: 24px;
   font-weight: 700;
   margin: 0;
   white-space: nowrap;
-  flex: 1;
-  text-align: center;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .navbar-user-desktop {
   display: flex;
   align-items: center;
   gap: 15px;
+  flex-shrink: 0;
 }
 
 .user-email {
   font-size: 13px;
   opacity: 0.95;
+  white-space: nowrap;
 }
 
 .btn-logout-desktop {
@@ -66,6 +78,7 @@
   align-items: center;
   gap: 6px;
   transition: all 0.3s ease;
+  font-size: 14px;
 }
 
 .btn-logout-desktop:hover {
@@ -81,8 +94,12 @@
     order: -1;
   }
 
-  .navbar-brand h1 {
+  .navbar-brand {
     flex: 1;
+    justify-content: flex-start;
+  }
+
+  .navbar-brand h1 {
     font-size: 18px;
     text-align: left;
   }
