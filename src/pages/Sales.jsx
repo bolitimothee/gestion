@@ -434,6 +434,30 @@ export default function Sales() {
           </div>
         )}
 
+        {/* Formulaire */}
+        {showForm && (
+          <div className="sales-form-section">
+            <div className="form-container">
+              <div className="form-header">
+                <h2>{editingId ? 'Modifier la vente' : 'Enregistrer une nouvelle vente'}</h2>
+                <button 
+                  onClick={() => {
+                    setShowForm(false);
+                    setEditingId(null);
+                  }}
+                  className="btn-close"
+                >
+                  ✕
+                </button>
+              </div>
+              
+              <form onSubmit={handleSubmit} className="sales-form">
+                {/* Contenu du formulaire */}
+              </form>
+            </div>
+          </div>
+        )}
+
         {/* Contenu principal */}
         {loading ? (
           <div className="loading-container">

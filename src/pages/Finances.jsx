@@ -439,6 +439,30 @@ export default function Finances() {
           </div>
         )}
 
+        {/* Formulaire */}
+        {showForm && (
+          <div className="expense-form-section">
+            <div className="form-container">
+              <div className="form-header">
+                <h2>{editingId ? 'Modifier la dépense' : 'Enregistrer une nouvelle dépense'}</h2>
+                <button 
+                  onClick={() => {
+                    setShowForm(false);
+                    setEditingId(null);
+                  }}
+                  className="btn-close"
+                >
+                  ✕
+                </button>
+              </div>
+              
+              <form onSubmit={handleSubmit} className="expense-form">
+                {/* Contenu du formulaire */}
+              </form>
+            </div>
+          </div>
+        )}
+
         {/* Contenu principal */}
         {loading ? (
           <div className="loading-container">
@@ -490,166 +514,6 @@ export default function Finances() {
                   )}
                 </div>
               </div>
-
-              {/* Formulaire */}
-              {showForm && (
-                <div className="expense-form-section">
-                  <div className="form-container">
-                    <div className="form-header">
-                      <h2>{editingId ? 'Modifier la dépense' : 'Enregistrer une nouvelle dépense'}</h2>
-                      <button 
-                        onClick={() => {
-                          setShowForm(false);
-                          setEditingId(null);
-                        }}
-                        className="btn-close"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                    
-                    <form onSubmit={handleSubmit} className="expense-form">
-                      {/* Section Informations principales */}
-                      <div className="form-section">
-                        <h3 className="section-title">
-                          <span className="section-number">1</span>
-                          Informations de la dépense
-                        </h3>
-                        
-                        <div className="form-row">
-                          <div className="form-group">
-                            <label htmlFor="description" className="form-label">
-                              Description <span className="required">*</span>
-                            </label>
-                            <input
-                              id="description"
-                              type="text"
-                              className="form-input"
-                              placeholder="Ex: Courses au supermarché, Essence pour la voiture..."
-                              value={formData.description}
-                              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                              required
-                            />
-                            <span className="form-hint">Description claire de la dépense</span>
-                          </div>
-
-                          <div className="form-group">
-                            <label htmlFor="amount" className="form-label">
-                              Montant <span className="required">*</span>
-                            </label>
-                            <div className="input-with-currency">
-                              <input
-                                id="amount"
-                                type="number"
-                                className="form-input"
-                                placeholder="0.00"
-                                value={formData.amount}
-                                onChange={(e) => setFormData({ ...formData, amount: Number(e.target.value) })}
-                                step="0.01"
-                                min="0"
-                                required
-                              />
-                              <span className="currency">FCFA</span>
-                            </div>
-                            <span className="form-hint">Montant de la dépense</span>
-                          </div>
-                        </div>
-
-                        <div className="form-row">
-                          <div className="form-group">
-                            <label htmlFor="category" className="form-label">
-                              Catégorie <span className="required">*</span>
-                            </label>
-                            <select
-                              id="category"
-                              className="form-select"
-                              value={formData.category}
-                              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                              required
-                            >
-                              {categories.map((category) => (
-                                <option key={category} value={category}>
-                                  {category}
-                                </option>
-                              ))}
-                            </select>
-                            <span className="form-hint">Catégorie pour organiser vos dépenses</span>
-                          </div>
-
-                          <div className="form-group">
-                            <label htmlFor="date" className="form-label">
-                              Date <span className="required">*</span>
-                            </label>
-                            <input
-                              id="date"
-                              type="date"
-                              className="form-input"
-                              value={formData.date}
-                              onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                              required
-                            />
-                            <span className="form-hint">Date de la dépense</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Section Notes */}
-                      <div className="form-section">
-                        <h3 className="section-title">
-                          <span className="section-number">2</span>
-                          Notes additionnelles
-                        </h3>
-                        
-                        <div className="form-group full-width">
-                          <label htmlFor="notes" className="form-label">
-                            Notes
-                          </label>
-                          <textarea
-                            id="notes"
-                            className="form-textarea"
-                            placeholder="Détails supplémentaires, référence, remarques..."
-                            value={formData.notes}
-                            onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                            rows="3"
-                          />
-                          <span className="form-hint">Informations additionnelles sur la dépense</span>
-                        </div>
-                      </div>
-
-                      {/* Actions */}
-                      <div className="form-actions">
-                        <div className="actions-left">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setShowForm(false);
-                              setEditingId(null);
-                            }}
-                            className="btn-secondary"
-                          >
-                            Annuler
-                          </button>
-                        </div>
-                        <div className="actions-right">
-                          <button type="submit" className="btn-primary">
-                            {editingId ? (
-                              <>
-                                <TrendingDown size={16} />
-                                Mettre à jour la dépense
-                              </>
-                            ) : (
-                              <>
-                                <Plus size={16} />
-                                Enregistrer la dépense
-                              </>
-                            )}
-                          </button>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         )}
