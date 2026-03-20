@@ -2,15 +2,45 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { stockService } from '../services/stockService';
-import { useProductsSync } from '../hooks/useRealtimeSync';
-import Navbar from '../components/Navbar';
-import Sidebar from '../components/Sidebar';
+import Layout from '../components/Layout';
 import { Plus, Edit2, Trash2, AlertCircle } from 'lucide-react';
 import './Stock.css';
 
 const formatFCFA = (amount) => {
   if (!isFinite(amount)) return '0 FCFA';
   return new Intl.NumberFormat('fr-FR').format(Math.round(amount)) + ' FCFA';
+};
+
+const StockStatus = ({ product }) => {
+  const initial = Number(product.initial_quantity ?? product.quantity ?? 0);
+  const current = Number(product.quantity ?? 0);
+  if (initial <= 0) return null;
+  
+  const sold = initial - current;
+  const percentSold = Math.min(Math.max((sold / initial) * 100, 0), 100);
+  let message = null;
+  
+  if (percentSold >= 100) {
+    message = '✅ Vous avez vendu 100% du stock disponible de cet article.';
+  } else if (percentSold >= 70) {
+    message = `⚠️ Attention : plus de ${Math.round(percentSold)}% du stock est vendu. Stock restant : ${current}.`;
+  }
+  
+  return (
+    <>
+      <div className="stock-progress">
+        <div className="progress-track">
+          <div className="progress-fill" style={{ width: `${percentSold}%` }}></div>
+        </div>
+        <div className="progress-label">{Math.round(percentSold)}% vendu</div>
+      </div>
+      {message && (
+        <div className={`stock-warning ${percentSold >= 100 ? 'stock-empty' : 'stock-low'}`}>
+          <AlertCircle size={16} style={{ marginRight: '6px' }} /> {message}
+        </div>
+      )}
+    </>
+  );
 };
 
 export default function Stock() {
@@ -28,6 +58,7 @@ export default function Stock() {
     selling_price: 0,
     category: '',
     sku: '',
+    initial_quantity: 0,
   });
 
   const loadProducts = useCallback(async () => {
@@ -52,8 +83,8 @@ export default function Stock() {
     }
   }, [user, loadProducts]);
 
-  // Synchroniser les produits en temps réel
-  useProductsSync(user?.id, setProducts);
+  // Synchroniser les produits en temps réel - Désactivé temporairement
+  // useProductsSync(user?.id, setProducts);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -95,6 +126,7 @@ export default function Stock() {
         selling_price: 0,
         category: '',
         sku: '',
+        initial_quantity: 0,
       });
       setEditingId(null);
       setShowForm(false);
@@ -126,136 +158,233 @@ export default function Stock() {
       selling_price: 0,
       category: '',
       sku: '',
+      initial_quantity: 0,
     });
     setEditingId(null);
     setShowForm(false);
   }
 
   return (
-    <div className="layout">
-      <Navbar />
-      <div className="layout-container">
-        <Sidebar active="/stock" />
-        <main className="main-content">
-          <div className="page-header">
-            <h1>Gestion des Stocks</h1>
+    <Layout activeRoute="/stock">
+      <div className="stock-page">
+        <div className="page-header">
+          <h1>Gestion des Stocks</h1>
+          <div className="page-actions">
             <button onClick={() => setShowForm(!showForm)} className="btn btn-primary">
               <Plus size={20} />
               Ajouter un produit
             </button>
           </div>
+        </div>
 
-          {error && (
-            <div className="alert alert-error">
-              <AlertCircle size={20} />
-              {error}
-            </div>
-          )}
+        {error && (
+          <div className="alert alert-error">
+            <AlertCircle size={20} />
+            {error}
+          </div>
+        )}
 
-          {showForm && (
-            <div className="form-card">
+        {showForm && (
+          <div className="form-container">
+            <div className="form-header">
               <h2>{editingId ? 'Modifier le produit' : 'Ajouter un nouveau produit'}</h2>
-              <form onSubmit={handleSubmit}>
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label htmlFor="product-name">Nom du Produit *</label>
+              <button 
+                onClick={handleCancel} 
+                className="btn-close"
+                aria-label="Fermer"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <form onSubmit={handleSubmit} className="product-form">
+              {/* Section Informations principales */}
+              <div className="form-section">
+                <h3 className="section-title">
+                  <span className="section-number">1</span>
+                  Informations principales
+                </h3>
+                <div className="form-row">
+                  <div className="form-group full-width">
+                    <label htmlFor="product-name" className="form-label">
+                      Nom du Produit <span className="required">*</span>
+                    </label>
                     <input
                       id="product-name"
                       type="text"
-                      placeholder="Ex: T-Shirt Blanc XL"
+                      className="form-input"
+                      placeholder="Ex: T-Shirt Blanc XL, iPhone 15 Pro, Café Arabica..."
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       required
+                      autoFocus
                     />
-                    <span className="form-hint">Entrez le nom ou la description du produit</span>
+                    <span className="form-hint">Nom ou description claire du produit</span>
                   </div>
-                  
+                </div>
+                
+                <div className="form-row">
                   <div className="form-group">
-                    <label htmlFor="category">Catégorie *</label>
+                    <label htmlFor="category" className="form-label">
+                      Catégorie <span className="required">*</span>
+                    </label>
                     <input
                       id="category"
                       type="text"
-                      placeholder="Ex: Vêtements, Électronique, Alimentation"
+                      className="form-input"
+                      placeholder="Ex: Vêtements, Électronique, Alimentation..."
                       value={formData.category}
                       onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                       required
+                      list="categories"
                     />
-                    <span className="form-hint">Catégorie pour organiser les produits</span>
+                    <datalist id="categories">
+                      <option value="Vêtements" />
+                      <option value="Électronique" />
+                      <option value="Alimentation" />
+                      <option value="Cosmétiques" />
+                      <option value="Livres" />
+                      <option value="Maison" />
+                      <option value="Sports" />
+                      <option value="Autre" />
+                    </datalist>
+                    <span className="form-hint">Choisissez une catégorie pour organiser vos produits</span>
                   </div>
-
+                  
                   <div className="form-group">
-                    <label htmlFor="purchase-price">Prix d'Achat  *</label>
-                    <input
-                      id="purchase-price"
-                      type="number"
-                      placeholder="Ex: 15.50"
-                      value={formData.purchase_price}
-                      onChange={(e) => setFormData({ ...formData, purchase_price: Number(e.target.value) })}
-                      step="0.01"
-                      min="0"
-                      required
-                    />
-                    <span className="form-hint">Coût d'acquisition de chaque unité</span>
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="selling-price">Prix de Revente  *</label>
-                    <input
-                      id="selling-price"
-                      type="number"
-                      placeholder="Ex: 24.99"
-                      value={formData.selling_price}
-                      onChange={(e) => setFormData({ ...formData, selling_price: Number(e.target.value) })}
-                      step="0.01"
-                      min="0"
-                      required
-                    />
-                    <span className="form-hint">Prix de vente à vos clients</span>
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="quantity">Quantité en Stock *</label>
-                    <input
-                      id="quantity"
-                      type="number"
-                      placeholder="Ex: 50"
-                      value={formData.quantity}
-                      onChange={(e) => setFormData({ ...formData, quantity: Number(e.target.value) })}
-                      min="0"
-                      required
-                    />
-                    <span className="form-hint">Nombre d'unités disponibles</span>
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="sku">Code SKU (optionnel)</label>
+                    <label htmlFor="sku" className="form-label">
+                      Code SKU
+                    </label>
                     <input
                       id="sku"
                       type="text"
+                      className="form-input"
                       placeholder="Ex: SKU-2024-001"
                       value={formData.sku}
                       onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
                     />
-                    <span className="form-hint">Code unique pour identifier le produit</span>
+                    <span className="form-hint">Code unique pour identifier le produit (optionnel)</span>
                   </div>
                 </div>
+              </div>
 
+              {/* Section Prix et Stock */}
+              <div className="form-section">
+                <h3 className="section-title">
+                  <span className="section-number">2</span>
+                  Prix et Stock
+                </h3>
+                <div className="price-stock-grid">
+                  <div className="price-group">
+                    <div className="form-group">
+                      <label htmlFor="purchase-price" className="form-label">
+                        Prix d'Achat <span className="required">*</span>
+                      </label>
+                      <div className="input-with-currency">
+                        <input
+                          id="purchase-price"
+                          type="number"
+                          className="form-input"
+                          placeholder="0.00"
+                          value={formData.purchase_price}
+                          onChange={(e) => setFormData({ ...formData, purchase_price: Number(e.target.value) })}
+                          step="0.01"
+                          min="0"
+                          required
+                        />
+                        <span className="currency">FCFA</span>
+                      </div>
+                      <span className="form-hint">Coût d'acquisition par unité</span>
+                    </div>
+                  </div>
+                  
+                  <div className="price-group">
+                    <div className="form-group">
+                      <label htmlFor="selling-price" className="form-label">
+                        Prix de Revente <span className="required">*</span>
+                      </label>
+                      <div className="input-with-currency">
+                        <input
+                          id="selling-price"
+                          type="number"
+                          className="form-input"
+                          placeholder="0.00"
+                          value={formData.selling_price}
+                          onChange={(e) => setFormData({ ...formData, selling_price: Number(e.target.value) })}
+                          step="0.01"
+                          min="0"
+                          required
+                        />
+                        <span className="currency">FCFA</span>
+                      </div>
+                      <span className="form-hint">Prix de vente à vos clients</span>
+                    </div>
+                  </div>
+                  
+                  <div className="stock-group">
+                    <div className="form-group">
+                      <label htmlFor="quantity" className="form-label">
+                        Quantité en Stock <span className="required">*</span>
+                      </label>
+                      <input
+                        id="quantity"
+                        type="number"
+                        className="form-input"
+                        placeholder="0"
+                        value={formData.quantity}
+                        onChange={(e) => setFormData({ ...formData, quantity: Number(e.target.value) })}
+                        min="0"
+                        required
+                      />
+                      <span className="form-hint">Nombre d'unités disponibles</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Calcul automatique de la marge */}
+                {formData.purchase_price > 0 && formData.selling_price > 0 && (
+                  <div className="margin-preview">
+                    <div className="margin-info">
+                      <span className="margin-label">Marge unitaire:</span>
+                      <span className="margin-value positive">
+                        {formatFCFA(formData.selling_price - formData.purchase_price)}
+                      </span>
+                    </div>
+                    <div className="margin-info">
+                      <span className="margin-label">Pourcentage:</span>
+                      <span className={`margin-value ${((formData.selling_price - formData.purchase_price) / formData.purchase_price * 100) >= 50 ? 'positive' : 'warning'}`}>
+                        {Math.round(((formData.selling_price - formData.purchase_price) / formData.purchase_price) * 100)}%
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Section Description */}
+              <div className="form-section">
+                <h3 className="section-title">
+                  <span className="section-number">3</span>
+                  Description détaillée
+                </h3>
                 <div className="form-group full-width">
-                  <label htmlFor="description">Description (optionnel)</label>
+                  <label htmlFor="description" className="form-label">
+                    Description
+                  </label>
                   <textarea
                     id="description"
-                    placeholder="Entrez les détails du produit..."
+                    className="form-textarea"
+                    placeholder="Entrez les détails, caractéristiques, ou informations supplémentaires sur ce produit..."
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    rows="3"
+                    rows="4"
                   />
-                  <span className="form-hint">Informations supplémentaires sur le produit</span>
+                  <span className="form-hint">Informations supplémentaires pour mieux décrire votre produit</span>
                 </div>
+              </div>
 
-                <div className="form-actions">
-                  <button type="submit" className="btn btn-primary">
-                    {editingId ? 'Mettre à jour' : 'Ajouter le produit'}
-                  </button>
+              {/* Actions du formulaire */}
+              <div className="form-actions">
+                <div className="actions-left">
                   <button
                     type="button"
                     onClick={handleCancel}
@@ -264,71 +393,163 @@ export default function Stock() {
                     Annuler
                   </button>
                 </div>
-              </form>
-            </div>
-          )}
+                <div className="actions-right">
+                  <button type="submit" className="btn btn-primary">
+                    {editingId ? (
+                      <>
+                        <Edit2 size={18} style={{ marginRight: '8px' }} />
+                        Mettre à jour le produit
+                      </>
+                    ) : (
+                      <>
+                        <Plus size={18} style={{ marginRight: '8px' }} />
+                        Ajouter le produit
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        )}
 
-          {loading ? (
-            <div className="loading">Chargement des produits...</div>
-          ) : (
-            <div className="products-grid">
+        {loading ? (
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <p>Chargement des produits...</p>
+          </div>
+        ) : (
+          <>
+            {/* Filtres et recherche */}
+            <div className="products-filters">
+              <div className="filter-group">
+                <input
+                  type="text"
+                  placeholder="Rechercher un produit..."
+                  className="search-input"
+                />
+              </div>
+              <div className="filter-stats">
+                <span className="stat-item">
+                  <span className="stat-number">{products.length}</span>
+                  <span className="stat-label">Produits</span>
+                </span>
+                <span className="stat-item">
+                  <span className="stat-number">{products.filter(p => p.quantity <= 10).length}</span>
+                  <span className="stat-label">Stock faible</span>
+                </span>
+              </div>
+            </div>
+
+            {/* Grille de produits */}
+            <div className="products-grid-enhanced">
               {products.map((product) => (
-                <div key={product.id} className="product-card">
-                  <div className="product-header">
-                    <h3>{product.name}</h3>
-                    <span className={`stock-badge ${product.quantity > 10 ? 'in-stock' : 'low-stock'}`}>
-                      {product.quantity}
-                    </span>
+                <div key={product.id} className="product-card-enhanced">
+                  {/* Header du produit */}
+                  <div className="product-header-enhanced">
+                    <div className="product-title-section">
+                      <h3 className="product-name">{product.name}</h3>
+                      <p className="product-category-badge">{product.category}</p>
+                    </div>
+                    <div className="product-stock-indicator">
+                      <span className={`stock-badge-enhanced ${product.quantity > 10 ? 'in-stock' : 'low-stock'}`}>
+                        {product.quantity} unités
+                      </span>
+                      <span className="sku-label">SKU: {product.sku || 'N/A'}</span>
+                    </div>
                   </div>
-                  <p className="product-sku">SKU: {product.sku}</p>
-                  <p className="product-category">Catégorie: {product.category}</p>
-                  <div className="stock-counter">
-                    <span className="label">Stock:</span>
-                    <span className="counter">{product.quantity} / {product.initial_quantity || product.quantity}</span>
+
+                  {/* Informations de stock avec visuel */}
+                  <div className="stock-visual-section">
+                    <StockStatus product={product} />
+                    <div className="stock-summary">
+                      <div className="stock-item">
+                        <span className="stock-label">Disponible:</span>
+                        <span className="stock-value">{product.quantity}</span>
+                      </div>
+                      <div className="stock-item">
+                        <span className="stock-label">Initial:</span>
+                        <span className="stock-value">{product.initial_quantity ?? product.quantity}</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="product-price">
-                    <span className="label">Prix d'achat:</span>
-                    <span className="price">{formatFCFA(product.purchase_price)}</span>
+
+                  {/* Informations financières */}
+                  <div className="financial-section">
+                    <div className="price-row">
+                      <div className="price-item">
+                        <span className="price-label">Achat</span>
+                        <span className="price-value purchase">{formatFCFA(product.purchase_price)}</span>
+                      </div>
+                      <div className="price-item">
+                        <span className="price-label">Revente</span>
+                        <span className="price-value selling">{formatFCFA(product.selling_price)}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="margin-section">
+                      <div className="margin-item">
+                        <span className="margin-label">Marge unitaire:</span>
+                        <span className={`margin-value ${((product.selling_price - product.purchase_price) / product.purchase_price * 100) >= 50 ? 'good' : 'low'}`}>
+                          {formatFCFA(product.selling_price - product.purchase_price)}
+                        </span>
+                      </div>
+                      <div className="margin-item">
+                        <span className="margin-label">Pourcentage:</span>
+                        <span className={`margin-percentage ${((product.selling_price - product.purchase_price) / product.purchase_price * 100) >= 50 ? 'good' : 'low'}`}>
+                          {Math.round(((product.selling_price - product.purchase_price) / product.purchase_price) * 100)}%
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="total-value">
+                      <span className="total-label">Valeur totale:</span>
+                      <span className="total-amount">{formatFCFA(product.quantity * product.selling_price)}</span>
+                    </div>
                   </div>
-                  <div className="product-price">
-                    <span className="label">Prix de revente:</span>
-                    <span className="price">{formatFCFA(product.selling_price)}</span>
-                  </div>
-                  <div className="product-margin">
-                    <span className="label">Marge:</span>
-                    <span className="margin">{formatFCFA(product.selling_price - product.purchase_price)} ({Math.round(((product.selling_price - product.purchase_price) / product.purchase_price) * 100)}%)</span>
-                  </div>
-                  <div className="product-total">
-                    <span className="label">Total:</span>
-                    <span className="total">{formatFCFA(product.quantity * product.selling_price)}</span>
-                  </div>
-                  <p className="product-description">{product.description}</p>
-                  <div className="product-actions">
+
+                  {/* Description */}
+                  {product.description && (
+                    <div className="product-description-section">
+                      <p className="product-description">{product.description}</p>
+                    </div>
+                  )}
+
+                  {/* Actions */}
+                  <div className="product-actions-enhanced">
                     <button
                       onClick={() => handleEdit(product)}
-                      className="btn btn-sm btn-edit"
+                      className="action-btn btn-edit"
+                      title="Modifier le produit"
                     >
                       <Edit2 size={16} />
+                      <span>Modifier</span>
                     </button>
                     <button
                       onClick={() => handleDelete(product.id)}
-                      className="btn btn-sm btn-delete"
+                      className="action-btn btn-delete"
+                      title="Supprimer le produit"
                     >
                       <Trash2 size={16} />
+                      <span>Supprimer</span>
                     </button>
                   </div>
                 </div>
               ))}
             </div>
-          )}
+          </>
+        )}
 
-          {!loading && products.length === 0 && (
-            <div className="empty-state">
-              <p>Aucun produit enregistré</p>
-            </div>
-          )}
-        </main>
+        {!loading && products.length === 0 && (
+          <div className="empty-state">
+            <p>Aucun produit enregistré</p>
+            <button onClick={() => setShowForm(true)} className="btn btn-primary">
+              <Plus size={20} />
+              Ajouter votre premier produit
+            </button>
+          </div>
+        )}
       </div>
-    </div>
+    </Layout>
   );
 }
