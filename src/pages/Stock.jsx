@@ -14,10 +14,12 @@ const formatFCFA = (amount) => {
 // Composant pour les jauges de stock
 const StockGauge = ({ current, initial, threshold = 10 }) => {
   const percentage = initial > 0 ? Math.max(0, Math.min(100, (current / initial) * 100)) : 0;
-  const stockLevel = current <= threshold ? 'critical' : current <= threshold * 2 ? 'low' : 'good';
+  const stockLevel = current <= 0 ? 'empty' : current <= threshold ? 'critical' : current <= threshold * 2 ? 'low' : 'good';
+  const soldPercentage = initial > 0 ? Math.min(100, ((initial - current) / initial) * 100) : 0;
   
   const getGaugeColor = (level) => {
     switch (level) {
+      case 'empty': return '#dc2626';
       case 'critical': return '#ef4444';
       case 'low': return '#f59e0b';
       case 'good': return '#10b981';
@@ -27,10 +29,24 @@ const StockGauge = ({ current, initial, threshold = 10 }) => {
 
   const getGaugeGradient = (level) => {
     switch (level) {
+      case 'empty': return 'linear-gradient(90deg, #dc2626 0%, #b91c1c 100%)';
       case 'critical': return 'linear-gradient(90deg, #ef4444 0%, #dc2626 100%)';
       case 'low': return 'linear-gradient(90deg, #f59e0b 0%, #d97706 100%)';
       case 'good': return 'linear-gradient(90deg, #10b981 0%, #047857 100%)';
       default: return 'linear-gradient(90deg, #6b7280 0%, #4b5563 100%)';
+    }
+  };
+
+  const getAlertMessage = (level, current, initial) => {
+    switch (level) {
+      case 'empty':
+        return '🚨 STOCK ÉPUISÉ - Réapprovisionnement immédiat requis !';
+      case 'critical':
+        return `⚠️ STOCK CRITIQUE - Il ne reste que ${current} unité(s) !`;
+      case 'low':
+        return `📉 STOCK FAIBLE - ${current} unité(s) restantes`;
+      default:
+        return null;
     }
   };
 
@@ -52,20 +68,48 @@ const StockGauge = ({ current, initial, threshold = 10 }) => {
               background: getGaugeGradient(stockLevel)
             }}
           ></div>
+          {/* Indicateur de progression de vente */}
+          {soldPercentage > 0 && (
+            <div 
+              className="sold-indicator" 
+              style={{ 
+                width: `${soldPercentage}%`,
+                background: 'linear-gradient(90deg, rgba(239, 68, 68, 0.3) 0%, rgba(239, 68, 68, 0.1) 100%)'
+              }}
+            ></div>
+          )}
         </div>
         <div className="gauge-percentage" style={{ color: getGaugeColor(stockLevel) }}>
           {Math.round(percentage)}%
         </div>
       </div>
       
+      {/* Alertes visuelles sous la jauge */}
+      {getAlertMessage(stockLevel, current, initial) && (
+        <div className={`stock-alert ${stockLevel}`}>
+          <div className="alert-icon">
+            {stockLevel === 'empty' && '🚨'}
+            {stockLevel === 'critical' && '⚠️'}
+            {stockLevel === 'low' && '📉'}
+          </div>
+          <div className="alert-message">
+            {getAlertMessage(stockLevel, current, initial)}
+          </div>
+        </div>
+      )}
+      
       <div className="gauge-indicators">
         <div className="indicator-item">
+          <div className="indicator-dot empty"></div>
+          <span>Épuisé (0)</span>
+        </div>
+        <div className="indicator-item">
           <div className="indicator-dot critical"></div>
-          <span>Critique ({`≤${threshold}`})</span>
+          <span>Critique (≤{threshold})</span>
         </div>
         <div className="indicator-item">
           <div className="indicator-dot low"></div>
-          <span>Bas ({`≤${threshold * 2}`})</span>
+          <span>Bas (≤{threshold * 2})</span>
         </div>
         <div className="indicator-item">
           <div className="indicator-dot good"></div>
