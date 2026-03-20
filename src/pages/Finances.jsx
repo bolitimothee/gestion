@@ -366,6 +366,30 @@ export default function Finances() {
           </div>
         </div>
 
+        {/* Formulaire */}
+        {showForm && (
+          <div className="expense-form-section">
+            <div className="form-container">
+              <div className="form-header">
+                <h2>{editingId ? 'Modifier la dépense' : 'Enregistrer une nouvelle dépense'}</h2>
+                <button 
+                  onClick={() => {
+                    setShowForm(false);
+                    setEditingId(null);
+                  }}
+                  className="btn-close"
+                >
+                  ✕
+                </button>
+              </div>
+              
+              <form onSubmit={handleSubmit} className="expense-form">
+                {/* Contenu du formulaire */}
+              </form>
+            </div>
+          </div>
+        )}
+
         {/* Statistiques */}
         {!loading && expenses.length > 0 && (
           <div className="stats-section">
