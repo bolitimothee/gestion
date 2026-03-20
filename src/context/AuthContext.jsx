@@ -20,6 +20,16 @@ export function AuthProvider({ children }) {
     sessionCheckRef.current = true;
 
     let isMounted = true;
+    let authTimeout;
+
+    // Timeout de sécurité pour éviter le blocage
+    authTimeout = setTimeout(() => {
+      if (isMounted && loading) {
+        console.warn('⚠️ Auth initialization timeout - forcing ready state');
+        setLoading(false);
+        setIsAuthReady(true);
+      }
+    }, 10000); // 10 secondes max
 
     // Écouter les changements d'authentification
     // Cette fonction gère AUSSI l'initialisation (elle se déclenche immédiatement)
@@ -36,14 +46,31 @@ export function AuthProvider({ children }) {
           setUser(session.user);
           setLoading(true);
           
-          // Charger les détails du compte
-          const { data: accountData } = await authService.getAccountDetails(session.user.id);
-          if (isMounted && accountData) {
-            setAccount(accountData);
-            // Vérifier la validité
-            const { valid } = await authService.checkAccountValidity(session.user.id);
+          // Charger les détails du compte avec timeout
+          const accountPromise = authService.getAccountDetails(session.user.id);
+          const validityPromise = authService.checkAccountValidity(session.user.id);
+          
+          // Timeout pour éviter le blocage
+          const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Account loading timeout')), 5000)
+          );
+          
+          try {
+            const [accountData, validityResult] = await Promise.all([
+              Promise.race([accountPromise, timeoutPromise]),
+              Promise.race([validityPromise, timeoutPromise])
+            ]);
+            
+            if (isMounted && accountData) {
+              setAccount(accountData);
+              setAccountValid(validityResult?.valid !== false);
+            }
+          } catch (err) {
+            console.warn('Account loading timeout or error:', err.message);
+            // Continuer sans les détails du compte
             if (isMounted) {
-              setAccountValid(valid);
+              setAccount(null);
+              setAccountValid(true);
             }
           }
         } else {
@@ -60,6 +87,7 @@ export function AuthProvider({ children }) {
         if (isMounted) {
           setLoading(false);
           setIsAuthReady(true);
+          clearTimeout(authTimeout); // Annuler le timeout de sécurité
         }
       }
     });
@@ -68,8 +96,9 @@ export function AuthProvider({ children }) {
     return () => {
       isMounted = false;
       subscription?.unsubscribe();
+      clearTimeout(authTimeout);
     };
-  }, []); // Aucune dépendance - exécuté UNE FOIS
+  }, [loading]); // Dépendance sur loading pour le timeout
 
   // ÉTAPE 2: Vérifier périodiquement la validité du compte (toutes les 30 sec)
   useEffect(() => {

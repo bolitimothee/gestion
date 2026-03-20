@@ -20,14 +20,8 @@ if (SUPABASE_URL && SUPABASE_ANON_KEY) {
   try {
     console.log('✅ Supabase client created successfully');
     
-    // Test connection avec timeout pour éviter AbortError
-    const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Connection timeout')), 5000)
-    );
-    
-    const sessionPromise = supabase.auth.getSession();
-    
-    Promise.race([sessionPromise, timeoutPromise])
+    // Test simple sans timeout pour éviter les blocages
+    supabase.auth.getSession()
       .then(({ data, error }) => {
         if (error) {
           console.error('❌ Session check error:', error.message);
@@ -37,12 +31,9 @@ if (SUPABASE_URL && SUPABASE_ANON_KEY) {
           console.log('⚠️ No active session (this is normal if not logged in)');
         }
       })
-      .catch(err => {
-        if (err.message === 'Connection timeout') {
-          console.log('⏰ Connection test timeout (this is normal)');
-        } else {
-          console.error('❌ Connection error:', err.message);
-        }
+      .catch(() => {
+        // Ignorer les erreurs de connexion pour ne pas bloquer
+        console.log('ℹ️ Connection check skipped (this is normal)');
       });
     
   } catch (err) {
