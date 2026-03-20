@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useSidebar } from '../context/SidebarContext';
+import { useSidebar } from '../hooks/useSidebarHook';
 import { LogOut, Menu, X } from 'lucide-react';
 import './Navbar.css';
 

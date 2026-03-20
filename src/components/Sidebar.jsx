@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useSidebar } from '../context/SidebarContext';
+import { useSidebar } from '../hooks/useSidebarHook';
 import { BarChart3, Package, ShoppingCart, TrendingUp, LogOut } from 'lucide-react';
 import './Sidebar.css';
 

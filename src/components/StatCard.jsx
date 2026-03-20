@@ -1,11 +1,11 @@
 import React from 'react';
 import './StatCard.css';
 
-export default function StatCard({ title, value, icon: Icon, color, trend }) {
+export default function StatCard({ title, value, icon, color, trend }) {
   return (
     <div className={`stat-card stat-card-${color}`}>
       <div className="stat-icon">
-        <Icon size={24} />
+        {React.createElement(icon, { size: 24 })}
       </div>
       <div className="stat-content">
         <p className="stat-title">{title}</p>
