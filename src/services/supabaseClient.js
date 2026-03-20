@@ -11,18 +11,29 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
   console.error('\nVérifiez votre fichier .env.local ou .env');
 }
 
-export const supabase = createClient(SUPABASE_URL || '', SUPABASE_ANON_KEY || '', {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: true,
-    storage: typeof window !== 'undefined' ? window.localStorage : undefined,
-    flowType: 'implicit',
-  },
-  global: {
-    headers: {
-      'Content-Type': 'application/json',
+// Singleton pattern pour éviter les instances multiples
+let supabaseInstance = null;
+
+export const supabase = (() => {
+  if (supabaseInstance) {
+    return supabaseInstance;
+  }
+
+  supabaseInstance = createClient(SUPABASE_URL || '', SUPABASE_ANON_KEY || '', {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+      flowType: 'implicit',
     },
-  },
-});
+    global: {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  });
+
+  return supabaseInstance;
+})();
 
