@@ -110,6 +110,13 @@ body::before {
   position: relative;
 }
 
+/* Ajustement pour desktop avec sidebar fixe */
+@media (min-width: 1025px) {
+  .main-content {
+    margin-left: 280px;  /* Espace pour la sidebar fixe */
+  }
+}
+
 /* Effet de verre dépoli pour le contenu */
 .main-content::before {
   content: '';
@@ -135,8 +142,11 @@ body::before {
   box-shadow: var(--shadow-lg);
   transition: var(--transition-smooth);
   z-index: 100;
-  position: relative;
-  overflow: hidden;
+  position: fixed;  /* Fixe pour desktop - immobile même au scroll */
+  top: 60px;  /* Juste en dessous de la navbar */
+  left: 0;
+  height: calc(100vh - 60px);  /* Hauteur de l'écran moins la navbar */
+  overflow-y: auto;  /* Scroll interne si nécessaire */
 }
 
 /* Effet de lueur pour la sidebar */
