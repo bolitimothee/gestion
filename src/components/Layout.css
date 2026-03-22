@@ -110,10 +110,10 @@ body::before {
   position: relative;
 }
 
-/* Ajustement pour desktop avec sidebar fixe */
+/* Ajustement pour desktop avec navbar gauche */
 @media (min-width: 1025px) {
   .main-content {
-    margin-left: 280px;  /* Espace pour la sidebar fixe */
+    margin-left: 80px;  /* Espace pour navbar compacte */
     padding: 2rem;  /* Plus d'espacement sur desktop */
   }
 }
@@ -121,13 +121,13 @@ body::before {
 /* Amélioration pour grands écrans desktop */
 @media (min-width: 1400px) {
   .main-content {
-    margin-left: 320px;  /* Espace pour sidebar plus grande */
+    margin-left: 80px;  /* Garder navbar compacte */
     padding: 2.5rem;  /* Encore plus d'espacement */
-    max-width: calc(100vw - 320px);  /* Utiliser toute la largeur disponible */
+    max-width: calc(100vw - 80px);  /* Utiliser toute la largeur disponible */
   }
   
-  .sidebar {
-    width: 320px;  /* Sidebar plus grande sur grands écrans */
+  .sidebar:hover {
+    width: 320px;  /* Expansion plus grande au survol */
   }
 }
 
@@ -135,8 +135,8 @@ body::before {
 @media (min-width: 1920px) {
   .main-content {
     padding: 3rem;  /* Espacement maximal */
-    max-width: calc(1400px + 320px);  /* Limiter la largeur pour la lisibilité */
-    margin: 0 auto 0 320px;  /* Centrer le contenu */
+    max-width: calc(1400px + 80px);  /* Limiter la largeur pour la lisibilité */
+    margin: 0 auto 0 80px;  /* Centrer le contenu */
   }
 }
 
@@ -155,9 +155,9 @@ body::before {
   z-index: -1;
 }
 
-/* Sidebar optimisée avec effets visuels uniques */
+/* SIDEBAR - NAVIGATION GAUCHE ADAPTATIVE */
 .sidebar {
-  width: 280px;
+  width: 80px;  /* Navbar compacte sur desktop */
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -172,58 +172,80 @@ body::before {
   overflow-y: auto;  /* Scroll interne si nécessaire */
 }
 
-/* Effet de lueur pour la sidebar */
-.sidebar::before {
+/* Expansion au survol pour desktop */
+.sidebar:hover {
+  width: 280px;  /* Expansion complète au survol */
+  box-shadow: var(--shadow-xl);
+}
+
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  flex: 1;
+}
+
+.nav-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.nav-menu::before {
   content: '';
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 1px;
-  height: 100%;
-  background: var(--primary-gradient);
-  opacity: 0;
-  transition: var(--transition);
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  border-radius: 2px;
 }
 
-.sidebar:hover::before {
-  opacity: 1;
-  animation: slideDown 2s ease-in-out infinite;
-}
-
-@keyframes slideDown {
-  0%, 100% {
-    transform: translateY(-100%);
-  }
-  50% {
-    transform: translateY(100%);
-  }
-}
-
-.sidebar:hover {
-  width: 300px;
-  box-shadow: var(--shadow-xl);
-  transform: translateX(-5px);
-}
-
-/* Navigation optimisée avec effets uniques */
-.nav-menu {
-  padding: 1.5rem 0;
-  position: relative;
+.nav-menu::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+  border-radius: 1px;
 }
 
 .nav-item {
   display: flex;
   align-items: center;
-  padding: 1rem 1.5rem;
-  margin-bottom: 0.5rem;
-  border-radius: var(--radius-lg);
-  transition: var(--transition-smooth);
+  gap: 1rem;
+  padding: 1rem 1.25rem;
   text-decoration: none;
   color: var(--text-secondary);
   font-weight: 500;
-  font-size: 0.9rem;
+  border-radius: var(--radius-lg);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+}
+
+/* Mode compact par défaut - icônes uniquement */
+.sidebar:not(:hover) .nav-item {
+  padding: 1rem;
+  justify-content: center;
+  min-width: 48px;
+  height: 48px;
+}
+
+.sidebar:not(:hover) .nav-item span {
+  display: none;  /* Cacher le texte en mode compact */
+}
+
+.sidebar:not(:hover) .nav-item .nav-icon {
+  margin: 0;  /* Centrer l'icône */
+  font-size: 1.4rem;
 }
 
 .nav-item::before {
@@ -244,14 +266,14 @@ body::before {
 .nav-item:hover {
   color: var(--primary-color);
   background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-  transform: translateX(8px);
+  transform: translateX(4px);
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
 }
 
 .nav-item.active {
   color: white;
   background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-  transform: translateX(8px);
+  transform: translateX(4px);
   box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
 }
 
@@ -271,6 +293,7 @@ body::before {
 .nav-icon {
   font-size: 1.2rem;
   transition: all 0.3s ease;
+  flex-shrink: 0;
 }
 
 .nav-item:hover .nav-icon,
@@ -279,18 +302,94 @@ body::before {
   filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.3));
 }
 
+/* Indicateur actif en mode compact */
+.sidebar:not(:hover) .nav-item.active::after {
+  right: -4px;
+  border-left-width: 4px;
+  border-top-width: 4px;
+  border-bottom-width: 4px;
+}
+
+/* Footer adaptatif */
+.sidebar-footer {
+  border-top: 1px solid var(--border-color);
+  padding: 1rem;
+  margin-top: auto;
+  background: linear-gradient(180deg, rgba(102, 126, 234, 0.02) 0%, rgba(102, 126, 234, 0.05) 100%);
+}
+
+.sidebar-user {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Mode compact pour footer */
+.sidebar:not(:hover) .sidebar-user {
+  display: none;  /* Cacher en mode compact */
+}
+
+.user-account {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.account-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.account-email {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  word-break: break-word;
+}
+
+.btn-logout-sidebar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+/* Mode compact pour bouton logout */
+.sidebar:not(:hover) .btn-logout-sidebar {
+  padding: 0.75rem;
+  justify-content: center;
+  min-width: 48px;
+  height: 48px;
+}
+
+.sidebar:not(:hover) .btn-logout-sidebar span {
+  display: none;  /* Cacher le texte en mode compact */
+}
+
+.btn-logout-sidebar:hover {
+  background: #5a67d8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
 /* ============================================
    RESPONSIVE DESIGN PARFAIT - TOUS ÉCRANS
    ============================================ */
 
 /* ÉCRANS GRANDS (1200px et plus) */
 @media (min-width: 1200px) {
-  .sidebar {
-    width: 320px;
-  }
-  
   .sidebar:hover {
-    width: 340px;
+    width: 300px;  /* Expansion sur grands écrans */
   }
   
   .nav-item {
@@ -305,12 +404,8 @@ body::before {
 
 /* ÉCRANS MOYENS (1024px - 1199px) */
 @media (max-width: 1199px) and (min-width: 1025px) {
-  .sidebar {
-    width: 260px;
-  }
-  
   .sidebar:hover {
-    width: 280px;
+    width: 280px;  /* Expansion standard */
   }
   
   .nav-item {
@@ -335,6 +430,7 @@ body::before {
   
   .main-content {
     padding: 0;
+    margin-left: 0;  /* Pas de marge pour mobile/tablette */
   }
   
   .sidebar {
@@ -355,8 +451,40 @@ body::before {
   }
   
   .sidebar:hover {
-    width: 280px;
+    width: 280px;  /* Pas d'expansion sur mobile */
     transform: translateX(0);
+  }
+  
+  /* Réinitialiser les styles compact sur mobile */
+  .sidebar:not(:hover) .nav-item {
+    padding: 1rem 1.25rem;
+    justify-content: flex-start;
+    min-width: auto;
+    height: auto;
+  }
+  
+  .sidebar:not(:hover) .nav-item span {
+    display: inline;  /* Afficher le texte sur mobile */
+  }
+  
+  .sidebar:not(:hover) .nav-item .nav-icon {
+    margin-right: 1rem;
+    font-size: 1.2rem;
+  }
+  
+  .sidebar:not(:hover) .sidebar-user {
+    display: flex;  /* Afficher footer sur mobile */
+  }
+  
+  .sidebar:not(:hover) .btn-logout-sidebar {
+    padding: 0.75rem;
+    justify-content: flex-start;
+    min-width: auto;
+    height: auto;
+  }
+  
+  .sidebar:not(:hover) .btn-logout-sidebar span {
+    display: inline;  /* Afficher le texte sur mobile */
   }
   
   .nav-menu {
