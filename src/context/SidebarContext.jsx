@@ -5,15 +5,11 @@ export function SidebarProvider({ children }) {
   // Détecter la taille de l'écran au chargement
   const getInitialState = () => {
     if (typeof window !== 'undefined') {
-      // Sur tablette (768px - 1024px), la sidebar devrait être visible par défaut
-      if (window.innerWidth >= 768 && window.innerWidth <= 1024) {
-        return true;
-      }
-      // Sur desktop (>1024px), la sidebar devrait être visible par défaut
+      // Sur desktop (>1024px), la sidebar doit être visible par défaut et immobile
       if (window.innerWidth > 1024) {
         return true;
       }
-      // Sur mobile (<768px), la sidebar devrait être fermée par défaut
+      // Sur tablette et mobile (<1024px), la sidebar doit être cachée par défaut
       return false;
     }
     return false;
@@ -25,11 +21,11 @@ export function SidebarProvider({ children }) {
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
-      if (width >= 768) {
-        // Sur tablette et desktop, garder la sidebar ouverte
+      if (width > 1024) {
+        // Sur desktop, garder la sidebar ouverte et immobile
         setIsSidebarOpen(true);
       } else {
-        // Sur mobile, fermer la sidebar
+        // Sur tablette et mobile, fermer la sidebar
         setIsSidebarOpen(false);
       }
     };
