@@ -317,25 +317,54 @@
   .product-card-enhanced {
     width: 100%;
     max-width: 100%;
-    border-radius: 20px;  /* Plus moderne */
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);  /* Ombre moderne */
+    border-radius: 22px;  /* Plus moderne et visible */
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.10);  /* Ombre plus profonde */
     min-height: 360px;  /* Hauteur augmentée */
-    background: linear-gradient(145deg, #ffffff, #fafafa);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    background: linear-gradient(145deg, #ffffff, #f8fafc);  /* Fond plus contrasté */
+    border: 2px solid rgba(0, 0, 0, 0.07);  /* Bordure plus visible */
     margin: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .product-card-enhanced::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;  /* Ligne supérieure décorative */
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);  /* Dégradé coloré */
+    z-index: 1;
+  }
+  
+  .product-card-enhanced::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.08) 50%, transparent 100%);
+    pointer-events: none;
+    z-index: 2;
   }
   
   .product-header-enhanced {
     padding: 2rem 1.75rem;  /* Plus généreux */
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    position: relative;
+    z-index: 3;  /* Au-dessus des éléments décoratifs */
   }
   
   .product-name {
     font-size: 1.55rem;  /* Impact optimal */
     line-height: 1.3;
-    font-weight: 800;  /* Très gras */
-    color: #1a1a1a;
+    font-weight: 800;  /* Très gras pour modernité */
+    color: #1a1a1a;  /* Noir profond */
     margin-bottom: 0.75rem;
+    position: relative;
+    z-index: 3;
   }
   
   .product-category-badge {
@@ -347,16 +376,22 @@
     border-radius: 20px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    position: relative;
+    z-index: 3;
   }
   
   .product-content-enhanced {
     padding: 2rem 1.75rem;  /* Plus généreux */
+    position: relative;
+    z-index: 3;
   }
   
   .product-actions-enhanced {
     padding: 1.75rem 1.75rem;  /* Plus généreux */
     gap: 1rem;
     border-top: 1px solid rgba(0, 0, 0, 0.06);
+    position: relative;
+    z-index: 3;
   }
   
   .action-btn {
@@ -368,6 +403,8 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: none;
     cursor: pointer;
+    position: relative;
+    z-index: 4;
   }
   
   .action-btn:hover {
@@ -690,18 +727,45 @@
   .product-card-enhanced {
     width: 100%;
     max-width: 100%;
-    border-radius: 20px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    border-radius: 24px;  /* Plus moderne et visible */
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);  /* Ombre plus profonde */
     margin: 0;
     min-height: 340px;  /* Hauteur augmentée pour compenser largeur */
-    background: linear-gradient(145deg, #ffffff, #fafafa);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    background: linear-gradient(145deg, #ffffff, #f8fafc);  /* Fond plus contrasté */
+    border: 2px solid rgba(0, 0, 0, 0.08);  /* Bordure plus visible */
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .product-card-enhanced::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;  /* Ligne supérieure décorative */
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);  /* Dégradé coloré */
+    z-index: 1;
+  }
+  
+  .product-card-enhanced::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+    pointer-events: none;
+    z-index: 2;
   }
   
   /* Header plus élégant */
   .product-header-enhanced {
     padding: 2rem 1.75rem;  /* Plus généreux et équilibré */
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);  /* Séparation subtile */
+    position: relative;
+    z-index: 3;  /* Au-dessus des éléments décoratifs */
   }
   
   /* Titre plus moderne */
@@ -711,6 +775,8 @@
     font-weight: 800;  /* Très gras pour modernité */
     color: #1a1a1a;  /* Noir profond */
     margin-bottom: 0.75rem;
+    position: relative;
+    z-index: 3;
   }
   
   /* Badge catégorie plus élégant */
@@ -723,11 +789,15 @@
     border-radius: 20px;  /* Plus arrondi */
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    position: relative;
+    z-index: 3;
   }
   
   /* Contenu plus structuré */
   .product-content-enhanced {
     padding: 2rem 1.75rem;  /* Plus généreux */
+    position: relative;
+    z-index: 3;
   }
   
   /* Informations de stock plus organisées */
@@ -735,6 +805,8 @@
     display: flex;
     flex-direction: column;
     gap: 1.25rem;  /* Plus d'espacement */
+    position: relative;
+    z-index: 3;
   }
   
   /* Prix et quantité plus pro */
@@ -746,6 +818,8 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    position: relative;
+    z-index: 3;
   }
   
   /* Jauge de stock plus moderne */
@@ -755,12 +829,16 @@
     background: #f3f4f6;
     border: 1px solid rgba(0, 0, 0, 0.08);
     overflow: hidden;
+    position: relative;
+    z-index: 3;
   }
   
   .stock-gauge-fill {
     height: 100%;
     border-radius: 5px;
     transition: all 0.3s ease;
+    position: relative;
+    z-index: 4;
   }
   
   /* Actions plus modernes */
@@ -768,6 +846,8 @@
     padding: 1.75rem 1.75rem;  /* Plus généreux */
     gap: 1rem;  /* Espacement professionnel */
     border-top: 1px solid rgba(0, 0, 0, 0.06);  /* Séparation subtile */
+    position: relative;
+    z-index: 3;
   }
   
   .action-btn {
@@ -779,6 +859,8 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: none;
     cursor: pointer;
+    position: relative;
+    z-index: 4;
   }
   
   .action-btn:hover {
