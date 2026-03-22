@@ -38,15 +38,16 @@ const StockGauge = ({ current, initial, threshold = 10 }) => {
   };
 
   const getAlertMessage = (level, current, initial) => {
+    const remainingPercentage = initial > 0 ? Math.round((current / initial) * 100) : 0;
     switch (level) {
       case 'empty':
-        return '🚨 STOCK ÉPUISÉ - Réapprovisionnement immédiat requis !';
+        return `🚨 STOCK ÉPUISÉ - ${initial} unité(s) initiales, réapprovisionnement immédiat requis !`;
       case 'critical':
-        return `⚠️ STOCK CRITIQUE - Il ne reste que ${current} unité(s) !`;
+        return `⚠️ STOCK CRITIQUE - Il ne reste que ${current} unité(s) sur ${initial} (${remainingPercentage}%) !`;
       case 'low':
-        return `📉 STOCK FAIBLE - ${current} unité(s) restantes`;
+        return `📉 STOCK FAIBLE - ${current} unité(s) restantes sur ${initial} (${remainingPercentage}%)`;
       default:
-        return null;
+        return `✅ Stock normal - ${current} unité(s) sur ${initial} (${remainingPercentage}%)`;
     }
   };
 
@@ -245,13 +246,22 @@ export default function Stock() {
   return (
     <Layout activeRoute="/stock">
       <div className="stock-page">
-        <div className="page-header">
-          <h1>Gestion des Stocks</h1>
-          <div className="page-actions">
-            <button onClick={() => setShowForm(!showForm)} className="btn btn-primary">
-              <Plus size={20} />
-              Ajouter un produit
-            </button>
+        {/* Header harmonisé */}
+        <div className="stock-header">
+          <div className="header-content">
+            <div className="header-text">
+              <h1>Gestion des Stocks</h1>
+              <p>Suivi et gestion de vos produits et inventaires</p>
+            </div>
+            <div className="header-actions">
+              <button 
+                onClick={() => setShowForm(!showForm)} 
+                className="btn-primary"
+              >
+                <Plus size={18} />
+                {showForm ? 'Masquer le formulaire' : 'Ajouter un produit'}
+              </button>
+            </div>
           </div>
         </div>
 

@@ -114,6 +114,29 @@ body::before {
 @media (min-width: 1025px) {
   .main-content {
     margin-left: 280px;  /* Espace pour la sidebar fixe */
+    padding: 2rem;  /* Plus d'espacement sur desktop */
+  }
+}
+
+/* Amélioration pour grands écrans desktop */
+@media (min-width: 1400px) {
+  .main-content {
+    margin-left: 320px;  /* Espace pour sidebar plus grande */
+    padding: 2.5rem;  /* Encore plus d'espacement */
+    max-width: calc(100vw - 320px);  /* Utiliser toute la largeur disponible */
+  }
+  
+  .sidebar {
+    width: 320px;  /* Sidebar plus grande sur grands écrans */
+  }
+}
+
+/* Amélioration pour écrans ultra-larges */
+@media (min-width: 1920px) {
+  .main-content {
+    padding: 3rem;  /* Espacement maximal */
+    max-width: calc(1400px + 320px);  /* Limiter la largeur pour la lisibilité */
+    margin: 0 auto 0 320px;  /* Centrer le contenu */
   }
 }
 
