@@ -569,15 +569,15 @@ export default function Finances() {
               </div>
               
               <div className="export-actions">
-                <button onClick={downloadHistorique} className="btn-secondary" title="Télécharger l'historique">
+                <button onClick={downloadHistorique} className="btn-download" title="Télécharger l'historique">
                   <Download size={16} />
                   Télécharger
                 </button>
-                <button onClick={shareViaWhatsApp} className="btn-secondary" title="Partager via WhatsApp">
+                <button onClick={shareViaWhatsApp} className="btn-share" title="Partager via WhatsApp">
                   <Share2 size={16} />
                   WhatsApp
                 </button>
-                <button onClick={shareViaMail} className="btn-secondary" title="Envoyer par e-mail">
+                <button onClick={shareViaMail} className="btn-export" title="Envoyer par e-mail">
                   <Mail size={16} />
                   Email
                 </button>
