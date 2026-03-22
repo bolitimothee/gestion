@@ -303,12 +303,12 @@
 @media (max-width: 767px) and (min-width: 481px) {
   /* Header avec même padding que la grille */
   .stock-header {
-    padding: 2.5rem 1.25rem;  /* Même padding horizontal que la grille */
+    padding: 2.25rem 1.25rem;  /* Cohérent avec grille */
   }
   
   .stock-grid {
     grid-template-columns: 1fr;  
-    gap: 1.5rem;  /* Augmenté de 1.25rem */
+    gap: 1.75rem;  /* Espacement généreux */
     padding: 0 1.25rem;  /* Même padding que le header */
     max-width: 100%;
   }
@@ -316,66 +316,99 @@
   .product-card-enhanced {
     width: 100%;
     max-width: 100%;
-    border-radius: 16px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);  /* Ombre plus prononcée */
-    min-height: 300px;  /* Hauteur minimale augmentée */
+    border-radius: 20px;  /* Plus moderne */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);  /* Ombre moderne */
+    min-height: 340px;  /* Hauteur plus généreuse */
+    background: linear-gradient(145deg, #ffffff, #fafafa);
+    border: 1px solid rgba(0, 0, 0, 0.05);
   }
   
   .product-header-enhanced {
-    padding: 1.75rem 1.5rem;  /* Padding augmenté */
+    padding: 2rem 1.75rem;  /* Plus généreux */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   }
   
   .product-name {
-    font-size: 1.4rem;  /* Augmenté de 1.3rem */
-    line-height: 1.4;
-    font-weight: 700;  /* Plus gras */
+    font-size: 1.55rem;  /* Impact optimal */
+    line-height: 1.3;
+    font-weight: 800;  /* Très gras */
+    color: #1a1a1a;
+    margin-bottom: 0.75rem;
   }
   
   .product-category-badge {
-    font-size: 0.85rem;  /* Augmenté de 0.825rem */
-    padding: 0.4rem 0.9rem;  /* Padding augmenté */
+    font-size: 0.875rem;
+    padding: 0.4rem 0.9rem;
     font-weight: 600;
+    background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
   
   .product-content-enhanced {
-    padding: 1.5rem;  /* Augmenté de 1.25rem */
+    padding: 2rem 1.75rem;  /* Plus généreux */
   }
   
   .product-actions-enhanced {
-    padding: 1.25rem 1.5rem;  /* Padding augmenté */
-    gap: 0.75rem;  /* Espacement augmenté */
+    padding: 1.75rem 1.75rem;  /* Plus généreux */
+    gap: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
   }
   
   .action-btn {
-    min-height: 45px;  /* Augmenté de 42px */
-    padding: 0.75rem 1rem;  /* Padding augmenté */
-    font-size: 0.9rem;  /* Augmenté de 0.875rem */
-    font-weight: 600;  /* Plus gras */
-    border-radius: 11px;
+    min-height: 50px;  /* Accessibilité optimale */
+    padding: 0.875rem 1.25rem;  /* Plus généreux */
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 16px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    cursor: pointer;
+  }
+  
+  .action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   }
   
   .stock-list-section {
-    padding: 1rem;  /* Augmenté de 0.875rem */
+    padding: 1.25rem 1.25rem;  /* Plus d'espacement */
   }
   
   .filters-section {
-    padding: 1rem;  /* Augmenté de 0.875rem */
+    padding: 1.25rem 1.25rem;
+    background: linear-gradient(145deg, #ffffff, #fafafa);
+    border-radius: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
   }
   
   .filters-container {
-    gap: 0.75rem;  /* Augmenté de 0.625rem */
+    gap: 1rem;  /* Plus espacé */
   }
   
   .search-input-wrapper svg {
-    left: 0.875rem;  /* Ajusté */
-    font-size: 0.975rem;  /* Augmenté */
+    left: 1rem;
+    font-size: 1.05rem;
+    color: #6b7280;
   }
   
   .search-input,
   .filter-select {
-    padding: 0.875rem 1rem 0.875rem 2.75rem;  /* Padding augmenté */
-    font-size: 0.9rem;  /* Augmenté de 0.875rem */
-    border-radius: 11px;
+    padding: 0.875rem 1.125rem 0.875rem 2.875rem;  /* Plus grand */
+    font-size: 0.95rem;
+    border-radius: 16px;
+    border: 2px solid #e5e7eb;
+    background: #ffffff;
+    transition: all 0.3s ease;
+  }
+  
+  .search-input:focus,
+  .filter-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    transform: translateY(-1px);
   }
 }
 
@@ -383,106 +416,179 @@
 @media (max-width: 480px) {
   /* Header avec même padding que la grille */
   .stock-header {
-    padding: 2.5rem 0.75rem;  /* Même padding horizontal que la grille */
+    padding: 2rem 1rem;  /* Plus compact et professionnel */
   }
   
   .stock-grid {
     grid-template-columns: 1fr;
-    gap: 1.25rem;  /* Augmenter l'espacement pour plus de visibilité */
-    padding: 0 0.75rem;  /* Même padding que le header */
+    gap: 1.5rem;  /* Espacement généreux pour aération */
+    padding: 0 1rem;  /* Padding cohérent avec header */
     max-width: 100%;
   }
   
   .product-card-enhanced {
     width: 100%;
     max-width: 100%;
-    border-radius: 16px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);  /* Ombre plus prononcée */
+    border-radius: 20px;  /* Plus moderne */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);  /* Ombre subtile et moderne */
     margin: 0 auto;
-    min-height: 280px;  /* Hauteur minimale augmentée */
+    min-height: 320px;  /* Hauteur plus généreuse */
+    background: linear-gradient(145deg, #ffffff, #fafafa);  /* Fond subtil */
+    border: 1px solid rgba(0, 0, 0, 0.05);  /* Bordure très subtile */
   }
   
-  /* Header plus spacieux */
+  /* Header plus élégant */
   .product-header-enhanced {
-    padding: 2rem 1.5rem;  /* Padding augmenté */
+    padding: 2rem 1.75rem;  /* Plus généreux et équilibré */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);  /* Séparation subtile */
   }
   
-  /* Titre plus grand et lisible */
+  /* Titre plus moderne */
   .product-name {
-    font-size: 1.5rem;  /* Augmenté de 1.25rem */
-    line-height: 1.4;
-    font-weight: 700;
+    font-size: 1.6rem;  /* Plus grand pour impact */
+    line-height: 1.3;
+    font-weight: 800;  /* Très gras pour modernité */
+    color: #1a1a1a;  /* Noir profond */
+    margin-bottom: 0.75rem;
   }
   
-  /* Badge catégorie plus visible */
+  /* Badge catégorie plus élégant */
   .product-category-badge {
-    font-size: 0.9rem;  /* Augmenté de 0.8rem */
-    padding: 0.5rem 1rem;  /* Padding augmenté */
+    font-size: 0.85rem;
+    padding: 0.4rem 0.9rem;
     font-weight: 600;
+    background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 20px;  /* Plus arrondi */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
   
-  /* Contenu plus aéré */
+  /* Contenu plus structuré */
   .product-content-enhanced {
-    padding: 1.75rem;  /* Augmenté de 1.25rem */
+    padding: 2rem 1.75rem;  /* Plus généreux */
   }
   
-  /* Informations de stock plus lisibles */
+  /* Informations de stock plus organisées */
   .product-stock-info {
     display: flex;
     flex-direction: column;
-    gap: 1rem;  /* Espacement augmenté */
+    gap: 1.25rem;  /* Plus d'espacement */
   }
   
-  /* Prix et quantité plus grands */
+  /* Prix et quantité plus pro */
   .product-price,
   .product-quantity {
-    font-size: 1.25rem;  /* Augmenté de 1rem */
-    font-weight: 700;  /* Plus gras */
+    font-size: 1.3rem;  /* Plus grands */
+    font-weight: 700;
+    color: #1a1a1a;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
   
-  /* Jauge de stock plus visible */
+  /* Jauge de stock plus moderne */
   .stock-gauge {
-    height: 8px;  /* Augmenté de 6px */
-    border-radius: 4px;
+    height: 10px;  /* Plus visible */
+    border-radius: 5px;
+    background: #f3f4f6;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    overflow: hidden;
   }
   
-  /* Actions plus accessibles */
+  .stock-gauge-fill {
+    height: 100%;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+  }
+  
+  /* Actions plus modernes */
   .product-actions-enhanced {
-    padding: 1.5rem 1.75rem;  /* Padding augmenté */
-    gap: 1rem;  /* Espacement augmenté */
+    padding: 1.75rem 1.75rem;  /* Plus généreux */
+    gap: 1rem;  /* Espacement professionnel */
+    border-top: 1px solid rgba(0, 0, 0, 0.06);  /* Séparation subtile */
   }
   
   .action-btn {
-    min-height: 48px;  /* Augmenté de 40px */
-    padding: 0.875rem 1.25rem;  /* Padding augmenté */
-    font-size: 0.95rem;  /* Augmenté de 0.85rem */
-    font-weight: 600;  /* Plus gras */
-    border-radius: 12px;
+    min-height: 52px;  /* Plus grand pour accessibilité */
+    padding: 1rem 1.5rem;  /* Plus généreux */
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 16px;  /* Plus moderne */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    cursor: pointer;
   }
   
-  /* Sections avec espacement optimisé */
+  .action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Sections plus propres */
   .stock-list-section {
-    padding: 1rem;  /* Augmenté de 0.75rem */
+    padding: 1.25rem 1rem;  /* Plus d'espacement */
   }
   
   .filters-section {
-    padding: 1rem;  /* Augmenté de 0.75rem */
+    padding: 1.25rem 1rem;
+    background: linear-gradient(145deg, #ffffff, #fafafa);
+    border-radius: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
   }
   
   .filters-container {
-    gap: 0.75rem;  /* Augmenté de 0.625rem */
+    gap: 1rem;  /* Plus espacé */
   }
   
   .search-input-wrapper svg {
-    left: 0.875rem;  /* Ajusté */
-    font-size: 1rem;  /* Augmenté */
+    left: 1rem;
+    font-size: 1.1rem;
+    color: #6b7280;
   }
   
   .search-input,
   .filter-select {
-    padding: 0.875rem 1rem 0.875rem 2.75rem;  /* Padding augmenté */
-    font-size: 0.9rem;  /* Augmenté de 0.85rem */
-    border-radius: 12px;
+    padding: 1rem 1.25rem 1rem 3rem;  /* Plus grand */
+    font-size: 1rem;
+    border-radius: 16px;
+    border: 2px solid #e5e7eb;
+    background: #ffffff;
+    transition: all 0.3s ease;
+  }
+  
+  .search-input:focus,
+  .filter-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    transform: translateY(-1px);
+  }
+  
+  /* Badge de stock plus moderne */
+  .stock-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .stock-badge.high {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+  }
+  
+  .stock-badge.medium {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+  }
+  
+  .stock-badge.low {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
   }
 }
 
