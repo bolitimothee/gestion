@@ -1,0 +1,412 @@
+/* ============================================
+   SALE CARD - RENDU VISUEL EXCEPTIONNEL ET UX UNIQUE
+   ============================================ */
+
+.sale-card {
+  position: relative;
+  background: var(--background-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+/* Effet de brillance animée au survol */
+.sale-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.1) 50%, 
+    transparent 100%
+  );
+  transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.sale-card:hover::before {
+  left: 100%;
+}
+
+/* Lueur colorée animée */
+.sale-card::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: var(--primary-gradient);
+  border-radius: 20px;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 0;
+}
+
+.sale-card:hover {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+  border-color: var(--primary-color);
+}
+
+.sale-card:hover::after {
+  opacity: 0.3;
+  animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.02);
+  }
+}
+
+/* Header de la carte */
+.sale-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-light);
+  position: relative;
+  z-index: 2;
+}
+
+.sale-date {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.date-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: var(--transition);
+}
+
+.date-text.today {
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.time-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--background-tertiary);
+  padding: 4px 8px;
+  border-radius: 12px;
+  transition: var(--transition);
+}
+
+.sale-card:hover .time-text {
+  background: var(--primary-color);
+  color: white;
+  transform: scale(1.05);
+}
+
+.sale-amount {
+  position: relative;
+}
+
+.amount-value {
+  font-size: 24px;
+  font-weight: 800;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  transition: var(--transition);
+}
+
+.sale-card:hover .amount-value {
+  transform: scale(1.1);
+  filter: drop-shadow(0 4px 8px rgba(37, 99, 235, 0.3));
+}
+
+/* Contenu principal */
+.sale-content {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 20px;
+}
+
+.sale-customer,
+.sale-product,
+.sale-quantity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 12px;
+  background: var(--background-tertiary);
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sale-customer:hover,
+.sale-product:hover,
+.sale-quantity:hover {
+  background: var(--primary-color);
+  color: white;
+  transform: translateX(8px);
+  box-shadow: 0 8px 16px rgba(37, 99, 235, 0.2);
+}
+
+.quantity-label {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-right: 8px;
+}
+
+.quantity-value {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.sale-notes {
+  background: linear-gradient(135deg, var(--background-tertiary) 0%, var(--background-secondary) 100%);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.sale-notes::before {
+  content: '"';
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 24px;
+  color: var(--primary-color);
+  opacity: 0.3;
+}
+
+.sale-notes p {
+  margin: 0;
+  font-style: italic;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
+}
+
+/* Actions avec effets uniques */
+.sale-actions {
+  display: flex;
+  gap: 12px;
+  position: relative;
+  z-index: 2;
+}
+
+.action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Effet de vague pour les boutons */
+.action-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.action-btn:active::before {
+  width: 200px;
+  height: 200px;
+}
+
+.btn-edit {
+  background: var(--primary-gradient);
+  color: white;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.btn-edit:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+}
+
+.btn-delete {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.btn-delete:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+  animation: shake 0.5s;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+/* Effet de particules flottantes */
+.sale-card::before {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  opacity: 0;
+  animation: floatUp 4s infinite ease-in-out;
+}
+
+.sale-card:nth-child(odd)::before {
+  top: 80%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.sale-card:nth-child(even)::before {
+  top: 20%;
+  right: 15%;
+  animation-delay: 2s;
+}
+
+@keyframes floatUp {
+  0%, 100% {
+    transform: translateY(0) scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-20px) scale(1);
+    opacity: 0.6;
+  }
+}
+
+/* Responsive design avancé */
+@media (max-width: 768px) {
+  .sale-card {
+    padding: 20px;
+    border-radius: 16px;
+  }
+  
+  .sale-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  
+  .amount-value {
+    font-size: 20px;
+  }
+  
+  .sale-actions {
+    flex-direction: column;
+  }
+  
+  .sale-card:hover {
+    transform: translateY(-6px) scale(1.01);
+  }
+}
+
+@media (max-width: 480px) {
+  .sale-card {
+    padding: 16px;
+    border-radius: 12px;
+  }
+  
+  .sale-customer,
+  .sale-product,
+  .sale-quantity {
+    padding: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .amount-value {
+    font-size: 18px;
+  }
+  
+  .action-btn {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+  
+  .sale-card:hover {
+    transform: translateY(-4px);
+  }
+}
+
+/* Effet de chargement animé */
+.sale-card.loading {
+  animation: pulse 1.5s infinite;
+}
+
+.sale-card.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  z-index: 10;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}

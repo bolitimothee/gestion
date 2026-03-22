@@ -7,6 +7,7 @@ import Layout from '../components/Layout';
 import { Plus, Edit2, Trash2, AlertCircle, Download, Mail, Share2, Search, Filter, Calendar, User, Package, Clock, TrendingUp, DollarSign } from 'lucide-react';
 import { formatDate } from '../utils/formatters';
 import './Sales.css';
+import '../components/SaleCard.css';
 
 const formatFCFA = (amount) => {
   if (!isFinite(amount)) return '0 FCFA';
