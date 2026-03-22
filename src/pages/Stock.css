@@ -375,98 +375,99 @@
 @media (max-width: 480px) {
   .stock-grid {
     grid-template-columns: 1fr;
-    gap: 1rem;  
-    padding: 0 1rem;  
+    gap: 1rem;
+    padding: 0 0.75rem;  /* Réduire le padding pour mieux utiliser l'espace */
+    max-width: 100%;  /* S'assurer que la grille n'excède pas l'écran */
   }
   
   .product-card-enhanced {
-    width: 100%;  
-    max-width: none;  
-    border-radius: 16px;  
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);  
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);  /* Ombre plus prononcée */
+    width: 100%;
+    max-width: 100%;  /* Forcer la largeur maximale à 100% */
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin: 0 auto;  /* Centrer la card */
   }
   
   /* Header plus spacieux */
   .product-header-enhanced {
-    padding: 1.75rem 1.5rem;  /* Plus de padding vertical */
+    padding: 1.5rem 1.25rem;  /* Réduire légèrement pour mobile */
   }
   
   /* Titre plus grand et lisible */
   .product-name {
-    font-size: 1.375rem;  /* Plus grand pour lisibilité */
-    line-height: 1.4;  /* Meilleur espacement des lignes */
-    font-weight: 700;  /* Plus gras */
+    font-size: 1.25rem;  /* Réduire légèrement pour éviter le débordement */
+    line-height: 1.3;
+    font-weight: 700;
   }
   
   /* Badge catégorie plus visible */
   .product-category-badge {
-    font-size: 0.875rem;  /* Plus grand */
-    padding: 0.375rem 0.875rem;  /* Plus de padding */
-    font-weight: 500;  /* Plus gras */
+    font-size: 0.8rem;
+    padding: 0.3rem 0.75rem;
+    font-weight: 500;
   }
   
   /* Contenu plus aéré */
   .product-content-enhanced {
-    padding: 1.5rem;  /* Plus de padding */
+    padding: 1.25rem;  /* Réduire pour mobile */
   }
   
   /* Informations de stock plus lisibles */
   .product-stock-info {
     display: flex;
-    flex-direction: column;  /* Vertical pour meilleure lisibilité */
-    gap: 0.75rem;  /* Plus d'espacement */
+    flex-direction: column;
+    gap: 0.625rem;  /* Réduire l'espacement */
   }
   
   /* Prix et quantité plus grands */
   .product-price,
   .product-quantity {
-    font-size: 1.125rem;  /* Plus grand */
-    font-weight: 600;  /* Plus gras */
+    font-size: 1rem;  /* Réduire pour éviter le débordement */
+    font-weight: 600;
   }
   
   /* Jauge de stock plus visible */
   .stock-gauge {
-    height: 8px;  /* Plus épaisse */
-    border-radius: 4px;  /* Plus arrondie */
+    height: 6px;  /* Réduire légèrement */
+    border-radius: 3px;
   }
   
   /* Actions plus accessibles */
   .product-actions-enhanced {
-    padding: 1.25rem 1.5rem;  /* Plus de padding */
-    gap: 0.75rem;  /* Plus d'espacement entre boutons */
+    padding: 1rem 1.25rem;  /* Réduire pour mobile */
+    gap: 0.625rem;
   }
   
   .action-btn {
-    min-height: 44px;  /* Taille minimale pour accessibilité */
-    padding: 0.75rem 1rem;  /* Plus de padding */
-    font-size: 0.9rem;  /* Plus grand */
-    border-radius: 12px;  /* Plus arrondi */
+    min-height: 40px;  /* Réduire légèrement pour mobile */
+    padding: 0.625rem 0.875rem;
+    font-size: 0.85rem;
+    border-radius: 10px;
   }
   
-  /* Sections avec plus d'espacement */
+  /* Sections avec espacement optimisé */
   .stock-list-section {
-    padding: 1rem;  /* Plus de padding */
+    padding: 0.75rem;
   }
   
   .filters-section {
-    padding: 1rem;  /* Plus de padding */
+    padding: 0.75rem;
   }
   
   .filters-container {
-    gap: 0.75rem;  /* Plus d'espacement */
+    gap: 0.625rem;
   }
   
   .search-input-wrapper svg {
-    left: 0.875rem;  /* Légèrement décalé */
-    font-size: 1rem;  /* Plus grand */
+    left: 0.75rem;
+    font-size: 0.9rem;
   }
   
   .search-input,
   .filter-select {
-    padding: 0.875rem 1rem 0.875rem 2.75rem;  /* Plus de padding */
-    font-size: 0.9rem;  /* Plus grand */
-    border-radius: 12px;  /* Plus arrondi */
+    padding: 0.75rem 0.875rem 0.75rem 2.5rem;
+    font-size: 0.85rem;
+    border-radius: 10px;
   }
 }
 
