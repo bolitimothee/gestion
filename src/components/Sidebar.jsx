@@ -26,19 +26,19 @@ export default function Sidebar({ active }) {
     <>
       <aside className={`sidebar ${isSidebarOpen ? 'active' : ''}`}>
         <div className="sidebar-content">
-          <div className="sidebar-menu">
+          <nav className="nav-menu">
             {menuItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`sidebar-item ${active === item.path ? 'active' : ''}`}
+                className={`nav-item ${active === item.path ? 'active' : ''}`}
                 onClick={closeSidebar}
               >
-                <item.icon size={20} />
+                <item.icon className="nav-icon" size={20} />
                 <span>{item.name}</span>
               </Link>
             ))}
-          </div>
+          </nav>
 
           <div className="sidebar-footer">
             <div className="sidebar-user">

@@ -1,187 +1,98 @@
+/* ============================================
+   SIDEBAR - INTÉGRATION AVEC LAYOUT.CSS
+   ============================================ */
+
+/* Utiliser les styles de Layout.css pour la sidebar */
 .sidebar {
-  width: 250px;
-  background: white;
-  border-right: 1px solid #e5e7eb;
-  height: calc(100vh - 60px);
-  position: sticky;
-  top: 60px;
-  overflow-y: auto;
-  z-index: 50;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+  /* Les styles sont définis dans Layout.css */
 }
 
-.sidebar-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  padding: 0;
-  flex: 1;
-}
-
-.sidebar-menu {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  padding: 20px 0;
-}
-
-.sidebar-item {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 12px 20px;
-  text-decoration: none;
-  color: #6b7280;
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  border-left: 3px solid transparent;
-  white-space: nowrap;
-}
-
-.sidebar-item:hover {
-  background: #f8fafc;
-  color: #667eea;
-}
-
-.sidebar-item.active {
-  background: linear-gradient(90deg, rgba(102, 126, 234, 0.1) 0%, transparent 100%);
-  color: #667eea;
-  border-left-color: #667eea;
-}
-
+/* Styles spécifiques pour le footer utilisateur */
 .sidebar-footer {
-  border-top: 1px solid #e5e7eb;
-  padding: 16px 20px;
-  background: linear-gradient(180deg, rgba(102, 126, 234, 0.02) 0%, rgba(102, 126, 234, 0.05) 100%);
+  border-top: 1px solid var(--border-color);
+  padding: 1rem;
   margin-top: auto;
+  background: var(--background-tertiary);
 }
 
 .sidebar-user {
-  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .user-account {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 0.25rem;
 }
 
 .account-name {
   font-weight: 600;
-  color: #1f2937;
-  font-size: 13px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
 }
 
 .account-email {
-  font-size: 11px;
-  color: #6b7280;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
   word-break: break-word;
 }
 
 .btn-logout-sidebar {
-  width: 100%;
-  background: #667eea;
-  color: white;
-  border: none;
-  padding: 10px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  transition: all 0.3s ease;
+  gap: 0.5rem;
+  width: 100%;
+  background: var(--error-color);
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: var(--transition);
 }
 
 .btn-logout-sidebar:hover {
-  background: #5a67d8;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  background: #dc2626;
+  transform: translateY(-1px);
 }
 
+/* Overlay pour mobile */
 .sidebar-overlay {
   display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 40;
   pointer-events: none;
 }
 
+/* Responsive pour mobile */
 @media (max-width: 768px) {
-  .sidebar {
-    position: fixed;
-    left: 0;
-    top: 60px;
-    width: 70%;
-    max-width: 280px;
-    height: calc(100vh - 60px);
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    border-right: none;
-    z-index: 50;
-  }
-
-  .sidebar.active {
-    transform: translateX(0);
-  }
-
-  .sidebar-overlay {
-    display: block;
-    position: fixed;
-    top: 60px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 40;
-    pointer-events: auto;
-  }
-
-  .sidebar-item {
-    padding: 12px 16px;
-    font-size: 13px;
-  }
-}
-
-@media (max-width: 480px) {
-  .sidebar {
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .sidebar-menu {
-    padding: 12px 0;
-  }
-
-  .sidebar-item {
-    padding: 10px 12px;
-    font-size: 12px;
-    gap: 12px;
-  }
-
-  .sidebar-item svg {
-    width: 18px;
-    height: 18px;
-  }
-
   .sidebar-footer {
-    padding: 12px 16px;
+    padding: 0.75rem;
   }
-
-  .btn-logout-sidebar {
-    padding: 8px 10px;
-    font-size: 12px;
-  }
-
+  
   .btn-logout-sidebar span {
     display: none;
   }
-
-  .btn-logout-sidebar svg {
-    width: 18px;
-    height: 18px;
+  
+  .btn-logout-sidebar {
+    padding: 0.5rem;
+  }
+  
+  .sidebar-overlay {
+    display: block;
+  }
+  
+  .sidebar.active .sidebar-overlay {
+    pointer-events: auto;
   }
 }
