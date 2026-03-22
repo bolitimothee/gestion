@@ -319,7 +319,7 @@
     max-width: 100%;
     border-radius: 22px;  /* Plus moderne et visible */
     box-shadow: 0 10px 35px rgba(0, 0, 0, 0.10);  /* Ombre plus profonde */
-    min-height: 360px;  /* Hauteur augmentée */
+    min-height: 440px;  /* Hauteur très augmentée pour tous éléments visibles */
     background: linear-gradient(145deg, #ffffff, #f8fafc);  /* Fond plus contrasté */
     border: 2px solid rgba(0, 0, 0, 0.07);  /* Bordure plus visible */
     margin: 0;
@@ -351,7 +351,7 @@
   }
   
   .product-header-enhanced {
-    padding: 2rem 1.75rem;  /* Plus généreux */
+    padding: 2.25rem 1.75rem;  /* Plus généreux pour visibilité */
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
     position: relative;
     z-index: 3;  /* Au-dessus des éléments décoratifs */
@@ -381,13 +381,13 @@
   }
   
   .product-content-enhanced {
-    padding: 2rem 1.75rem;  /* Plus généreux */
+    padding: 2.25rem 1.75rem;  /* Plus généreux pour tous éléments visibles */
     position: relative;
     z-index: 3;
   }
   
   .product-actions-enhanced {
-    padding: 1.75rem 1.75rem;  /* Plus généreux */
+    padding: 1.75rem 1.75rem;  /* Plus généreux pour visibilité */
     gap: 1rem;
     border-top: 1px solid rgba(0, 0, 0, 0.06);
     position: relative;
@@ -730,7 +730,7 @@
     border-radius: 24px;  /* Plus moderne et visible */
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);  /* Ombre plus profonde */
     margin: 0;
-    min-height: 340px;  /* Hauteur augmentée pour compenser largeur */
+    min-height: 420px;  /* Hauteur très augmentée pour tous éléments visibles */
     background: linear-gradient(145deg, #ffffff, #f8fafc);  /* Fond plus contrasté */
     border: 2px solid rgba(0, 0, 0, 0.08);  /* Bordure plus visible */
     position: relative;
@@ -762,7 +762,7 @@
   
   /* Header plus élégant */
   .product-header-enhanced {
-    padding: 2rem 1.75rem;  /* Plus généreux et équilibré */
+    padding: 2.5rem 2rem;  /* Plus généreux pour visibilité */
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);  /* Séparation subtile */
     position: relative;
     z-index: 3;  /* Au-dessus des éléments décoratifs */
@@ -795,7 +795,7 @@
   
   /* Contenu plus structuré */
   .product-content-enhanced {
-    padding: 2rem 1.75rem;  /* Plus généreux */
+    padding: 2.5rem 2rem;  /* Plus généreux pour tous éléments visibles */
     position: relative;
     z-index: 3;
   }
@@ -804,7 +804,7 @@
   .product-stock-info {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;  /* Plus d'espacement */
+    gap: 1.5rem;  /* Plus d'espacement pour visibilité */
     position: relative;
     z-index: 3;
   }
@@ -843,7 +843,7 @@
   
   /* Actions plus modernes */
   .product-actions-enhanced {
-    padding: 1.75rem 1.75rem;  /* Plus généreux */
+    padding: 2rem 2rem;  /* Plus généreux pour visibilité */
     gap: 1rem;  /* Espacement professionnel */
     border-top: 1px solid rgba(0, 0, 0, 0.06);  /* Séparation subtile */
     position: relative;
