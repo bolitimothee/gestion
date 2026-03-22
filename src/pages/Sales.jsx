@@ -361,6 +361,225 @@ export default function Sales() {
           </div>
         </div>
 
+        {/* Formulaire */}
+        {showForm && (
+          <div className="sales-form-section">
+            <div className="form-container">
+              <div className="form-header">
+                <h2>{editingId ? 'Modifier la vente' : 'Enregistrer une nouvelle vente'}</h2>
+                <button 
+                  onClick={() => {
+                    setShowForm(false);
+                    setEditingId(null);
+                  }}
+                  className="btn-close"
+                >
+                  ✕
+                </button>
+              </div>
+              
+              <form onSubmit={handleSubmit} className="sales-form">
+                {/* Section Informations principales */}
+                <div className="form-section">
+                  <h3 className="section-title">
+                    <span className="section-number">1</span>
+                    Informations de la vente
+                  </h3>
+                  
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="product" className="form-label">
+                        Produit <span className="required">*</span>
+                      </label>
+                      <select
+                        id="product"
+                        className="form-select"
+                        value={formData.product_id}
+                        onChange={(e) => {
+                          const product = products.find((p) => p.id === e.target.value);
+                          setFormData({
+                            ...formData,
+                            product_id: e.target.value,
+                            unit_price: product?.selling_price || 0,
+                          });
+                        }}
+                        required
+                      >
+                        <option value="">Sélectionner un produit</option>
+                        {products.map((product) => (
+                          <option key={product.id} value={product.id}>
+                            {product.name} - {formatFCFA(product.selling_price)}
+                          </option>
+                        ))}
+                      </select>
+                      <span className="form-hint">Choisissez le produit vendu</span>
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="quantity" className="form-label">
+                        Quantité <span className="required">*</span>
+                      </label>
+                      <input
+                        id="quantity"
+                        type="number"
+                        className="form-input"
+                        placeholder="Ex: 2"
+                        value={formData.quantity}
+                        onChange={(e) => setFormData({ ...formData, quantity: Number(e.target.value) })}
+                        min="1"
+                        required
+                      />
+                      <span className="form-hint">Nombre d'unités vendues</span>
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="customer" className="form-label">
+                        Nom du client <span className="required">*</span>
+                      </label>
+                      <input
+                        id="customer"
+                        type="text"
+                        className="form-input"
+                        placeholder="Ex: Jean Dupont"
+                        value={formData.customer_name}
+                        onChange={(e) => setFormData({ ...formData, customer_name: e.target.value })}
+                        required
+                      />
+                      <span className="form-hint">Nom ou identifiant du client</span>
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="saleDate" className="form-label">
+                        Date de vente <span className="required">*</span>
+                      </label>
+                      <input
+                        id="saleDate"
+                        type="date"
+                        className="form-input"
+                        value={formData.sale_date}
+                        onChange={(e) => setFormData({ ...formData, sale_date: e.target.value })}
+                        required
+                      />
+                      <span className="form-hint">Quand la vente s'est effectuée</span>
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="saleTime" className="form-label">
+                        Heure de vente
+                      </label>
+                      <input
+                        id="saleTime"
+                        type="time"
+                        className="form-input"
+                        value={formData.sale_time}
+                        onChange={(e) => setFormData({ ...formData, sale_time: e.target.value })}
+                      />
+                      <span className="form-hint">À quelle heure la vente s'est effectuée</span>
+                    </div>
+
+                    {formData.product_id && (
+                      <div className="form-group">
+                        <label className="form-label">Prix unitaire</label>
+                        <div className="price-display">
+                          <span className="price-value">
+                            {formatFCFA(formData.unit_price)}
+                          </span>
+                        </div>
+                        <span className="form-hint">Prix du produit sélectionné</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Section Calculs */}
+                {formData.product_id && formData.quantity > 0 && (
+                  <div className="form-section">
+                    <h3 className="section-title">
+                      <span className="section-number">2</span>
+                      Récapitulatif
+                    </h3>
+                    
+                    <div className="calculation-preview">
+                      <div className="calc-item">
+                        <span className="calc-label">Quantité:</span>
+                        <span className="calc-value">{formData.quantity}</span>
+                      </div>
+                      <div className="calc-item">
+                        <span className="calc-label">Prix unitaire:</span>
+                        <span className="calc-value">{formatFCFA(formData.unit_price)}</span>
+                      </div>
+                      <div className="calc-item total">
+                        <span className="calc-label">Total:</span>
+                        <span className="calc-value total-amount">
+                          {formatFCFA(formData.quantity * formData.unit_price)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Section Notes */}
+                <div className="form-section">
+                  <h3 className="section-title">
+                    <span className="section-number">3</span>
+                    Notes additionnelles
+                  </h3>
+                  
+                  <div className="form-group full-width">
+                    <label htmlFor="notes" className="form-label">
+                      Notes
+                    </label>
+                    <textarea
+                      id="notes"
+                      className="form-textarea"
+                      placeholder="Remarques ou détails supplémentaires sur cette vente..."
+                      value={formData.notes}
+                      onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                      rows="3"
+                    />
+                    <span className="form-hint">Informations additionnelles sur la vente</span>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="form-actions">
+                  <div className="actions-left">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowForm(false);
+                        setEditingId(null);
+                      }}
+                      className="btn-secondary"
+                    >
+                      Annuler
+                    </button>
+                  </div>
+                  <div className="actions-right">
+                    <button type="submit" className="btn-primary">
+                      {editingId ? (
+                        <>
+                          <Edit2 size={16} />
+                          Mettre à jour la vente
+                        </>
+                      ) : (
+                        <>
+                          <Plus size={16} />
+                          Enregistrer la vente
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
         {/* Statistiques */}
         {!loading && sales.length > 0 && (
           <div className="stats-section">
@@ -490,224 +709,6 @@ export default function Sales() {
                 </div>
               </div>
 
-              {/* Formulaire */}
-              {showForm && (
-                <div className="sales-form-section">
-                  <div className="form-container">
-                    <div className="form-header">
-                      <h2>{editingId ? 'Modifier la vente' : 'Enregistrer une nouvelle vente'}</h2>
-                      <button 
-                        onClick={() => {
-                          setShowForm(false);
-                          setEditingId(null);
-                        }}
-                        className="btn-close"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                    
-                    <form onSubmit={handleSubmit} className="sales-form">
-                      {/* Section Informations principales */}
-                      <div className="form-section">
-                        <h3 className="section-title">
-                          <span className="section-number">1</span>
-                          Informations de la vente
-                        </h3>
-                        
-                        <div className="form-row">
-                          <div className="form-group">
-                            <label htmlFor="product" className="form-label">
-                              Produit <span className="required">*</span>
-                            </label>
-                            <select
-                              id="product"
-                              className="form-select"
-                              value={formData.product_id}
-                              onChange={(e) => {
-                                const product = products.find((p) => p.id === e.target.value);
-                                setFormData({
-                                  ...formData,
-                                  product_id: e.target.value,
-                                  unit_price: product?.selling_price || 0,
-                                });
-                              }}
-                              required
-                            >
-                              <option value="">Sélectionner un produit</option>
-                              {products.map((product) => (
-                                <option key={product.id} value={product.id}>
-                                  {product.name} - {formatFCFA(product.selling_price)}
-                                </option>
-                              ))}
-                            </select>
-                            <span className="form-hint">Choisissez le produit vendu</span>
-                          </div>
-
-                          <div className="form-group">
-                            <label htmlFor="quantity" className="form-label">
-                              Quantité <span className="required">*</span>
-                            </label>
-                            <input
-                              id="quantity"
-                              type="number"
-                              className="form-input"
-                              placeholder="Ex: 2"
-                              value={formData.quantity}
-                              onChange={(e) => setFormData({ ...formData, quantity: Number(e.target.value) })}
-                              min="1"
-                              required
-                            />
-                            <span className="form-hint">Nombre d'unités vendues</span>
-                          </div>
-                        </div>
-
-                        <div className="form-row">
-                          <div className="form-group">
-                            <label htmlFor="customer" className="form-label">
-                              Nom du client <span className="required">*</span>
-                            </label>
-                            <input
-                              id="customer"
-                              type="text"
-                              className="form-input"
-                              placeholder="Ex: Jean Dupont"
-                              value={formData.customer_name}
-                              onChange={(e) => setFormData({ ...formData, customer_name: e.target.value })}
-                              required
-                            />
-                            <span className="form-hint">Nom ou identifiant du client</span>
-                          </div>
-
-                          <div className="form-group">
-                            <label htmlFor="saleDate" className="form-label">
-                              Date de vente <span className="required">*</span>
-                            </label>
-                            <input
-                              id="saleDate"
-                              type="date"
-                              className="form-input"
-                              value={formData.sale_date}
-                              onChange={(e) => setFormData({ ...formData, sale_date: e.target.value })}
-                              required
-                            />
-                            <span className="form-hint">Quand la vente s'est effectuée</span>
-                          </div>
-                        </div>
-
-                        <div className="form-row">
-                          <div className="form-group">
-                            <label htmlFor="saleTime" className="form-label">
-                              Heure de vente
-                            </label>
-                            <input
-                              id="saleTime"
-                              type="time"
-                              className="form-input"
-                              value={formData.sale_time}
-                              onChange={(e) => setFormData({ ...formData, sale_time: e.target.value })}
-                            />
-                            <span className="form-hint">À quelle heure la vente s'est effectuée</span>
-                          </div>
-
-                          {formData.product_id && (
-                            <div className="form-group">
-                              <label className="form-label">Prix unitaire</label>
-                              <div className="price-display">
-                                <span className="price-value">
-                                  {formatFCFA(formData.unit_price)}
-                                </span>
-                              </div>
-                              <span className="form-hint">Prix du produit sélectionné</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Section Calculs */}
-                      {formData.product_id && formData.quantity > 0 && (
-                        <div className="form-section">
-                          <h3 className="section-title">
-                            <span className="section-number">2</span>
-                            Récapitulatif
-                          </h3>
-                          
-                          <div className="calculation-preview">
-                            <div className="calc-item">
-                              <span className="calc-label">Quantité:</span>
-                              <span className="calc-value">{formData.quantity}</span>
-                            </div>
-                            <div className="calc-item">
-                              <span className="calc-label">Prix unitaire:</span>
-                              <span className="calc-value">{formatFCFA(formData.unit_price)}</span>
-                            </div>
-                            <div className="calc-item total">
-                              <span className="calc-label">Total:</span>
-                              <span className="calc-value total-amount">
-                                {formatFCFA(formData.quantity * formData.unit_price)}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Section Notes */}
-                      <div className="form-section">
-                        <h3 className="section-title">
-                          <span className="section-number">3</span>
-                          Notes additionnelles
-                        </h3>
-                        
-                        <div className="form-group full-width">
-                          <label htmlFor="notes" className="form-label">
-                            Notes
-                          </label>
-                          <textarea
-                            id="notes"
-                            className="form-textarea"
-                            placeholder="Remarques ou détails supplémentaires sur cette vente..."
-                            value={formData.notes}
-                            onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                            rows="3"
-                          />
-                          <span className="form-hint">Informations additionnelles sur la vente</span>
-                        </div>
-                      </div>
-
-                      {/* Actions */}
-                      <div className="form-actions">
-                        <div className="actions-left">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setShowForm(false);
-                              setEditingId(null);
-                            }}
-                            className="btn-secondary"
-                          >
-                            Annuler
-                          </button>
-                        </div>
-                        <div className="actions-right">
-                          <button type="submit" className="btn-primary">
-                            {editingId ? (
-                              <>
-                                <Edit2 size={16} />
-                                Mettre à jour la vente
-                              </>
-                            ) : (
-                              <>
-                                <Plus size={16} />
-                                Enregistrer la vente
-                              </>
-                            )}
-                          </button>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         )}
