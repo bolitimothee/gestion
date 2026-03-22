@@ -709,17 +709,17 @@
   }
 }
 
-/* ÉCRANS TRÈS PETITS (max 480px) */
+/* ÉCRANS TRÈS PETITS (max 480px) - OPTIMISATION PORTRAIT */
 @media (max-width: 480px) {
-  /* Header avec padding réduit pour plus largeur */
+  /* Header avec padding minimal pour largeur maximale portrait */
   .stock-header {
-    padding: 2rem 0.5rem;  /* Padding réduit pour plus largeur */
+    padding: 2rem 0.25rem;  /* Padding ultra-réduit pour portrait */
   }
   
   .stock-grid {
     grid-template-columns: 1fr;
-    gap: 1.25rem;  /* Espacement légèrement réduit */
-    padding: 0 0.5rem;  /* Padding minimal pour largeur maximale */
+    gap: 1rem;  /* Espacement réduit pour portrait */
+    padding: 0 0.25rem;  /* Padding ultra-minimal pour largeur maximale */
     max-width: 100%;
     width: 100%;  /* Force utilisation complète */
   }
@@ -727,10 +727,10 @@
   .product-card-enhanced {
     width: 100%;
     max-width: 100%;
-    border-radius: 24px;  /* Plus moderne et visible */
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);  /* Ombre plus profonde */
+    border-radius: 20px;  /* Légèrement réduit pour plus largeur */
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.10);  /* Ombre ajustée */
     margin: 0;
-    min-height: 420px;  /* Hauteur très augmentée pour tous éléments visibles */
+    min-height: 460px;  /* Hauteur augmentée pour équilibre portrait */
     background: linear-gradient(145deg, #ffffff, #f8fafc);  /* Fond plus contrasté */
     border: 2px solid rgba(0, 0, 0, 0.08);  /* Bordure plus visible */
     position: relative;
@@ -760,9 +760,9 @@
     z-index: 2;
   }
   
-  /* Header plus élégant */
+  /* Header plus élégant - optimisé portrait */
   .product-header-enhanced {
-    padding: 2.5rem 2rem;  /* Plus généreux pour visibilité */
+    padding: 2rem 1.5rem;  /* Padding ajusté pour portrait */
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);  /* Séparation subtile */
     position: relative;
     z-index: 3;  /* Au-dessus des éléments décoratifs */
@@ -793,9 +793,9 @@
     z-index: 3;
   }
   
-  /* Contenu plus structuré */
+  /* Contenu plus structuré - optimisé portrait */
   .product-content-enhanced {
-    padding: 2.5rem 2rem;  /* Plus généreux pour tous éléments visibles */
+    padding: 2rem 1.5rem;  /* Padding ajusté pour portrait */
     position: relative;
     z-index: 3;
   }
@@ -841,9 +841,9 @@
     z-index: 4;
   }
   
-  /* Actions plus modernes */
+  /* Actions plus modernes - optimisé portrait */
   .product-actions-enhanced {
-    padding: 2rem 2rem;  /* Plus généreux pour visibilité */
+    padding: 1.75rem 1.5rem;  /* Padding ajusté pour portrait */
     gap: 1rem;  /* Espacement professionnel */
     border-top: 1px solid rgba(0, 0, 0, 0.06);  /* Séparation subtile */
     position: relative;
@@ -868,13 +868,13 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   }
   
-  /* Sections plus propres avec largeur maximale */
+  /* Sections plus propres avec largeur maximale portrait */
   .stock-list-section {
-    padding: 1.25rem 0.5rem;  /* Padding réduit pour largeur maximale */
+    padding: 1.25rem 0.25rem;  /* Padding ultra-réduit pour portrait */
   }
   
   .filters-section {
-    padding: 1.25rem 0.5rem;  /* Padding réduit */
+    padding: 1.25rem 0.25rem;  /* Padding ultra-réduit */
     background: linear-gradient(145deg, #ffffff, #fafafa);
     border-radius: 20px;
     border: 1px solid rgba(0, 0, 0, 0.05);
@@ -885,14 +885,14 @@
   }
   
   .search-input-wrapper svg {
-    left: 0.5rem;  /* Ajusté pour padding réduit */
+    left: 0.25rem;  /* Ajusté pour padding ultra-réduit */
     font-size: 1.1rem;
     color: #6b7280;
   }
   
   .search-input,
   .filter-select {
-    padding: 1rem 1.25rem 1rem 2.5rem;  /* Padding left réduit */
+    padding: 1rem 1.25rem 1rem 2.25rem;  /* Padding left réduit pour portrait */
     font-size: 1rem;
     border-radius: 16px;
     border: 2px solid #e5e7eb;
