@@ -267,73 +267,248 @@
 }
 
 /* ============================================
-   RESPONSIVE DESIGN AMÉLIORÉ
+   RESPONSIVE DESIGN PARFAIT - TOUS ÉCRANS
    ============================================ */
 
+/* ÉCRANS GRANDS (1200px et plus) */
+@media (min-width: 1200px) {
+  .expenses-grid {
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 2rem;
+  }
+  
+  .expenses-list-section {
+    padding: 2.5rem;
+  }
+  
+  .stats-section {
+    padding: 2.5rem;
+  }
+  
+  .filters-section {
+    padding: 2rem;
+  }
+}
+
+/* ÉCRANS MOYENS (1024px - 1199px) */
+@media (max-width: 1199px) and (min-width: 1025px) {
+  .expenses-grid {
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .expenses-list-section {
+    padding: 2rem;
+  }
+}
+
+/* ÉCRANS TABLETTES (768px - 1024px) */
 @media (max-width: 1024px) {
   .expenses-grid {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1rem;
+  }
+  
+  .expenses-list-section {
+    padding: 1.5rem;
+  }
+  
+  .stats-section {
+    padding: 1.5rem;
+  }
+  
+  .filters-section {
+    padding: 1.5rem;
   }
   
   .filters-container {
     flex-direction: column;
-    align-items: stretch;
+    gap: 1rem;
   }
   
   .search-group {
-    min-width: auto;
+    min-width: 100%;
+  }
+  
+  .export-actions {
+    justify-content: center;
   }
 }
 
-@media (max-width: 768px) {
-  .finances-header {
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
+/* ÉCRANS PETITS (480px - 767px) */
+@media (max-width: 767px) and (min-width: 481px) {
+  .expenses-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.875rem;
   }
   
-  .header-text h1 {
-    font-size: 1.875rem;
+  .expenses-list-section {
+    padding: 1rem;
   }
   
+  .stats-section {
+    padding: 1rem;
+  }
+  
+  .filters-section {
+    padding: 1rem;
+  }
+  
+  .filters-container {
+    gap: 0.75rem;
+  }
+  
+  .search-input,
+  .filter-select {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.875rem;
+  }
+  
+  .btn {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* ÉCRANS TRÈS PETITS (max 480px) */
+@media (max-width: 480px) {
   .expenses-grid {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 0.75rem;
+    padding: 0 0.25rem;
   }
   
   .expenses-list-section {
-    padding: 1.5rem;
+    padding: 0.75rem;
   }
   
-  .stats-section,
+  .stats-section {
+    padding: 0.75rem;
+  }
+  
   .filters-section {
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
+    padding: 0.75rem;
+  }
+  
+  .filters-container {
+    gap: 0.5rem;
+  }
+  
+  .search-input-wrapper svg,
+  .filter-input-wrapper svg {
+    left: 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  .search-input,
+  .filter-select {
+    padding: 0.5rem 0.75rem 0.5rem 2.5rem;
+    font-size: 0.8rem;
+  }
+  
+  .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: stretch;
+  }
+  
+  .section-header h2 {
+    font-size: 1.125rem;
+    text-align: center;
+  }
+  
+  .expenses-count {
+    align-self: center;
   }
 }
 
-@media (max-width: 480px) {
-  .finances-header {
-    padding: 1rem;
-    margin-bottom: 1rem;
-  }
-  
-  .header-content {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: flex-start;
-  }
-  
-  .header-text h1 {
-    font-size: 1.5rem;
-  }
-  
+/* ÉCRANS ULTRA PETITS (max 320px) */
+@media (max-width: 320px) {
   .expenses-grid {
-    padding: 0 0.5rem;
+    gap: 0.5rem;
   }
   
   .expenses-list-section {
-    padding: 1rem;
+    padding: 0.5rem;
+  }
+  
+  .stats-section {
+    padding: 0.5rem;
+  }
+  
+  .filters-section {
+    padding: 0.5rem;
+  }
+  
+  .search-input,
+  .filter-select {
+    padding: 0.5rem 0.625rem 0.5rem 2.25rem;
+    font-size: 0.75rem;
+  }
+  
+  .btn {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.75rem;
+  }
+  
+  .section-header h2 {
+    font-size: 1rem;
+  }
+  
+  .expenses-count {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+  }
+}
+
+/* ORIENTATION PAYSAGE POUR MOBILES */
+@media (max-width: 768px) and (orientation: landscape) {
+  .filters-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .search-group {
+    flex: 2;
+    min-width: 200px;
+  }
+  
+  .filter-group {
+    flex: 1;
+    min-width: 120px;
+  }
+  
+  .export-actions {
+    flex: 1;
+    justify-content: flex-end;
+  }
+}
+
+/* HIGH DPI SCREENS */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .search-input,
+  .filter-select {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* REDUCED MOTION */
+@media (prefers-reduced-motion: reduce) {
+  .expenses-grid {
+    transition: none;
+  }
+  
+  .search-input,
+  .filter-select,
+  .btn {
+    transition: none;
   }
 }
 
