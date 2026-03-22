@@ -14,8 +14,8 @@
 .dashboard-header {
   background: var(--background-primary);
   border-bottom: 1px solid var(--border-color);
-  padding: 2rem;
-  margin-bottom: 2rem;
+  padding: 2.5rem 3rem;  /* Plus d'espacement pour desktop */
+  margin-bottom: 2.5rem;
   box-shadow: var(--shadow-sm);
 }
 
@@ -23,13 +23,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1400px;
+  max-width: 1600px;  /* Plus large pour desktop */
   margin: 0 auto;
 }
 
 .header-text h1 {
   margin: 0 0 0.5rem 0;
-  font-size: 2.25rem;
+  font-size: 2.5rem;  /* Police plus grande pour desktop */
   font-weight: 700;
   color: var(--text-primary);
   background: var(--primary-gradient);
@@ -42,7 +42,7 @@
 .header-text p {
   margin: 0;
   color: var(--text-secondary);
-  font-size: 1rem;
+  font-size: 1.1rem;  /* Police plus grande */
   font-weight: 400;
 }
 
@@ -55,10 +55,10 @@
 /* Grille des cartes */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
-  padding: 0 2rem 2rem;
-  max-width: 1400px;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));  /* Plus large pour desktop */
+  gap: 2rem;  /* Plus d'espacement */
+  padding: 0 3rem 3rem;  /* Plus de padding */
+  max-width: 1600px;  /* Plus large pour desktop */
   margin: 0 auto;
 }
 
@@ -67,11 +67,12 @@
   background: var(--background-primary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 1.5rem;
+  padding: 2rem;  /* Plus de padding */
   box-shadow: var(--shadow-sm);
   transition: var(--transition);
   position: relative;
   overflow: hidden;
+  min-height: 180px;  /* Hauteur minimale pour uniformité */
 }
 
 .dashboard-card::before {
