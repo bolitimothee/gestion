@@ -302,31 +302,72 @@
 /* ÉCRANS PETITS (480px - 767px) */
 @media (max-width: 767px) and (min-width: 481px) {
   .stock-grid {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 0.875rem;
+    grid-template-columns: 1fr;  
+    gap: 1.25rem;  
+    padding: 0 1.25rem;  
+  }
+  
+  .product-card-enhanced {
+    width: 100%;
+    max-width: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  .product-header-enhanced {
+    padding: 1.5rem;
+  }
+  
+  .product-name {
+    font-size: 1.3rem;
+    line-height: 1.35;
+    font-weight: 650;
+  }
+  
+  .product-category-badge {
+    font-size: 0.825rem;
+    padding: 0.325rem 0.825rem;
+    font-weight: 500;
+  }
+  
+  .product-content-enhanced {
+    padding: 1.25rem;
+  }
+  
+  .product-actions-enhanced {
+    padding: 1.125rem 1.25rem;
+    gap: 0.625rem;
+  }
+  
+  .action-btn {
+    min-height: 42px;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.875rem;
+    border-radius: 10px;
   }
   
   .stock-list-section {
-    padding: 1rem;
+    padding: 0.875rem;
   }
   
   .filters-section {
-    padding: 1rem;
+    padding: 0.875rem;
   }
   
   .filters-container {
-    gap: 0.75rem;
+    gap: 0.625rem;
+  }
+  
+  .search-input-wrapper svg {
+    left: 0.825rem;
+    font-size: 0.95rem;
   }
   
   .search-input,
   .filter-select {
-    padding: 0.625rem 0.875rem;
+    padding: 0.825rem 0.925rem 0.825rem 2.625rem;
     font-size: 0.875rem;
-  }
-  
-  .btn {
-    padding: 0.625rem 1.25rem;
-    font-size: 0.875rem;
+    border-radius: 11px;
   }
 }
 
@@ -334,51 +375,98 @@
 @media (max-width: 480px) {
   .stock-grid {
     grid-template-columns: 1fr;
-    gap: 0.75rem;
-    padding: 0 0.25rem;
+    gap: 1rem;  
+    padding: 0 1rem;  
   }
   
+  .product-card-enhanced {
+    width: 100%;  
+    max-width: none;  
+    border-radius: 16px;  
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);  
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);  /* Ombre plus prononcée */
+  }
+  
+  /* Header plus spacieux */
+  .product-header-enhanced {
+    padding: 1.75rem 1.5rem;  /* Plus de padding vertical */
+  }
+  
+  /* Titre plus grand et lisible */
+  .product-name {
+    font-size: 1.375rem;  /* Plus grand pour lisibilité */
+    line-height: 1.4;  /* Meilleur espacement des lignes */
+    font-weight: 700;  /* Plus gras */
+  }
+  
+  /* Badge catégorie plus visible */
+  .product-category-badge {
+    font-size: 0.875rem;  /* Plus grand */
+    padding: 0.375rem 0.875rem;  /* Plus de padding */
+    font-weight: 500;  /* Plus gras */
+  }
+  
+  /* Contenu plus aéré */
+  .product-content-enhanced {
+    padding: 1.5rem;  /* Plus de padding */
+  }
+  
+  /* Informations de stock plus lisibles */
+  .product-stock-info {
+    display: flex;
+    flex-direction: column;  /* Vertical pour meilleure lisibilité */
+    gap: 0.75rem;  /* Plus d'espacement */
+  }
+  
+  /* Prix et quantité plus grands */
+  .product-price,
+  .product-quantity {
+    font-size: 1.125rem;  /* Plus grand */
+    font-weight: 600;  /* Plus gras */
+  }
+  
+  /* Jauge de stock plus visible */
+  .stock-gauge {
+    height: 8px;  /* Plus épaisse */
+    border-radius: 4px;  /* Plus arrondie */
+  }
+  
+  /* Actions plus accessibles */
+  .product-actions-enhanced {
+    padding: 1.25rem 1.5rem;  /* Plus de padding */
+    gap: 0.75rem;  /* Plus d'espacement entre boutons */
+  }
+  
+  .action-btn {
+    min-height: 44px;  /* Taille minimale pour accessibilité */
+    padding: 0.75rem 1rem;  /* Plus de padding */
+    font-size: 0.9rem;  /* Plus grand */
+    border-radius: 12px;  /* Plus arrondi */
+  }
+  
+  /* Sections avec plus d'espacement */
   .stock-list-section {
-    padding: 0.75rem;
+    padding: 1rem;  /* Plus de padding */
   }
   
   .filters-section {
-    padding: 0.75rem;
+    padding: 1rem;  /* Plus de padding */
   }
   
   .filters-container {
-    gap: 0.5rem;
+    gap: 0.75rem;  /* Plus d'espacement */
   }
   
   .search-input-wrapper svg {
-    left: 0.75rem;
-    font-size: 0.875rem;
+    left: 0.875rem;  /* Légèrement décalé */
+    font-size: 1rem;  /* Plus grand */
   }
   
   .search-input,
   .filter-select {
-    padding: 0.5rem 0.75rem 0.5rem 2.5rem;
-    font-size: 0.8rem;
-  }
-  
-  .btn {
-    padding: 0.5rem 1rem;
-    font-size: 0.8rem;
-  }
-  
-  .section-header {
-    flex-direction: column;
-    gap: 0.75rem;
-    align-items: stretch;
-  }
-  
-  .section-header h2 {
-    font-size: 1.125rem;
-    text-align: center;
-  }
-  
-  .stock-count {
-    align-self: center;
+    padding: 0.875rem 1rem 0.875rem 2.75rem;  /* Plus de padding */
+    font-size: 0.9rem;  /* Plus grand */
+    border-radius: 12px;  /* Plus arrondi */
   }
 }
 
