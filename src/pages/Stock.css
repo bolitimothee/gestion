@@ -301,16 +301,17 @@
 
 /* ÉCRANS PETITS (480px - 767px) */
 @media (max-width: 767px) and (min-width: 481px) {
-  /* Header avec même padding que la grille */
+  /* Header avec padding réduit pour plus largeur */
   .stock-header {
-    padding: 2.25rem 1.25rem;  /* Cohérent avec grille */
+    padding: 2.25rem 0.75rem;  /* Padding réduit pour largeur maximale */
   }
   
   .stock-grid {
     grid-template-columns: 1fr;  
-    gap: 1.75rem;  /* Espacement généreux */
-    padding: 0 1.25rem;  /* Même padding que le header */
+    gap: 1.5rem;  /* Espacement légèrement réduit */
+    padding: 0 0.75rem;  /* Padding réduit pour largeur maximale */
     max-width: 100%;
+    width: 100%;  /* Force utilisation complète */
   }
   
   .product-card-enhanced {
@@ -318,9 +319,10 @@
     max-width: 100%;
     border-radius: 20px;  /* Plus moderne */
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);  /* Ombre moderne */
-    min-height: 340px;  /* Hauteur plus généreuse */
+    min-height: 360px;  /* Hauteur augmentée */
     background: linear-gradient(145deg, #ffffff, #fafafa);
     border: 1px solid rgba(0, 0, 0, 0.05);
+    margin: 0;
   }
   
   .product-header-enhanced {
@@ -374,11 +376,11 @@
   }
   
   .stock-list-section {
-    padding: 1.25rem 1.25rem;  /* Plus d'espacement */
+    padding: 1.25rem 0.75rem;  /* Padding réduit pour largeur maximale */
   }
   
   .filters-section {
-    padding: 1.25rem 1.25rem;
+    padding: 1.25rem 0.75rem;  /* Padding réduit */
     background: linear-gradient(145deg, #ffffff, #fafafa);
     border-radius: 20px;
     border: 1px solid rgba(0, 0, 0, 0.05);
@@ -389,14 +391,14 @@
   }
   
   .search-input-wrapper svg {
-    left: 1rem;
+    left: 0.75rem;  /* Ajusté pour padding réduit */
     font-size: 1.05rem;
     color: #6b7280;
   }
   
   .search-input,
   .filter-select {
-    padding: 0.875rem 1.125rem 0.875rem 2.875rem;  /* Plus grand */
+    padding: 0.875rem 1.125rem 0.875rem 2.75rem;  /* Padding left réduit */
     font-size: 0.95rem;
     border-radius: 16px;
     border: 2px solid #e5e7eb;
@@ -672,27 +674,28 @@
 
 /* ÉCRANS TRÈS PETITS (max 480px) */
 @media (max-width: 480px) {
-  /* Header avec même padding que la grille */
+  /* Header avec padding réduit pour plus largeur */
   .stock-header {
-    padding: 2rem 1rem;  /* Plus compact et professionnel */
+    padding: 2rem 0.5rem;  /* Padding réduit pour plus largeur */
   }
   
   .stock-grid {
     grid-template-columns: 1fr;
-    gap: 1.5rem;  /* Espacement généreux pour aération */
-    padding: 0 1rem;  /* Padding cohérent avec header */
+    gap: 1.25rem;  /* Espacement légèrement réduit */
+    padding: 0 0.5rem;  /* Padding minimal pour largeur maximale */
     max-width: 100%;
+    width: 100%;  /* Force utilisation complète */
   }
   
   .product-card-enhanced {
     width: 100%;
     max-width: 100%;
-    border-radius: 20px;  /* Plus moderne */
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);  /* Ombre subtile et moderne */
-    margin: 0 auto;
-    min-height: 320px;  /* Hauteur plus généreuse */
-    background: linear-gradient(145deg, #ffffff, #fafafa);  /* Fond subtil */
-    border: 1px solid rgba(0, 0, 0, 0.05);  /* Bordure très subtile */
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    margin: 0;
+    min-height: 340px;  /* Hauteur augmentée pour compenser largeur */
+    background: linear-gradient(145deg, #ffffff, #fafafa);
+    border: 1px solid rgba(0, 0, 0, 0.05);
   }
   
   /* Header plus élégant */
@@ -783,13 +786,13 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   }
   
-  /* Sections plus propres */
+  /* Sections plus propres avec largeur maximale */
   .stock-list-section {
-    padding: 1.25rem 1rem;  /* Plus d'espacement */
+    padding: 1.25rem 0.5rem;  /* Padding réduit pour largeur maximale */
   }
   
   .filters-section {
-    padding: 1.25rem 1rem;
+    padding: 1.25rem 0.5rem;  /* Padding réduit */
     background: linear-gradient(145deg, #ffffff, #fafafa);
     border-radius: 20px;
     border: 1px solid rgba(0, 0, 0, 0.05);
@@ -800,14 +803,14 @@
   }
   
   .search-input-wrapper svg {
-    left: 1rem;
+    left: 0.5rem;  /* Ajusté pour padding réduit */
     font-size: 1.1rem;
     color: #6b7280;
   }
   
   .search-input,
   .filter-select {
-    padding: 1rem 1.25rem 1rem 3rem;  /* Plus grand */
+    padding: 1rem 1.25rem 1rem 2.5rem;  /* Padding left réduit */
     font-size: 1rem;
     border-radius: 16px;
     border: 2px solid #e5e7eb;
