@@ -301,15 +301,21 @@
 
 /* ÉCRANS PETITS (480px - 767px) */
 @media (max-width: 767px) and (min-width: 481px) {
+  /* Header avec même padding que la grille */
+  .stock-header {
+    padding: 2.5rem 1.25rem;  /* Même padding horizontal que la grille */
+  }
+  
   .stock-grid {
     grid-template-columns: 1fr;  
     gap: 1.25rem;  
-    padding: 0 1.25rem;  
+    padding: 0 1.25rem;  /* Même padding que le header */
+    max-width: 100%;
   }
   
   .product-card-enhanced {
     width: 100%;
-    max-width: none;
+    max-width: 100%;
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
@@ -373,29 +379,34 @@
 
 /* ÉCRANS TRÈS PETITS (max 480px) */
 @media (max-width: 480px) {
+  /* Header avec même padding que la grille */
+  .stock-header {
+    padding: 2.5rem 0.75rem;  /* Même padding horizontal que la grille */
+  }
+  
   .stock-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
-    padding: 0 0.75rem;  /* Réduire le padding pour mieux utiliser l'espace */
-    max-width: 100%;  /* S'assurer que la grille n'excède pas l'écran */
+    padding: 0 0.75rem;  /* Même padding que le header */
+    max-width: 100%;
   }
   
   .product-card-enhanced {
     width: 100%;
-    max-width: 100%;  /* Forcer la largeur maximale à 100% */
+    max-width: 100%;
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    margin: 0 auto;  /* Centrer la card */
+    margin: 0 auto;
   }
   
   /* Header plus spacieux */
   .product-header-enhanced {
-    padding: 1.5rem 1.25rem;  /* Réduire légèrement pour mobile */
+    padding: 1.5rem 1.25rem;
   }
   
   /* Titre plus grand et lisible */
   .product-name {
-    font-size: 1.25rem;  /* Réduire légèrement pour éviter le débordement */
+    font-size: 1.25rem;
     line-height: 1.3;
     font-weight: 700;
   }
@@ -409,37 +420,37 @@
   
   /* Contenu plus aéré */
   .product-content-enhanced {
-    padding: 1.25rem;  /* Réduire pour mobile */
+    padding: 1.25rem;
   }
   
   /* Informations de stock plus lisibles */
   .product-stock-info {
     display: flex;
     flex-direction: column;
-    gap: 0.625rem;  /* Réduire l'espacement */
+    gap: 0.625rem;
   }
   
   /* Prix et quantité plus grands */
   .product-price,
   .product-quantity {
-    font-size: 1rem;  /* Réduire pour éviter le débordement */
+    font-size: 1rem;
     font-weight: 600;
   }
   
   /* Jauge de stock plus visible */
   .stock-gauge {
-    height: 6px;  /* Réduire légèrement */
+    height: 6px;
     border-radius: 3px;
   }
   
   /* Actions plus accessibles */
   .product-actions-enhanced {
-    padding: 1rem 1.25rem;  /* Réduire pour mobile */
+    padding: 1rem 1.25rem;
     gap: 0.625rem;
   }
   
   .action-btn {
-    min-height: 40px;  /* Réduire légèrement pour mobile */
+    min-height: 40px;
     padding: 0.625rem 0.875rem;
     font-size: 0.85rem;
     border-radius: 10px;
