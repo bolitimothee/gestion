@@ -557,7 +557,7 @@ export default function Stock() {
                       />
                     </div>
                     <div className="mobile-stock-quick-info">
-                      <div className="mobile-stock-stat">
+                      <div className={`mobile-stock-stat ${product.quantity <= 10 ? 'low-stock' : ''}`}>
                         <span className="mobile-stat-label">Disponible</span>
                         <span className="mobile-stat-value">{product.quantity}</span>
                       </div>

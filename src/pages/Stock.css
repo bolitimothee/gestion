@@ -835,22 +835,76 @@
     flex-shrink: 0;
   }
   
-  /* Section stock mobile */
+  /* Section stock mobile - Jauge ultra visible */
   .mobile-stock-section {
     padding: 1.5rem 1rem;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     position: relative;
     z-index: 3;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);  /* Fond contrasté pour jauge */
   }
   
   .mobile-stock-gauge-container {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;  /* Plus d'espace pour visibilité */
+    padding: 1rem;  /* Padding pour mettre en valeur */
+    background: #ffffff;  /* Fond blanc pour contraste */
+    border-radius: 16px;  /* Coins arrondis */
+    border: 2px solid rgba(0, 0, 0, 0.08);  /* Bordure visible */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);  /* Ombre subtile */
+  }
+  
+  /* Jauge de stock agrandie et plus visible */
+  .mobile-stock-gauge-container .stock-gauge {
+    height: 16px;  /* Plus haute pour visibilité */
+    border-radius: 8px;  /* Plus arrondie */
+    background: #e5e7eb;  /* Fond plus clair */
+    border: 2px solid rgba(0, 0, 0, 0.1);  /* Bordure plus visible */
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);  /* Ombre intérieure */
+  }
+  
+  .mobile-stock-gauge-container .stock-gauge-fill {
+    height: 100%;
+    border-radius: 8px;  /* Coins arrondis */
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);  /* Animation plus fluide */
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);  /* Ombre portée */
+  }
+  
+  /* Effet de brillance pour la jauge */
+  .mobile-stock-gauge-container .stock-gauge-fill::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
+    border-radius: 8px 8px 0 0;
+  }
+  
+  /* Animation de pulse pour stock critique */
+  .mobile-stock-gauge-container .stock-gauge-fill.critical {
+    animation: mobile-pulse-gauge 2s infinite;
+  }
+  
+  @keyframes mobile-pulse-gauge {
+    0%, 100% { 
+      transform: scale(1); 
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+    }
+    50% { 
+      transform: scale(1.02); 
+      box-shadow: 0 2px 12px rgba(220, 38, 38, 0.5);
+    }
   }
   
   .mobile-stock-quick-info {
     display: flex;
     justify-content: space-around;
     gap: 1rem;
+    margin-top: 1rem;  /* Plus d'espace après la jauge */
   }
   
   .mobile-stock-stat {
@@ -859,20 +913,74 @@
     align-items: center;
     text-align: center;
     flex: 1;
+    padding: 1rem 0.5rem;  /* Plus de padding pour visibilité */
+    background: linear-gradient(135deg, #ffffff, #f8fafc);  /* Fond pour mise en valeur */
+    border-radius: 12px;  /* Coins arrondis */
+    border: 1px solid rgba(0, 0, 0, 0.06);  /* Bordure subtile */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);  /* Ombre légère */
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Effet de brillance pour les stats */
+  .mobile-stock-stat::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+  }
+  
+  .mobile-stock-stat:hover::before {
+    left: 100%;
   }
   
   .mobile-stat-label {
-    font-size: 0.7rem;
+    font-size: 0.65rem;  /* Plus petit pour élégance */
     color: #6b7280;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
-    margin-bottom: 0.25rem;
+    letter-spacing: 0.4px;  /* Plus d'espacement */
+    margin-bottom: 0.5rem;  /* Plus d'espace */
+    font-weight: 600;  /* Plus gras */
   }
   
   .mobile-stat-value {
-    font-size: 1.1rem;
-    font-weight: 700;
+    font-size: 1.3rem;  /* Plus grand pour impact */
+    font-weight: 800;  /* Très gras */
     color: #1a1a1a;
+    line-height: 1;
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Animation pour les valeurs importantes */
+  .mobile-stock-stat .mobile-stat-value {
+    animation: mobile-stat-pulse 3s ease-in-out infinite;
+  }
+  
+  @keyframes mobile-stat-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+  }
+  
+  /* Style spécial pour stock faible */
+  .mobile-stock-stat.low-stock .mobile-stat-value {
+    color: #dc2626;  /* Rouge pour alerte */
+    animation: mobile-stat-warning 1.5s ease-in-out infinite;
+  }
+  
+  @keyframes mobile-stat-warning {
+    0%, 100% { 
+      transform: scale(1); 
+      color: #dc2626;
+    }
+    50% { 
+      transform: scale(1.05); 
+      color: #ef4444;
+    }
   }
   
   /* Section financière mobile */
