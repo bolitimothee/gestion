@@ -529,101 +529,103 @@ export default function Stock() {
               </div>
             </div>
 
-            {/* Grille de produits */}
-            <div className="products-grid-enhanced">
+            {/* Grille de produits - Affichage spécial mobile */}
+            <div className="products-grid-enhanced mobile-special-layout">
               {products.map((product) => (
-                <div key={product.id} className="product-card-enhanced">
-                  {/* Header du produit */}
-                  <div className="product-header-enhanced">
-                    <div className="product-title-section">
-                      <h3 className="product-name">{product.name}</h3>
-                      <p className="product-category-badge">{product.category}</p>
-                    </div>
-                    <div className="product-stock-indicator">
-                      <span className={`stock-badge-enhanced ${product.quantity > 10 ? 'in-stock' : 'low-stock'}`}>
+                <div key={product.id} className="product-card-enhanced mobile-product-card">
+                  {/* Header du produit - Version mobile */}
+                  <div className="product-header-enhanced mobile-product-header">
+                    <div className="mobile-product-title-row">
+                      <h3 className="product-name mobile-product-name">{product.name}</h3>
+                      <span className={`stock-badge-enhanced mobile-stock-badge ${product.quantity > 10 ? 'in-stock' : 'low-stock'}`}>
                         {product.quantity} unités
                       </span>
-                      <span className="sku-label">SKU: {product.sku || 'N/A'}</span>
+                    </div>
+                    <div className="mobile-product-meta">
+                      <p className="product-category-badge mobile-category-badge">{product.category}</p>
+                      <span className="sku-label mobile-sku">SKU: {product.sku || 'N/A'}</span>
                     </div>
                   </div>
 
-                  {/* Informations de stock avec visuel */}
-                  <div className="stock-visual-section">
-                    <StockGauge 
-                      current={product.quantity} 
-                      initial={product.initial_quantity ?? product.quantity} 
-                      threshold={10}
-                    />
-                    <div className="stock-summary">
-                      <div className="stock-item">
-                        <span className="stock-label">Disponible:</span>
-                        <span className="stock-value">{product.quantity}</span>
+                  {/* Section stock visuel mobile */}
+                  <div className="stock-visual-section mobile-stock-section">
+                    <div className="mobile-stock-gauge-container">
+                      <StockGauge 
+                        current={product.quantity} 
+                        initial={product.initial_quantity ?? product.quantity} 
+                        threshold={10}
+                      />
+                    </div>
+                    <div className="mobile-stock-quick-info">
+                      <div className="mobile-stock-stat">
+                        <span className="mobile-stat-label">Disponible</span>
+                        <span className="mobile-stat-value">{product.quantity}</span>
                       </div>
-                      <div className="stock-item">
-                        <span className="stock-label">Initial:</span>
-                        <span className="stock-value">{product.initial_quantity ?? product.quantity}</span>
+                      <div className="mobile-stock-stat">
+                        <span className="mobile-stat-label">Initial</span>
+                        <span className="mobile-stat-value">{product.initial_quantity ?? product.quantity}</span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Informations financières */}
-                  <div className="financial-section">
-                    <div className="price-row">
-                      <div className="price-item">
-                        <span className="price-label">Achat</span>
-                        <span className="price-value purchase">{formatFCFA(product.purchase_price)}</span>
+                  {/* Section financière mobile */}
+                  <div className="financial-section mobile-financial-section">
+                    <div className="mobile-price-grid">
+                      <div className="mobile-price-item">
+                        <span className="mobile-price-label">Achat</span>
+                        <span className="mobile-price-value purchase">{formatFCFA(product.purchase_price)}</span>
                       </div>
-                      <div className="price-item">
-                        <span className="price-label">Revente</span>
-                        <span className="price-value selling">{formatFCFA(product.selling_price)}</span>
+                      <div className="mobile-price-item">
+                        <span className="mobile-price-label">Revente</span>
+                        <span className="mobile-price-value selling">{formatFCFA(product.selling_price)}</span>
                       </div>
                     </div>
                     
-                    <div className="margin-section">
-                      <div className="margin-item">
-                        <span className="margin-label">Marge unitaire:</span>
-                        <span className={`margin-value ${((product.selling_price - product.purchase_price) / product.purchase_price * 100) >= 50 ? 'good' : 'low'}`}>
+                    <div className="mobile-margin-row">
+                      <div className="mobile-margin-item">
+                        <span className="mobile-margin-label">Marge</span>
+                        <span className={`mobile-margin-value ${((product.selling_price - product.purchase_price) / product.purchase_price * 100) >= 50 ? 'good' : 'low'}`}>
                           {formatFCFA(product.selling_price - product.purchase_price)}
                         </span>
                       </div>
-                      <div className="margin-item">
-                        <span className="margin-label">Pourcentage:</span>
-                        <span className={`margin-percentage ${((product.selling_price - product.purchase_price) / product.purchase_price * 100) >= 50 ? 'good' : 'low'}`}>
-                          {Math.round(((product.selling_price - product.purchase_price) / product.purchase_price) * 100)}%
+                      <div className="mobile-margin-item">
+                        <span className="mobile-margin-label">%</span>
+                        <span className={`mobile-margin-percentage ${((product.selling_price - product.purchase_price) / product.purchase_price * 100) >= 50 ? 'good' : 'low'}`}>
+                          {Math.round(((product.selling_price - product.purchase_price) / product.purchase_price * 100))}%
                         </span>
                       </div>
                     </div>
 
-                    <div className="total-value">
-                      <span className="total-label">Valeur totale:</span>
-                      <span className="total-amount">{formatFCFA(product.quantity * product.selling_price)}</span>
+                    <div className="mobile-total-value">
+                      <span className="mobile-total-label">Valeur totale</span>
+                      <span className="mobile-total-amount">{formatFCFA(product.quantity * product.selling_price)}</span>
                     </div>
                   </div>
 
-                  {/* Description */}
+                  {/* Description mobile */}
                   {product.description && (
-                    <div className="product-description-section">
-                      <p className="product-description">{product.description}</p>
+                    <div className="product-description-section mobile-description-section">
+                      <p className="product-description mobile-description">{product.description}</p>
                     </div>
                   )}
 
-                  {/* Actions */}
-                  <div className="product-actions-enhanced">
+                  {/* Actions mobile */}
+                  <div className="product-actions-enhanced mobile-actions">
                     <button
                       onClick={() => handleEdit(product)}
-                      className="action-btn btn-edit"
+                      className="action-btn btn-edit mobile-action-btn mobile-edit-btn"
                       title="Modifier le produit"
                     >
                       <Edit2 size={16} />
-                      <span>Modifier</span>
+                      <span className="mobile-action-text">Modifier</span>
                     </button>
                     <button
                       onClick={() => handleDelete(product.id)}
-                      className="action-btn btn-delete"
+                      className="action-btn btn-delete mobile-action-btn mobile-delete-btn"
                       title="Supprimer le produit"
                     >
                       <Trash2 size={16} />
-                      <span>Supprimer</span>
+                      <span className="mobile-action-text">Supprimer</span>
                     </button>
                   </div>
                 </div>
