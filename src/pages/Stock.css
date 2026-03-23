@@ -844,57 +844,153 @@
     background: linear-gradient(135deg, #f8fafc, #f1f5f9);  /* Fond contrasté pour jauge */
   }
   
-  .mobile-stock-gauge-container {
-    margin-bottom: 1.5rem;  /* Plus d'espace pour visibilité */
-    padding: 1rem;  /* Padding pour mettre en valeur */
-    background: #ffffff;  /* Fond blanc pour contraste */
-    border-radius: 16px;  /* Coins arrondis */
-    border: 2px solid rgba(0, 0, 0, 0.08);  /* Bordure visible */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);  /* Ombre subtile */
-  }
-  
-  /* Jauge optimisée portrait - taille adaptée */
-  .mobile-stock-gauge-container .stock-gauge {
-    height: 18px;  /* Augmentée pour meilleure visibilité portrait */
-    border-radius: 9px;
-    background: #e5e7eb;
-    border: 1px solid rgba(0, 0, 0, 0.08);
+  /* Espace d'affichage dédié pour la jauge seule */
+  .mobile-gauge-dedicated-container {
+    margin-bottom: 1.5rem;
+    padding: 1.25rem;
+    background: linear-gradient(145deg, #ffffff, #f8fafc);
+    border-radius: 16px;
+    border: 2px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    position: relative;
     overflow: hidden;
-    position: relative;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.04);
   }
   
-  .mobile-stock-gauge-container .stock-gauge-fill {
-    height: 100%;
-    border-radius: 9px;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
-  }
-  
-  .mobile-stock-gauge-container .stock-gauge-fill::before {
+  .mobile-gauge-dedicated-container::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 45%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, transparent 100%);
-    border-radius: 9px 9px 0 0;
+    height: 3px;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+    z-index: 1;
   }
   
-  .mobile-stock-gauge-container .stock-gauge-fill.critical {
-    animation: mobile-pulse-gauge-portrait 1.8s infinite;
+  .mobile-gauge-dedicated-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.05) 50%, transparent 100%);
+    pointer-events: none;
+    z-index: 2;
   }
   
-  @keyframes mobile-pulse-gauge-portrait {
+  .mobile-gauge-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    position: relative;
+    z-index: 3;
+  }
+  
+  .mobile-gauge-wrapper {
+    position: relative;
+    z-index: 3;
+    margin-bottom: 1rem;
+  }
+  
+  .mobile-gauge-dedicated {
+    height: 20px;  /* Hauteur augmentée pour visibilité maximale */
+    border-radius: 10px;
+    background: #e5e7eb;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+  }
+  
+  .mobile-gauge-dedicated-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  .mobile-gauge-dedicated-fill::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
+    border-radius: 10px 10px 0 0;
+  }
+  
+  .mobile-gauge-dedicated-fill.critical {
+    animation: mobile-gauge-dedicated-pulse 2s infinite;
+  }
+  
+  @keyframes mobile-gauge-dedicated-pulse {
     0%, 100% { 
       transform: scale(1); 
-      box-shadow: 0 1px 6px rgba(220, 38, 38, 0.25);
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
     }
     50% { 
-      transform: scale(1.02);  /* Pulse plus visible */
-      box-shadow: 0 1px 8px rgba(220, 38, 38, 0.4);
+      transform: scale(1.03);  /* Pulse plus visible */
+      box-shadow: 0 2px 12px rgba(220, 38, 38, 0.5);
+    }
+  }
+  
+  .mobile-gauge-stats {
+    display: flex;
+    justify-content: space-around;
+    gap: 1rem;
+    position: relative;
+    z-index: 3;
+  }
+  
+  .mobile-gauge-stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+    padding: 0.75rem 0.5rem;
+    background: linear-gradient(135deg, #ffffff, #f8fafc);
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+  
+  .mobile-gauge-stat-label {
+    font-size: 0.65rem;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+  }
+  
+  .mobile-gauge-stat-value {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #1a1a1a;
+    line-height: 1;
+  }
+  
+  .mobile-gauge-stat-item.warning .mobile-gauge-stat-value {
+    color: #dc2626;
+    animation: mobile-gauge-stat-warning 1.5s ease-in-out infinite;
+  }
+  
+  @keyframes mobile-gauge-stat-warning {
+    0%, 100% { 
+      transform: scale(1); 
+      color: #dc2626;
+    }
+    50% { 
+      transform: scale(1.05); 
+      color: #ef4444;
     }
   }
   

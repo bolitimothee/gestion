@@ -549,21 +549,31 @@ export default function Stock() {
 
                   {/* Section stock visuel mobile */}
                   <div className="stock-visual-section mobile-stock-section">
-                    <div className="mobile-stock-gauge-container">
-                      <StockGauge 
-                        current={product.quantity} 
-                        initial={product.initial_quantity ?? product.quantity} 
-                        threshold={10}
-                      />
-                    </div>
-                    <div className="mobile-stock-quick-info">
-                      <div className={`mobile-stock-stat ${product.quantity <= 10 ? 'low-stock' : ''}`}>
-                        <span className="mobile-stat-label">Disponible</span>
-                        <span className="mobile-stat-value">{product.quantity}</span>
+                    {/* Espace d'affichage dédié pour la jauge seule */}
+                    <div className="mobile-gauge-dedicated-container">
+                      <div className="mobile-gauge-title">Niveau de Stock</div>
+                      <div className="mobile-gauge-wrapper">
+                        <div className="mobile-gauge-dedicated">
+                          <div 
+                            className={`mobile-gauge-dedicated-fill ${product.quantity <= 10 ? 'critical' : ''}`}
+                            style={{ 
+                              width: `${Math.min((product.quantity / (product.initial_quantity || product.quantity)) * 100, 100)}%`,
+                              background: product.quantity > 20 ? 'linear-gradient(90deg, #10b981, #059669)' : 
+                                          product.quantity > 10 ? 'linear-gradient(90deg, #f59e0b, #d97706)' : 
+                                          'linear-gradient(90deg, #ef4444, #dc2626)'
+                            }}
+                          ></div>
+                        </div>
                       </div>
-                      <div className="mobile-stock-stat">
-                        <span className="mobile-stat-label">Initial</span>
-                        <span className="mobile-stat-value">{product.initial_quantity ?? product.quantity}</span>
+                      <div className="mobile-gauge-stats">
+                        <div className={`mobile-gauge-stat-item ${product.quantity <= 10 ? 'warning' : ''}`}>
+                          <span className="mobile-gauge-stat-label">Disponible</span>
+                          <span className="mobile-gauge-stat-value">{product.quantity}</span>
+                        </div>
+                        <div className="mobile-gauge-stat-item">
+                          <span className="mobile-gauge-stat-label">Initial</span>
+                          <span className="mobile-gauge-stat-value">{product.initial_quantity ?? product.quantity}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
