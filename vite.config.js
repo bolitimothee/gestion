@@ -17,5 +17,23 @@ export default defineConfig({
   build: {
     target: 'esnext',
     minify: 'terser',
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (id.includes('react') || id.includes('react-dom')) {
+            return 'vendor';
+          }
+          if (id.includes('react-router-dom')) {
+            return 'router';
+          }
+          if (id.includes('@supabase')) {
+            return 'supabase';
+          }
+          if (id.includes('lucide-react')) {
+            return 'icons';
+          }
+        },
+      },
+    },
   },
 })
