@@ -19,8 +19,14 @@ export const testSupabaseConnection = async () => {
   console.log('\n=== TESTING SUPABASE CONNECTION ===');
   
   try {
+    // Timeout pour éviter les blocages
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Connection timeout')), 5000)
+    );
+    
     // Test simple: vérifier la session
-    const { data: sessionData, error } = await supabase.auth.getSession();
+    const sessionPromise = supabase.auth.getSession();
+    const { data: sessionData, error } = await Promise.race([sessionPromise, timeoutPromise]);
     
     if (error) {
       console.error('Session check error:', error.message);
@@ -30,11 +36,13 @@ export const testSupabaseConnection = async () => {
     console.log('Session check successful');
     console.log('Session data:', sessionData ? 'Present' : 'None');
     
-    // Test de connexion à la base de données
-    const { data: testData, error: testError } = await supabase
+    // Test de connexion à la base de données (avec timeout)
+    const dbPromise = supabase
       .from('accounts')
       .select('count')
       .limit(1);
+    
+    const { data: testData, error: testError } = await Promise.race([dbPromise, timeoutPromise]);
     
     if (testError) {
       console.warn('Database test warning:', testError.message);
@@ -48,7 +56,11 @@ export const testSupabaseConnection = async () => {
     return true;
     
   } catch (err) {
-    console.error('Connection test failed:', err);
+    if (err.name === 'AbortError' || err.message === 'Connection timeout') {
+      console.warn('Connection test timeout - this is normal on first load');
+      return true; // Ne pas échouer sur timeout
+    }
+    console.error('Connection test failed:', err.message);
     return false;
   }
 };

@@ -12,37 +12,31 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
 }
 
 // Singleton global pour éviter TOUTES les instances multiples
-const supabaseSingleton = {
-  instance: null,
-  initialized: false,
-  
-  getInstance() {
-    if (!this.instance) {
-      console.log('Création de l\'instance Supabase (singleton)');
-      this.instance = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-        auth: {
-          persistSession: true,
-          autoRefreshToken: true,
-          detectSessionInUrl: true,
-          storage: typeof window !== 'undefined' ? window.localStorage : undefined,
-          flowType: 'implicit',
-        },
-        global: {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
-        db: {
-          schema: 'public',
-        },
-      });
-      this.initialized = true;
-      console.log('Supabase client initialisé avec succès');
-    } else {
-      console.log('Réutilisation de l\'instance Supabase existante');
-    }
-    return this.instance;
-  }
-};
+let supabaseInstance = null;
 
-export const supabase = supabaseSingleton.getInstance();
+export const supabase = (() => {
+  if (supabaseInstance) {
+    return supabaseInstance;
+  }
+  
+  console.log('Création de l\'instance Supabase (singleton)');
+  supabaseInstance = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+      flowType: 'implicit',
+    },
+    global: {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+    db: {
+      schema: 'public',
+    },
+  });
+  console.log('✅ Supabase client created successfully');
+  return supabaseInstance;
+})();
