@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { SidebarProvider } from './context/SidebarContext';
@@ -8,10 +8,16 @@ import Dashboard from './pages/Dashboard';
 import Stock from './pages/Stock';
 import Sales from './pages/Sales';
 import Finances from './pages/Finances';
+import { testSupabaseConnection } from './utils/supabaseTest';
 import './styles/globals.css';
 import './styles/components.css';
 
 function App() {
+  useEffect(() => {
+    // Tester la connexion Supabase au démarrage
+    testSupabaseConnection();
+  }, []);
+
   return (
     <Router>
       <AuthProvider>

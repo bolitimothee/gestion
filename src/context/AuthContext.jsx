@@ -44,9 +44,9 @@ export function AuthProvider({ children }) {
       abortControllerRef.current = new AbortController();
       
       try {
-        // Timeout pour éviter les blocages
+        // Timeout augmenté pour éviter les blocages
         const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Session timeout')), 10000)
+          setTimeout(() => reject(new Error('Session timeout')), 30000)
         );
 
         const sessionPromise = supabase.auth.getSession();
@@ -60,6 +60,12 @@ export function AuthProvider({ children }) {
       } catch (err) {
         if (err.name === 'AbortError') {
           console.log('Session check aborted');
+        } else if (err.message === 'Session timeout') {
+          console.warn('Session timeout - forçage de l\'état prêt');
+          // Forcer l'état prêt même si timeout
+          setLoading(false);
+          setIsAuthReady(true);
+          return;
         } else {
           console.error('Error checking session:', err);
         }

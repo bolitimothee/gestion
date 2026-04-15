@@ -1,46 +1,48 @@
 import { createClient } from '@supabase/supabase-js';
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co';
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'your-anon-key';
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 // Vérifier que les variables sont chargées
-if (!SUPABASE_URL || !SUPABASE_ANON_KEY || SUPABASE_URL === 'https://your-project.supabase.co') {
-  console.error('ERREUR CRITIQUE: Variables Supabase manquantes ou incorrectes');
-  console.error('VITE_SUPABASE_URL:', SUPABASE_URL);
-  console.error('VITE_SUPABASE_ANON_KEY:', SUPABASE_ANON_KEY ? 'Présente' : 'MANQUANTE');
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  console.error('ERREUR CRITIQUE: Variables Supabase manquantes');
+  console.error('VITE_SUPABASE_URL:', SUPABASE_URL ? 'Chargée' : 'MANQUANTE');
+  console.error('VITE_SUPABASE_ANON_KEY:', SUPABASE_ANON_KEY ? 'Chargée' : 'MANQUANTE');
   console.error('\nVérifiez votre fichier .env.local');
 }
 
-// Singleton pattern pour éviter les instances multiples
-let supabaseInstance = null;
-
-export const supabase = (() => {
-  if (supabaseInstance) {
-    return supabaseInstance;
+// Singleton global pour éviter TOUTES les instances multiples
+const supabaseSingleton = {
+  instance: null,
+  initialized: false,
+  
+  getInstance() {
+    if (!this.instance) {
+      console.log('Création de l\'instance Supabase (singleton)');
+      this.instance = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true,
+          storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+          flowType: 'implicit',
+        },
+        global: {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+        db: {
+          schema: 'public',
+        },
+      });
+      this.initialized = true;
+      console.log('Supabase client initialisé avec succès');
+    } else {
+      console.log('Réutilisation de l\'instance Supabase existante');
+    }
+    return this.instance;
   }
+};
 
-  supabaseInstance = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-      detectSessionInUrl: true,
-      storage: typeof window !== 'undefined' ? window.localStorage : undefined,
-      flowType: 'implicit',
-    },
-    global: {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    },
-    db: {
-      schema: 'public',
-    },
-  });
-
-  // Test de connexion
-  if (SUPABASE_URL && SUPABASE_ANON_KEY && SUPABASE_URL !== 'https://your-project.supabase.co') {
-    console.log('Supabase client initialisé avec succès');
-  }
-
-  return supabaseInstance;
-})();
+export const supabase = supabaseSingleton.getInstance();
