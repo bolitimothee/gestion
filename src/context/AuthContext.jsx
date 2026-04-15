@@ -10,6 +10,7 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [isAuthReady, setIsAuthReady] = useState(false);
   const sessionCheckRef = useRef(false);
+  const abortControllerRef = useRef(null);
 
   const loadAccountDetails = useCallback(async (userId) => {
     if (!userId) {
@@ -34,14 +35,34 @@ export function AuthProvider({ children }) {
     sessionCheckRef.current = true;
 
     const checkSession = async () => {
+      // Annuler les requêtes précédentes
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      
+      // Créer un nouveau AbortController
+      abortControllerRef.current = new AbortController();
+      
       try {
-        const { data } = await supabase.auth.getSession();
+        // Timeout pour éviter les blocages
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Session timeout')), 10000)
+        );
+
+        const sessionPromise = supabase.auth.getSession();
+        
+        const { data } = await Promise.race([sessionPromise, timeoutPromise]);
+        
         if (data?.session) {
           setUser(data.session.user);
           await loadAccountDetails(data.session.user.id);
         }
-      } catch (_err) {
-        console.error('Error checking session:', _err);
+      } catch (err) {
+        if (err.name === 'AbortError') {
+          console.log('Session check aborted');
+        } else {
+          console.error('Error checking session:', err);
+        }
       } finally {
         setLoading(false);
         setIsAuthReady(true);
@@ -64,6 +85,10 @@ export function AuthProvider({ children }) {
     });
 
     return () => {
+      // Annuler les requêtes en cours
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
       subscription?.unsubscribe();
     };
   }, [loadAccountDetails]);

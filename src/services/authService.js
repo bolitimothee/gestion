@@ -37,10 +37,17 @@ export const authService = {
 
   async signIn(email, password) {
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      // Timeout pour éviter les blocages
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Connection timeout')), 10000)
+      );
+
+      const signInPromise = supabase.auth.signInWithPassword({
         email,
         password,
       });
+
+      const { data, error } = await Promise.race([signInPromise, timeoutPromise]);
 
       if (error) throw error;
 
@@ -49,35 +56,45 @@ export const authService = {
         try {
           const { data: accountData, error: accountError } = await supabase
             .from('accounts')
-            .select('*')
+            .select('is_active, validity_date')
             .eq('user_id', data.user.id)
             .maybeSingle();
 
           if (!accountError && accountData) {
+            // Vérifier si le compte est actif
+            if (!accountData.is_active) {
+              await supabase.auth.signOut();
+              return { 
+                data: null, 
+                error: 'Votre compte a été désactivé. Veuillez contacter l\'administrateur.' 
+              };
+            }
+
             // Vérifier la date de validité
             if (accountData.validity_date) {
               const validityDate = new Date(accountData.validity_date);
               const today = new Date();
+              today.setHours(0, 0, 0, 0);
+              validityDate.setHours(0, 0, 0, 0);
+              
               if (today > validityDate) {
-                throw new Error('Votre compte a expiré. Veuillez contacter l\'administrateur.');
+                await supabase.auth.signOut();
+                return { 
+                  data: null, 
+                  error: 'Votre compte a expiré. Veuillez contacter l\'administrateur.' 
+                };
               }
             }
-
-            if (!accountData.is_active) {
-              throw new Error('Votre compte est désactivé.');
-            }
-          } else if (accountError) {
-            console.warn('Avertissement: Impossible de vérifier le compte:', accountError.message);
-            // Ne pas bloquer la connexion si la table n'existe pas
           }
         } catch (accError) {
           console.warn('Erreur lors de la vérification du compte:', accError.message);
-          // Continuer quand même - la table peut ne pas exister encore
+          // Continuer même si la vérification du compte échoue
         }
       }
 
       return { data, error: null };
     } catch (error) {
+      console.error('Erreur signIn:', error);
       return { data: null, error };
     }
   },
