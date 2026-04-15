@@ -75,13 +75,13 @@ export const stockService = {
     try {
       const { data, error } = await supabase
         .from('products')
-        .select('quantity, purchase_price')
+        .select('quantity, selling_price')
         .eq('user_id', userId);
 
       if (error) throw error;
 
       const totalValue = data.reduce((sum, product) => {
-        return sum + (product.quantity * product.purchase_price);
+        return sum + (product.quantity * product.selling_price);
       }, 0);
 
       return { data: totalValue, error: null };
