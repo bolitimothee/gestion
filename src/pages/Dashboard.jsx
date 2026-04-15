@@ -35,6 +35,7 @@ export default function Dashboard() {
     setError(null);
     
     try {
+      // Timeout pour éviter les blocages
       const timeoutPromise = new Promise((_, reject) => 
         setTimeout(() => reject(new Error('Dashboard loading timeout')), 15000)
       );
@@ -91,9 +92,18 @@ export default function Dashboard() {
       } else if (recentSalesRes.error) {
         console.warn('Erreur getRecentSales:', recentSalesRes.error);
       }
-    } catch (_err) {
-      console.error('Error loading dashboard:', _err);
-      setError('Erreur système lors du chargement des données.');
+    } catch (err) {
+      if (err.name === 'AbortError') {
+        console.log('Dashboard loading aborted');
+        return; // Ne pas afficher d'erreur pour AbortError
+      } else if (err.message === 'Dashboard loading timeout') {
+        console.warn('Dashboard timeout - affichage des données existantes');
+        // Ne pas afficher d'erreur, juste continuer avec les données existantes
+        return;
+      } else {
+        console.error('Error loading dashboard:', err);
+        setError('Erreur système lors du chargement des données.');
+      }
     } finally {
       setLoading(false);
       setIsRefreshing(false);

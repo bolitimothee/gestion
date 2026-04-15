@@ -60,6 +60,8 @@ export function AuthProvider({ children }) {
       } catch (err) {
         if (err.name === 'AbortError') {
           console.log('Session check aborted');
+          // Ne pas forcer l'état prêt sur AbortError
+          return;
         } else if (err.message === 'Session timeout') {
           console.warn('Session timeout - forçage de l\'état prêt');
           // Forcer l'état prêt même si timeout
