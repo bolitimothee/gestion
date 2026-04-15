@@ -40,6 +40,20 @@ export const financeService = {
     }
   },
 
+  async deleteExpense(expenseId) {
+    try {
+      const { error } = await supabase
+        .from('expenses')
+        .delete()
+        .eq('id', expenseId);
+
+      if (error) throw error;
+      return { error: null };
+    } catch (error) {
+      return { error };
+    }
+  },
+
   async getTotalExpenses(userId) {
     try {
       const { data, error } = await supabase

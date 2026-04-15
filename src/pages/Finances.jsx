@@ -5,9 +5,8 @@ import { financeService } from '../services/financeService';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import StatCard from '../components/StatCard';
-import { Plus, Trash2, AlertCircle } from 'lucide-react';
+import { Plus, Trash2, AlertCircle, DollarSign, TrendingDown, TrendingUp } from 'lucide-react';
 import { formatCurrency, formatDate } from '../utils/formatters';
-import { DollarSign, TrendingDown, TrendingUp } from 'lucide-react';
 import './Finances.css';
 
 export default function Finances() {
@@ -64,8 +63,9 @@ export default function Finances() {
     }
   }
 
-  async function handleDelete() {
+  async function handleDelete(id) {
     if (confirm('Êtes-vous sûr de vouloir supprimer cette dépense?')) {
+      await financeService.deleteExpense(id);
       await loadData();
     }
   }

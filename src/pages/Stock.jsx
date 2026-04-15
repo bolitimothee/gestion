@@ -288,7 +288,7 @@ export default function Stock() {
                   </div>
                   <div className="product-total">
                     <span className="label">Total:</span>
-                    <span className="total">{formatCurrency(product.quantity * product.unit_price)}</span>
+                    <span className="total">{formatCurrency(product.quantity * product.selling_price)}</span>
                   </div>
                   <p className="product-description">{product.description}</p>
                   <div className="product-actions">
