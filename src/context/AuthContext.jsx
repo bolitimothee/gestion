@@ -17,13 +17,22 @@ export function AuthProvider({ children }) {
       return null;
     }
     try {
-      const { data } = await authService.getAccountDetails(userId);
+      // Ajouter un timeout pour éviter le blocage
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Timeout chargement compte')), 3000)
+      );
+
+      const accountPromise = authService.getAccountDetails(userId);
+      const { data } = await Promise.race([accountPromise, timeoutPromise]);
+      
       if (data) {
         setAccount(data);
         return data;
       }
     } catch (err) {
       console.warn('Erreur chargement compte:', err);
+      // Définir un compte par défaut pour éviter les blocages
+      setAccount({ user_id: userId, account_name: 'Utilisateur', email: '' });
     }
     return null;
   }, []);
@@ -35,13 +44,23 @@ export function AuthProvider({ children }) {
 
     const checkSession = async () => {
       try {
-        const { data } = await supabase.auth.getSession();
+        // Ajouter un timeout pour éviter le blocage infini
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Timeout de connexion')), 5000)
+        );
+
+        const sessionPromise = supabase.auth.getSession();
+        
+        const { data } = await Promise.race([sessionPromise, timeoutPromise]);
+        
         if (data?.session) {
           setUser(data.session.user);
           await loadAccountDetails(data.session.user.id);
         }
       } catch (_err) {
         console.error('Error checking session:', _err);
+        // En cas d'erreur, considérer que l'authentification est prête
+        // pour permettre à l'application de continuer
       } finally {
         setLoading(false);
         setIsAuthReady(true);
