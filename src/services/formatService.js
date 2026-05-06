@@ -12,25 +12,9 @@ const FCFA_CODE = 'XAF';
  * @param {number} amount - Le montant à formater
  * @returns {string} - Le montant formaté (ex: "1 234,56 FCFA" ou "1 234 FCFA")
  */
-export const formatFCFA = (amount) => {
-  if (amount === null || amount === undefined) return '0 FCFA';
-  
-  const num = Math.round(Number(amount) * 100) / 100; // Corriger les erreurs de précision
-  
-  // Si le montant est entier, ne pas afficher de décimales
-  if (Number.isInteger(num)) {
-    return `${Math.floor(num).toLocaleString('fr-FR')} ${FCFA_SYMBOL}`;
-  }
-  
-  // Sinon afficher 2 décimales précises
-  const rounded = Math.round(num * 100) / 100;
-  const formatted = rounded.toLocaleString('fr-FR', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-  
-  return `${formatted} ${FCFA_SYMBOL}`;
-};
+import { formatCurrencyOptimized } from '../utils/performance';
+
+export const formatFCFA = formatCurrencyOptimized;
 
 /**
  * Formate un montant en FCFA (alias pour formatCurrency)

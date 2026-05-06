@@ -3,11 +3,11 @@ import { useAuth } from '../context/AuthContext';
 import { financeService } from '../services/financeService';
 import { salesService } from '../services/salesService';
 import { stockService } from '../services/stockService';
+import { formatCurrency, formatDate } from '../services/formatService';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import StatCard from '../components/StatCard';
 import { DollarSign, TrendingUp, Package, ShoppingCart } from 'lucide-react';
-import { formatCurrency, formatDate } from '../services/formatService';
 import './Dashboard.css';
 
 export default function Dashboard() {
