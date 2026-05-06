@@ -19,7 +19,7 @@ export function AuthProvider({ children }) {
     try {
       // Ajouter un timeout pour éviter les AbortError
       const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Timeout')), 10000)
+        setTimeout(() => reject(new Error('Timeout')), 5000)
       );
       
       const accountPromise = authService.getAccountDetails(userId);
@@ -48,7 +48,7 @@ export function AuthProvider({ children }) {
       try {
         // Ajouter un timeout pour éviter les AbortError
         const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Session timeout')), 8000)
+          setTimeout(() => reject(new Error('Session timeout')), 3000)
         );
         
         const sessionPromise = supabase.auth.getSession();
@@ -108,7 +108,7 @@ export function AuthProvider({ children }) {
           // Charger les détails du compte et attendre
           await loadAccountDetails(result.data.user.id);
           // S'assurer que le state est mis à jour
-          await new Promise(resolve => setTimeout(resolve, 100));
+          await new Promise(resolve => setTimeout(resolve, 50));
         }
 
         return result;
@@ -129,7 +129,7 @@ export function AuthProvider({ children }) {
           // Charger les détails du compte et attendre
           await loadAccountDetails(result.data.user.id);
           // S'assurer que le state est mis à jour
-          await new Promise(resolve => setTimeout(resolve, 100));
+          await new Promise(resolve => setTimeout(resolve, 50));
         }
 
         return result;

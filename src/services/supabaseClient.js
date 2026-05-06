@@ -6,7 +6,7 @@ const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'your-anon-k
 // Créer un fetch custom avec timeout pour éviter les AbortError
 const customFetch = async (url, options = {}) => {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
+  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
 
   try {
     const response = await fetch(url, {
