@@ -1,0 +1,13 @@
+# Ignorer les fichiers et dossiers pour le déploiement Vercel
+node_modules
+.env.local
+.env.*.local
+.git
+.gitignore
+README.md
+.DS_Store
+.vscode
+.idea
+*.log
+coverage
+.nyc_output
