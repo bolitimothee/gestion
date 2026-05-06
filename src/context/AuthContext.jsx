@@ -19,7 +19,7 @@ export function AuthProvider({ children }) {
     try {
       // Ajouter un timeout pour éviter les AbortError
       const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Timeout')), 5000)
+        setTimeout(() => reject(new Error('Timeout')), 10000)
       );
       
       const accountPromise = authService.getAccountDetails(userId);
@@ -48,7 +48,7 @@ export function AuthProvider({ children }) {
       try {
         // Ajouter un timeout pour éviter les AbortError
         const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Session timeout')), 3000)
+          setTimeout(() => reject(new Error('Session timeout')), 8000)
         );
         
         const sessionPromise = supabase.auth.getSession();
