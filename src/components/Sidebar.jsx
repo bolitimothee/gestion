@@ -6,7 +6,7 @@ import { BarChart3, Package, ShoppingCart, TrendingUp, LogOut } from 'lucide-rea
 import './Sidebar.css';
 
 export default function Sidebar({ active }) {
-  const { user, account, signOut } = useAuth();
+  const { user, signOut } = useAuth();
   const { isSidebarOpen, closeSidebar } = useSidebar();
 
   const menuItems = [
@@ -34,28 +34,25 @@ export default function Sidebar({ active }) {
                 className={`sidebar-item ${active === item.path ? 'active' : ''}`}
                 onClick={closeSidebar}
               >
-                <item.icon size={20} />
+                <item.icon size={18} />
                 <span>{item.name}</span>
               </Link>
             ))}
           </div>
 
           <div className="sidebar-footer">
-            <div className="sidebar-user">
-              <div className="user-account">
-                <span className="account-name">{account?.account_name || 'Mon Compte'}</span>
-                <span className="account-email">{user?.email}</span>
-              </div>
+            <div className="user-email">
+              {user?.email}
             </div>
             <button onClick={handleLogout} className="btn-logout-sidebar">
               <LogOut size={18} />
-              <span>Déconnexion</span>
+              Déconnexion
             </button>
           </div>
         </div>
       </aside>
 
-      {isSidebarOpen && <div className="sidebar-overlay" onClick={closeSidebar} />}
+      {isSidebarOpen && <div className={`sidebar-overlay ${isSidebarOpen ? 'active' : ''}`} onClick={closeSidebar} />}
     </>
   );
 }

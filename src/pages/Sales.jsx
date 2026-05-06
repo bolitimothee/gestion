@@ -5,18 +5,22 @@ import { salesService } from '../services/salesService';
 import { stockService } from '../services/stockService';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import SearchBar from '../components/SearchBar';
 import { Plus, Edit2, Trash2, AlertCircle, Download, Mail, Share2 } from 'lucide-react';
-import { formatCurrency, formatDate } from '../utils/formatters';
+import { formatCurrency, formatDate } from '../services/formatService';
 import './Sales.css';
 
 export default function Sales() {
   const { user, account } = useAuth();
   const [sales, setSales] = useState([]);
+  const [filteredSales, setFilteredSales] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState('');
+  const [_searchTerm, setSearchTerm] = useState('');
+  const [_selectedDateFilter, setSelectedDateFilter] = useState('');
   const [formData, setFormData] = useState({
     product_id: '',
     quantity: 1,
@@ -34,10 +38,77 @@ export default function Sales() {
       stockService.getProducts(user.id),
     ]);
 
-    if (salesRes.data) setSales(salesRes.data);
+    if (salesRes.data) {
+      setSales(salesRes.data);
+      setFilteredSales(salesRes.data);
+    }
     if (productsRes.data) setProducts(productsRes.data);
     setLoading(false);
   }, [user]);
+
+  // Get date filter options
+  const getDateFilters = useCallback(() => {
+    const today = new Date();
+    const filters = [
+      { value: 'today', label: "Aujourd'hui" },
+      { value: 'week', label: 'Cette semaine' },
+      { value: 'month', label: 'Ce mois' },
+      { value: 'year', label: 'Cette année' },
+    ];
+    return filters;
+  }, []);
+
+  // Handle search and filter
+  const handleSearch = useCallback((search, dateFilter) => {
+    setSearchTerm(search);
+    setSelectedDateFilter(dateFilter);
+    
+    let filtered = sales;
+    
+    // Filter by search term
+    if (search.trim()) {
+      const searchLower = search.toLowerCase();
+      filtered = filtered.filter(sale => {
+        const product = products.find(p => p.id === sale.product_id);
+        return (
+          sale.customer_name.toLowerCase().includes(searchLower) ||
+          (product?.name && product.name.toLowerCase().includes(searchLower)) ||
+          sale.notes?.toLowerCase().includes(searchLower) ||
+          formatDate(sale.sale_date).includes(search)
+        );
+      });
+    }
+    
+    // Filter by date
+    if (dateFilter) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      filtered = filtered.filter(sale => {
+        const saleDate = new Date(sale.sale_date);
+        saleDate.setHours(0, 0, 0, 0);
+        
+        switch (dateFilter) {
+          case 'today':
+            return saleDate.getTime() === today.getTime();
+          case 'week': {
+            const weekStart = new Date(today);
+            weekStart.setDate(today.getDate() - today.getDay());
+            return saleDate >= weekStart;
+          }
+          case 'month':
+            return saleDate.getMonth() === today.getMonth() && 
+                   saleDate.getFullYear() === today.getFullYear();
+          case 'year':
+            return saleDate.getFullYear() === today.getFullYear();
+          default:
+            return true;
+        }
+      });
+    }
+    
+    setFilteredSales(filtered);
+  }, [sales, products]);
 
   useEffect(() => {
     if (user) {
@@ -49,8 +120,13 @@ export default function Sales() {
     e.preventDefault();
     setError('');
 
-    if (!formData.product_id) {
+    if (!formData.product_id || formData.product_id === '') {
       setError('Veuillez sélectionner un produit');
+      return;
+    }
+    
+    if (products.length === 0) {
+      setError('Aucun produit disponible. Veuillez d\'abord ajouter des produits en stock.');
       return;
     }
     if (!formData.customer_name.trim()) {
@@ -63,17 +139,40 @@ export default function Sales() {
     }
 
     try {
-      const product = products.find((p) => p.id === formData.product_id);
+      console.log('FormData product_id:', formData.product_id);
+      console.log('Available products:', products.map(p => ({ id: p.id, name: p.name })));
+      
+      const product = products.find((p) => String(p.id) === String(formData.product_id));
+      console.log('Found product:', product);
+      
+      if (!product) {
+        setError('Produit non trouvé. Veuillez sélectionner un produit valide.');
+        return;
+      }
+
+      // Vérifier si le stock est suffisant
+      if (Number(formData.quantity) > product.quantity) {
+        setError(`Stock insuffisant! Seulement ${product.quantity} unités disponibles pour ce produit.`);
+        return;
+      }
+
       const saleData = {
         ...formData,
         unit_price: product.selling_price,
         quantity: Number(formData.quantity),
       };
 
+      let result;
       if (editingId) {
-        await salesService.updateSale(editingId, saleData);
+        result = await salesService.updateSale(editingId, saleData);
       } else {
-        await salesService.addSale(user.id, saleData);
+        result = await salesService.addSale(user.id, saleData);
+      }
+
+      if (result.error) {
+        console.error('Erreur service ventes:', result.error);
+        setError(result.error.message || 'Erreur lors de l\'ajout de la vente');
+        return;
       }
 
       setFormData({
@@ -88,8 +187,9 @@ export default function Sales() {
       setEditingId(null);
       setShowForm(false);
       await loadData();
-    } catch {
-      setError('Erreur lors de l\'ajout de la vente');
+    } catch (error) {
+      console.error('Erreur handleSubmit ventes:', error);
+      setError(error.message || 'Erreur lors de l\'ajout de la vente');
     }
   }
 
@@ -131,20 +231,20 @@ export default function Sales() {
     text += `Date d'export: ${new Date().toLocaleString('fr-FR')}\n`;
     text += `${'='.repeat(80)}\n\n`;
 
-    sales.forEach((sale) => {
+    filteredSales.forEach((sale) => {
       const product = products.find(p => p.id === sale.product_id);
       text += `Date: ${formatDate(sale.sale_date)}\n`;
       text += `Client: ${sale.customer_name}\n`;
       text += `Produit: ${product?.name || 'Produit supprimé'}\n`;
       text += `Quantité: ${sale.quantity}\n`;
-      text += `Montant: ${formatCurrency(sale.total_amount)}\n`;
+      text += `Montant: ${formatCurrency(sale.total_amount || (sale.quantity * sale.unit_price))}\n`;
       text += `Notes: ${sale.notes || 'Aucune'}\n`;
       text += `${'-'.repeat(80)}\n\n`;
     });
 
     text += `${'='.repeat(80)}\n`;
-    text += `Total ventes: ${sales.length}\n`;
-    text += `Montant total: ${formatCurrency(sales.reduce((sum, s) => sum + s.total_amount, 0))}\n`;
+    text += `Total ventes: ${filteredSales.length}\n`;
+    text += `Montant total: ${formatCurrency(filteredSales.reduce((sum, s) => sum + (s.total_amount || (s.quantity * s.unit_price)), 0))}\n`;
 
     return text;
   }
@@ -169,7 +269,16 @@ export default function Sales() {
         <Sidebar active="/sales" />
         <main className="main-content">
           <div className="page-header">
-            <h1>Gestion des Ventes</h1>
+            <div className="page-header-content">
+              <h1>Gestion des Ventes</h1>
+              <SearchBar
+                placeholder="Rechercher une vente par client, produit, date..."
+                onSearch={handleSearch}
+                filters={getDateFilters()}
+                showFilters={true}
+                className="sales-search-bar"
+              />
+            </div>
             <button onClick={() => setShowForm(!showForm)} className="btn btn-primary">
               <Plus size={20} />
               Ajouter une vente
@@ -183,8 +292,166 @@ export default function Sales() {
             </div>
           )}
 
+          {showForm && (
+            <div className="form-card">
+              <h2>{editingId ? 'Modifier la vente' : 'Nouvelle Vente'}</h2>
+              <form onSubmit={handleSubmit}>
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label htmlFor="product">Produit *</label>
+                    <select
+                      id="product"
+                      value={formData.product_id}
+                      onChange={(e) => {
+                        const product = products.find(p => String(p.id) === String(e.target.value));
+                        setFormData({
+                          ...formData,
+                          product_id: e.target.value,
+                          unit_price: product?.selling_price || 0,
+                          quantity: 1, // Réinitialiser la quantité à 1 lors du changement de produit
+                        });
+                      }}
+                      required
+                    >
+                      <option value="">Sélectionner un produit</option>
+                      {products.map((product) => (
+                        <option key={product.id} value={product.id}>
+                          {product.name} - {formatCurrency(product.selling_price)}
+                        </option>
+                      ))}
+                    </select>
+                    <span className="form-hint">Choisissez le produit vendu</span>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="quantity">Quantité *</label>
+                    <input
+                      id="quantity"
+                      type="number"
+                      placeholder="Ex: 2"
+                      value={formData.quantity === '' ? '' : formData.quantity}
+                      onChange={(e) => {
+                        const selectedProduct = products.find(p => String(p.id) === String(formData.product_id));
+                        const maxQuantity = selectedProduct ? selectedProduct.quantity : 1;
+                        
+                        // Permettre de vider le champ pour le remplir manuellement
+                        if (e.target.value === '') {
+                          setFormData({ ...formData, quantity: '' });
+                          return;
+                        }
+                        
+                        const newQuantity = Number(e.target.value);
+                        if (isNaN(newQuantity) || newQuantity < 1) {
+                          return; // Ne rien faire si invalide, laisser l'utilisateur corriger
+                        }
+                        
+                        setFormData({ ...formData, quantity: Math.min(newQuantity, maxQuantity) });
+                      }}
+                      onBlur={(e) => {
+                        // Valider et corriger quand l'utilisateur quitte le champ
+                        if (e.target.value === '' || e.target.value === null) {
+                          setFormData({ ...formData, quantity: 1 });
+                        }
+                      }}
+                      min="1"
+                      max={products.find(p => String(p.id) === String(formData.product_id))?.quantity || 1}
+                      required
+                    />
+                    <span className="form-hint">
+                      Stock disponible: {products.find(p => String(p.id) === String(formData.product_id))?.quantity || 0} unités
+                    </span>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="customer">Nom du client *</label>
+                    <input
+                      id="customer"
+                      type="text"
+                      placeholder="Ex: Jean Dupont"
+                      value={formData.customer_name}
+                      onChange={(e) => setFormData({ ...formData, customer_name: e.target.value })}
+                      required
+                    />
+                    <span className="form-hint">Nom ou identifier du client</span>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="saleDate">Date de vente *</label>
+                    <input
+                      id="saleDate"
+                      type="date"
+                      value={formData.sale_date}
+                      onChange={(e) => setFormData({ ...formData, sale_date: e.target.value })}
+                      required
+                    />
+                    <span className="form-hint">Quand la vente s'est effectuée</span>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="saleTime">Heure de vente</label>
+                    <input
+                      id="saleTime"
+                      type="time"
+                      value={formData.sale_time}
+                      onChange={(e) => setFormData({ ...formData, sale_time: e.target.value })}
+                    />
+                    <span className="form-hint">À quelle heure la vente s'est effectuée</span>
+                  </div>
+                </div>
+
+                <div className="form-group full-width">
+                  <label htmlFor="notes">Notes (optionnel)</label>
+                  <textarea
+                    id="notes"
+                    placeholder="Remarques ou détails supplémentaires..."
+                    value={formData.notes}
+                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                    rows="3"
+                  />
+                  <span className="form-hint">Informations supplémentaires sur la vente</span>
+                </div>
+
+                <div className="form-actions">
+                  <button type="submit" className="btn btn-primary">
+                    {editingId ? 'Mettre à jour' : 'Enregistrer la vente'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowForm(false);
+                      setEditingId(null);
+                      setFormData({
+                        product_id: '',
+                        quantity: 1,
+                        unit_price: 0,
+                        customer_name: '',
+                        sale_date: new Date().toISOString().split('T')[0],
+                        sale_time: new Date().toTimeString().slice(0, 5),
+                        notes: '',
+                      });
+                    }}
+                    className="btn btn-secondary"
+                  >
+                    Annuler
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+
           {loading ? (
             <div className="loading">Chargement des ventes...</div>
+          ) : products.length === 0 ? (
+            <div className="empty-state">
+              <h3>Aucun produit disponible</h3>
+              <p>Vous devez d'abord ajouter des produits en stock avant de pouvoir enregistrer des ventes.</p>
+              <button 
+                onClick={() => window.location.href = '/stock'}
+                className="btn btn-primary"
+              >
+                Aller à la gestion des stocks
+              </button>
+            </div>
           ) : (
             <div className="sales-layout">
               {/* HISTORIQUE À GAUCHE */}
@@ -208,7 +475,7 @@ export default function Sales() {
                   )}
 
                   <div className="sales-table">
-                    {sales.length > 0 ? (
+                    {filteredSales.length > 0 ? (
                       <div className="table-responsive">
                         <table>
                           <thead>
@@ -223,7 +490,7 @@ export default function Sales() {
                             </tr>
                           </thead>
                           <tbody>
-                            {sales.map((sale) => {
+                            {filteredSales.map((sale) => {
                               const product = products.find(p => p.id === sale.product_id);
                               return (
                                 <tr key={sale.id}>
@@ -232,7 +499,7 @@ export default function Sales() {
                                   <td data-label="Client">{sale.customer_name}</td>
                                   <td data-label="Produit">{product?.name || 'Produit supprimé'}</td>
                                   <td data-label="Quantité" className="quantity">{sale.quantity}</td>
-                                  <td data-label="Montant" className="amount">{formatCurrency(sale.total_amount)}</td>
+                                  <td data-label="Montant" className="amount">{formatCurrency(sale.total_amount || (sale.quantity * sale.unit_price))}</td>
                                   <td className="actions-cell" data-label="Actions">
                                     <button
                                       onClick={() => handleEdit(sale)}
@@ -262,120 +529,6 @@ export default function Sales() {
                 </div>
               </div>
 
-              {/* FORMULAIRE À DROITE */}
-              {showForm && (
-                <div className="sales-form-section">
-                  <div className="form-card">
-                    <h2>{editingId ? 'Modifier la vente' : 'Enregistrer une nouvelle vente'}</h2>
-                    <form onSubmit={handleSubmit}>
-                      <div className="form-grid">
-                        <div className="form-group">
-                          <label htmlFor="product">Produit *</label>
-                          <select
-                            id="product"
-                            value={formData.product_id}
-                            onChange={(e) => {
-                              const product = products.find((p) => p.id === e.target.value);
-                              setFormData({
-                                ...formData,
-                                product_id: e.target.value,
-                                unit_price: product?.selling_price || 0,
-                              });
-                            }}
-                            required
-                          >
-                            <option value="">Sélectionner un produit</option>
-                            {products.map((product) => (
-                              <option key={product.id} value={product.id}>
-                                {product.name} - {formatCurrency(product.selling_price)}
-                              </option>
-                            ))}
-                          </select>
-                          <span className="form-hint">Choisissez le produit vendu</span>
-                        </div>
-
-                        <div className="form-group">
-                          <label htmlFor="quantity">Quantité *</label>
-                          <input
-                            id="quantity"
-                            type="number"
-                            placeholder="Ex: 2"
-                            value={formData.quantity}
-                            onChange={(e) => setFormData({ ...formData, quantity: Number(e.target.value) })}
-                            min="1"
-                            required
-                          />
-                          <span className="form-hint">Nombre d'unités vendues</span>
-                        </div>
-
-                        <div className="form-group">
-                          <label htmlFor="customer">Nom du client *</label>
-                          <input
-                            id="customer"
-                            type="text"
-                            placeholder="Ex: Jean Dupont"
-                            value={formData.customer_name}
-                            onChange={(e) => setFormData({ ...formData, customer_name: e.target.value })}
-                            required
-                          />
-                          <span className="form-hint">Nom ou identifier du client</span>
-                        </div>
-
-                        <div className="form-group">
-                          <label htmlFor="saleDate">Date de vente *</label>
-                          <input
-                            id="saleDate"
-                            type="date"
-                            value={formData.sale_date}
-                            onChange={(e) => setFormData({ ...formData, sale_date: e.target.value })}
-                            required
-                          />
-                          <span className="form-hint">Quand la vente s'est effectuée</span>
-                        </div>
-
-                        <div className="form-group">
-                          <label htmlFor="saleTime">Heure de vente</label>
-                          <input
-                            id="saleTime"
-                            type="time"
-                            value={formData.sale_time}
-                            onChange={(e) => setFormData({ ...formData, sale_time: e.target.value })}
-                          />
-                          <span className="form-hint">À quelle heure la vente s'est effectuée</span>
-                        </div>
-                      </div>
-
-                      <div className="form-group full-width">
-                        <label htmlFor="notes">Notes (optionnel)</label>
-                        <textarea
-                          id="notes"
-                          placeholder="Remarques ou détails supplémentaires..."
-                          value={formData.notes}
-                          onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                          rows="3"
-                        />
-                        <span className="form-hint">Informations additionnelles sur la vente</span>
-                      </div>
-
-                      <div className="form-actions">
-                        <button type="submit" className="btn btn-primary">
-                          {editingId ? 'Mettre à jour la vente' : 'Enregistrer la vente'}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowForm(false);
-                            setEditingId(null);
-                          }}
-                          className="btn btn-secondary"
-                        >
-                          Annuler
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              )}
             </div>
           )}
         </main>

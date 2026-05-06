@@ -25,9 +25,9 @@ export const stockService = {
             user_id: userId,
             name: product.name,
             description: product.description,
-            quantity: product.quantity,
-            purchase_price: product.purchase_price,
-            selling_price: product.selling_price,
+            quantity: Math.round(Number(product.quantity)) || 0,
+            purchase_price: Math.round(Number(product.purchase_price)) || 0,
+            selling_price: Math.round(Number(product.selling_price)) || 0,
             category: product.category,
             sku: product.sku,
             created_at: new Date().toISOString(),
@@ -44,9 +44,17 @@ export const stockService = {
 
   async updateProduct(productId, updates) {
     try {
+      // S'assurer que les prix sont des nombres entiers
+      const sanitizedUpdates = {
+        ...updates,
+        quantity: updates.quantity !== undefined ? Math.round(Number(updates.quantity)) || 0 : undefined,
+        purchase_price: updates.purchase_price !== undefined ? Math.round(Number(updates.purchase_price)) || 0 : undefined,
+        selling_price: updates.selling_price !== undefined ? Math.round(Number(updates.selling_price)) || 0 : undefined,
+      };
+
       const { data, error } = await supabase
         .from('products')
-        .update(updates)
+        .update(sanitizedUpdates)
         .eq('id', productId)
         .select();
 

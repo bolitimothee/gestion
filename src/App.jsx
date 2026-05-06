@@ -1,8 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { SidebarProvider } from './context/SidebarContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import LoadingSpinner from './components/LoadingSpinner';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Stock from './pages/Stock';
@@ -11,12 +12,18 @@ import Finances from './pages/Finances';
 import './styles/globals.css';
 import './styles/components.css';
 
-function App() {
+function AppContent() {
+  const { loading, isAuthReady } = useAuth();
+
+  // Afficher le spinner pendant le chargement initial de l'authentification
+  if (loading || !isAuthReady) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <Router>
-      <AuthProvider>
-        <SidebarProvider>
-          <Routes>
+      <SidebarProvider>
+        <Routes>
           <Route path="/login" element={<Login />} />
           <Route
             path="/dashboard"
@@ -51,10 +58,17 @@ function App() {
             }
           />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          </Routes>
-        </SidebarProvider>
-      </AuthProvider>
+        </Routes>
+      </SidebarProvider>
     </Router>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 

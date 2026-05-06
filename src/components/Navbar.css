@@ -1,79 +1,211 @@
 .navbar {
-  background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);
+  background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
   color: white;
-  padding: 1rem 0;
-  box-shadow: var(--shadow);
-  position: sticky;
+  padding: 0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  position: fixed;
   top: 0;
-  z-index: 100;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all var(--transition-normal);
+}
+
+.navbar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.navbar:hover::before {
+  opacity: 1;
 }
 
 .navbar-container {
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 var(--spacing-10);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 20px;
+  gap: var(--spacing-10);
+  height: 80px;
+  position: relative;
 }
 
 .navbar-toggle {
   display: none;
-  background: none;
-  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
   cursor: pointer;
-  font-size: 24px;
-  padding: 8px;
-  border-radius: 6px;
-  transition: all 0.3s ease;
+  font-size: 20px;
+  padding: var(--spacing-3);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-normal);
   flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar-toggle::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width var(--transition-normal), height var(--transition-normal);
+}
+
+.navbar-toggle:hover::before {
+  width: 100%;
+  height: 100%;
 }
 
 .navbar-toggle:hover {
-  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-toggle:active {
+  transform: scale(0.95);
+}
+
+.navbar-brand {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
 
 .navbar-brand h1 {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
   margin: 0;
   white-space: nowrap;
-  flex: 1;
-  text-align: center;
+  letter-spacing: -0.5px;
+  line-height: 1;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+}
+
+.navbar-brand h1::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+  border-radius: var(--radius-full);
+  transition: width var(--transition-normal);
+}
+
+.navbar-brand:hover h1::after {
+  width: 80%;
 }
 
 .navbar-user-desktop {
   display: flex;
   align-items: center;
-  gap: 15px;
-}
-
-.user-email {
-  font-size: 13px;
-  opacity: 0.95;
 }
 
 .btn-logout-desktop {
   background: rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
-  padding: 8px 12px;
-  border-radius: 6px;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
-  transition: all 0.3s ease;
+  justify-content: center;
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-logout-desktop::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left var(--transition-slow);
+}
+
+.btn-logout-desktop:hover::before {
+  left: 100%;
 }
 
 .btn-logout-desktop:hover {
   background: rgba(255, 255, 255, 0.3);
   border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-@media (max-width: 768px) {
+.btn-logout-desktop:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Tablette (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .navbar-container {
+    padding: 0 16px;
+  }
+
+  .navbar-brand h1 {
+    font-size: 20px;
+  }
+
+  .btn-logout-desktop {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Mobile (≤767px) */
+@media (max-width: 767px) {
+  .navbar-container {
+    padding: 0 16px;
+    gap: 16px;
+    height: 60px;
+  }
+
+  .navbar {
+    height: 60px;
+  }
+
   .navbar-toggle {
     display: flex;
     align-items: center;
@@ -105,5 +237,66 @@
   .navbar-toggle {
     width: 40px;
     height: 40px;
+  }
+}
+
+/* Large Desktop (≥1400px) */
+@media (min-width: 1400px) {
+  .navbar-container {
+    padding: 0 60px;
+    max-width: 1800px;
+  }
+
+  .navbar-brand h1 {
+    font-size: 32px;
+  }
+
+  .btn-logout-desktop {
+    width: 52px;
+    height: 52px;
+  }
+}
+
+/* Ultra Wide (≥1920px) */
+@media (min-width: 1920px) {
+  .navbar-container {
+    padding: 0 80px;
+    max-width: 2000px;
+    height: 100px;
+  }
+
+  .navbar {
+    height: 100px;
+  }
+
+  .navbar-brand h1 {
+    font-size: 36px;
+  }
+
+  .btn-logout-desktop {
+    width: 56px;
+    height: 56px;
+  }
+}
+
+/* 4K Ultra Wide (≥2560px) */
+@media (min-width: 2560px) {
+  .navbar-container {
+    padding: 0 100px;
+    max-width: 2400px;
+    height: 120px;
+  }
+
+  .navbar {
+    height: 120px;
+  }
+
+  .navbar-brand h1 {
+    font-size: 40px;
+  }
+
+  .btn-logout-desktop {
+    width: 60px;
+    height: 60px;
   }
 }

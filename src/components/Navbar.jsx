@@ -5,7 +5,7 @@ import { LogOut, Menu, X } from 'lucide-react';
 import './Navbar.css';
 
 export default function Navbar() {
-  const { user, signOut } = useAuth();
+  const { signOut } = useAuth();
   const { isSidebarOpen, toggleSidebar } = useSidebar();
 
   async function handleLogout() {
@@ -21,13 +21,12 @@ export default function Navbar() {
         </button>
 
         <div className="navbar-brand">
-          <h1>📊 Gestion Commerce</h1>
+          <h1>Gestion Commerce</h1>
         </div>
 
         <div className="navbar-user-desktop">
-          <span className="user-email">{user?.email}</span>
           <button onClick={handleLogout} className="btn-logout-desktop">
-            <LogOut size={18} />
+            <LogOut size={20} />
           </button>
         </div>
       </div>
