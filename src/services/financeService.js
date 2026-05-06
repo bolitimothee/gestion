@@ -58,61 +58,53 @@ export const financeService = {
 
   async getFinancialSummary(userId) {
     try {
-      // Récupérer toutes les données en parallèle avec des requêtes optimisées
-      const [salesPromise, expensesPromise, productsPromise] = await Promise.all([
-        supabase
-          .from('sales')
-          .select('total_amount, quantity, unit_price, product_id')
-          .eq('user_id', userId),
-        supabase
-          .from('expenses')
-          .select('amount')
-          .eq('user_id', userId),
-        supabase
-          .from('products')
-          .select('id, quantity, purchase_price, selling_price')
-          .eq('user_id', userId)
-      ]);
+      // Récupérer les ventes avec détails des produits
+      const { data: salesData } = await supabase
+        .from('sales')
+        .select('total_amount, quantity, unit_price, product_id')
+        .eq('user_id', userId);
 
-      const { data: salesData } = salesPromise;
-      const { data: expensesData } = expensesPromise;
-      const { data: productsData } = productsPromise;
-
-      // Calculs optimisés avec Map pour O(1) lookup
       const totalRevenue = salesData?.reduce((sum, sale) => sum + Math.round(Number(sale.total_amount) * 100) / 100, 0) || 0;
+
+      // Récupérer les dépenses
+      const { data: expensesData } = await supabase
+        .from('expenses')
+        .select('amount')
+        .eq('user_id', userId);
+
       const expenseExpenses = expensesData?.reduce((sum, expense) => sum + Math.round(Number(expense.amount) * 100) / 100, 0) || 0;
 
-      // Pré-créer le Map pour optimiser le calcul du COGS
-      const productMap = productsData ? new Map(productsData.map(p => [p.id, p])) : new Map();
-      
-      // Calculer le COGS et la valeur du stock en une seule passe
+      // Récupérer les produits pour calculer le COGS (Coût des Marchandises Vendues)
+      const { data: productsData } = await supabase
+        .from('products')
+        .select('id, quantity, purchase_price, selling_price')
+        .eq('user_id', userId);
+
+      // Calculer le COGS basé sur les ventes réelles
       let costOfGoodsSold = 0;
-      let stockValue = 0;
-      let productCosts = 0;
-
-      if (productsData) {
-        // Calculer la valeur du stock et le coût des produits
-        stockValue = productsData.reduce((sum, product) => {
-          return sum + (Math.round(Number(product.quantity)) * Math.round(Number(product.selling_price)));
-        }, 0) || 0;
-
-        productCosts = productsData.reduce((sum, product) => {
-          return sum + (Math.round(Number(product.quantity)) * Math.round(Number(product.purchase_price)));
-        }, 0) || 0;
-
-        // Calculer le COGS basé sur les ventes réelles
-        if (salesData) {
-          costOfGoodsSold = salesData.reduce((sum, sale) => {
-            const product = productMap.get(sale.product_id);
-            if (product) {
-              const unitCost = Math.round(Number(product.purchase_price));
-              const quantitySold = Math.round(Number(sale.quantity));
-              return sum + (unitCost * quantitySold);
-            }
-            return sum;
-          }, 0);
-        }
+      if (salesData && productsData) {
+        const productMap = new Map(productsData.map(p => [p.id, p]));
+        
+        costOfGoodsSold = salesData.reduce((sum, sale) => {
+          const product = productMap.get(sale.product_id);
+          if (product) {
+            const unitCost = Math.round(Number(product.purchase_price));
+            const quantitySold = Math.round(Number(sale.quantity));
+            return sum + (unitCost * quantitySold);
+          }
+          return sum;
+        }, 0);
       }
+
+      // Calculer la valeur du stock actuel
+      const stockValue = productsData?.reduce((sum, product) => {
+        return sum + (Math.round(Number(product.quantity)) * Math.round(Number(product.selling_price)));
+      }, 0) || 0;
+
+      // Calculer le coût total du stock actuel (pour information)
+      const productCosts = productsData?.reduce((sum, product) => {
+        return sum + (Math.round(Number(product.quantity)) * Math.round(Number(product.purchase_price)));
+      }, 0) || 0;
 
       // Les dépenses totales sont seulement les dépenses enregistrées
       const totalExpenses = expenseExpenses;

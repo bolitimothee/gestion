@@ -35,23 +35,13 @@ export function AuthProvider({ children }) {
 
     const checkSession = async () => {
       try {
-        // Ajouter un timeout pour éviter les AbortError
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Session timeout')), 5000)
-        );
-        
-        const sessionPromise = supabase.auth.getSession();
-        const { data } = await Promise.race([sessionPromise, timeoutPromise]);
-        
+        const { data } = await supabase.auth.getSession();
         if (data?.session) {
           setUser(data.session.user);
           await loadAccountDetails(data.session.user.id);
         }
       } catch (_err) {
         console.error('Error checking session:', _err);
-        // Ne pas bloquer l'application en cas d'erreur de session
-        setUser(null);
-        setAccount(null);
       } finally {
         setLoading(false);
         setIsAuthReady(true);

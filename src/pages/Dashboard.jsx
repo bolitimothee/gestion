@@ -1,23 +1,25 @@
-import React, { useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { financeService } from '../services/financeService';
 import { salesService } from '../services/salesService';
 import { stockService } from '../services/stockService';
-import { formatCurrency, formatDate } from '../services/formatService';
-import { useDataOptimization } from '../hooks/useDataOptimization';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import StatCard from '../components/StatCard';
 import { DollarSign, TrendingUp, Package, ShoppingCart } from 'lucide-react';
+import { formatCurrency, formatDate } from '../services/formatService';
 import './Dashboard.css';
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const [stats, setStats] = useState(null);
+  const [recentSales, setRecentSales] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Optimisation du chargement des données avec cache
-  const fetchDashboardData = useCallback(async () => {
-    if (!user?.id) return null;
-    
+  const loadDashboardData = useCallback(async () => {
+    setLoading(true);
+    setError(null);
     try {
       const [financeRes, salesRes, stockRes, recentSalesRes] = await Promise.all([
         financeService.getFinancialSummary(user.id),
@@ -32,28 +34,39 @@ export default function Dashboard() {
           sales: salesRes.error,
           stock: stockRes.error,
         });
-        throw new Error('Erreur lors du chargement des données');
+        setError('Erreur lors du chargement des données. Vérifiez que les tables Supabase sont créées.');
+        return;
       }
 
-      return {
-        stats: {
-          revenue: financeRes.data?.totalRevenue || 0,
-          netProfit: financeRes.data?.netProfit || 0,
+      if (financeRes.data && salesRes.data !== null && stockRes.data !== null) {
+        setStats({
+          revenue: financeRes.data.totalRevenue || 0,
+          netProfit: financeRes.data.netProfit || 0,
           stockValue: stockRes.data || 0,
           salesCount: salesRes.data || 0,
-        },
-        recentSales: recentSalesRes.data || []
-      };
-    } catch (error) {
-      console.error('Error loading dashboard:', error);
-      throw error;
-    }
-  }, [user?.id]);
+        });
+      }
 
-  const { data: dashboardData, loading, error, refetch: _refetch } = useDataOptimization(
-    fetchDashboardData,
-    [user?.id]
-  );
+      if (recentSalesRes.data) {
+        setRecentSales(recentSalesRes.data || []);
+      } else if (recentSalesRes.error) {
+        console.warn('Erreur getRecentSales:', recentSalesRes.error);
+      }
+    } catch (_err) {
+      console.error('Error loading dashboard:', _err);
+      setError('Erreur système lors du chargement des données.');
+    }
+    setLoading(false);
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      const timeoutId = setTimeout(() => {
+        loadDashboardData();
+      }, 0);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [user, loadDashboardData]);
 
   return (
     <div className="layout">
@@ -76,30 +89,30 @@ export default function Dashboard() {
               <p>{error}</p>
               <small>Vérifiez la console (F12) pour plus de détails.</small>
             </div>
-          ) : dashboardData?.stats ? (
+          ) : stats ? (
             <>
               <div className="stats-grid">
                 <StatCard
                   title="Chiffre d'Affaires"
-                  value={formatCurrency(dashboardData.stats.revenue)}
+                  value={formatCurrency(stats.revenue)}
                   icon={DollarSign}
                   color="blue"
                 />
                 <StatCard
                   title="Bénéfice Net"
-                  value={formatCurrency(dashboardData.stats.netProfit)}
+                  value={formatCurrency(stats.netProfit)}
                   icon={TrendingUp}
                   color="green"
                 />
                 <StatCard
                   title="Valeur du Stock"
-                  value={formatCurrency(dashboardData.stats.stockValue)}
+                  value={formatCurrency(stats.stockValue)}
                   icon={Package}
                   color="orange"
                 />
                 <StatCard
                   title="Ventes Totales"
-                  value={dashboardData.stats.salesCount}
+                  value={stats.salesCount}
                   icon={ShoppingCart}
                   color="purple"
                 />
@@ -108,7 +121,7 @@ export default function Dashboard() {
               <div className="dashboard-section">
                 <h2>Dernières Ventes</h2>
                 <div className="sales-table">
-                  {dashboardData.recentSales.length > 0 ? (
+                  {recentSales.length > 0 ? (
                     <table>
                       <thead>
                         <tr>
@@ -119,7 +132,7 @@ export default function Dashboard() {
                         </tr>
                       </thead>
                       <tbody>
-                        {dashboardData.recentSales.map((sale) => (
+                        {recentSales.map((sale) => (
                           <tr key={sale.id}>
                             <td data-label="Client">{sale.customer_name}</td>
                             <td className="amount" data-label="Montant">{formatCurrency(sale.total_amount)}</td>

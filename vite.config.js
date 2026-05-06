@@ -17,5 +17,10 @@ export default defineConfig({
   build: {
     target: 'esnext',
     minify: 'terser',
+    outDir: 'dist',
+    sourcemap: false,
+  },
+  define: {
+    global: 'globalThis',
   },
 })

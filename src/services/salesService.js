@@ -5,7 +5,7 @@ export const salesService = {
     try {
       const { data, error } = await supabase
         .from('sales')
-        .select('id, product_id, customer_id, quantity, unit_price, total_amount, sale_date, created_at')
+        .select('*')
         .eq('user_id', userId)
         .order('sale_date', { ascending: false });
 
