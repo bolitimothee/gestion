@@ -6,11 +6,23 @@ const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'your-anon-k
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
     persistSession: true,
-    autoRefreshToken: false, // Désactiver le rafraîchissement automatique qui cause l'erreur
+    autoRefreshToken: false,
     detectSessionInUrl: true,
-    storage: localStorage, // Utiliser localStorage explicitement
+    storage: localStorage,
+    flowType: 'pkce', // Utiliser PKCE flow pour plus de sécurité
   },
   db: {
     schema: 'public',
+  },
+  global: {
+    headers: {
+      'X-Client-Info': 'gestion-commerce/1.0.0',
+    },
+  },
+  // Ajouter des timeouts pour éviter les AbortError
+  realtime: {
+    params: {
+      eventsPerSecond: 10,
+    },
   },
 });
