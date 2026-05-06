@@ -17,13 +17,24 @@ export function AuthProvider({ children }) {
       return null;
     }
     try {
-      const { data } = await authService.getAccountDetails(userId);
+      // Ajouter un timeout pour éviter les AbortError
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Timeout')), 10000)
+      );
+      
+      const accountPromise = authService.getAccountDetails(userId);
+      const { data } = await Promise.race([accountPromise, timeoutPromise]);
+      
       if (data) {
         setAccount(data);
         return data;
       }
     } catch (err) {
-      console.warn('Erreur chargement compte:', err);
+      if (err.message === 'Timeout') {
+        console.warn('Timeout chargement compte:', err);
+      } else {
+        console.warn('Erreur chargement compte:', err);
+      }
     }
     return null;
   }, []);
@@ -35,13 +46,24 @@ export function AuthProvider({ children }) {
 
     const checkSession = async () => {
       try {
-        const { data } = await supabase.auth.getSession();
+        // Ajouter un timeout pour éviter les AbortError
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Session timeout')), 8000)
+        );
+        
+        const sessionPromise = supabase.auth.getSession();
+        const { data } = await Promise.race([sessionPromise, timeoutPromise]);
+        
         if (data?.session) {
           setUser(data.session.user);
           await loadAccountDetails(data.session.user.id);
         }
-      } catch (_err) {
-        console.error('Error checking session:', _err);
+      } catch (err) {
+        if (err.message === 'Session timeout') {
+          console.warn('Session timeout:', err);
+        } else {
+          console.error('Error checking session:', err);
+        }
       } finally {
         setLoading(false);
         setIsAuthReady(true);
