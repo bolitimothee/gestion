@@ -34,6 +34,6 @@ export default defineConfig({
       },
     },
   },
-  // Configuration pour le déploiement
-  base: './',
+  // Configuration pour le déploiement Vercel (chemins absolus)
+  base: '/',
 })
