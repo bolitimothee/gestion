@@ -42,9 +42,10 @@ self.addEventListener('activate', (event) => {
 
 // Stratégie de cache: Network First with fallback
 self.addEventListener('fetch', (event) => {
-  // Ne pas mettre en cache les requêtes API
+  // Ne pas mettre en cache les requêtes API et pages d'authentification
   if (event.request.url.includes('supabase') || 
       event.request.url.includes('api') ||
+      event.request.url.includes('/login') ||
       event.request.method !== 'GET') {
     return fetch(event.request);
   }
