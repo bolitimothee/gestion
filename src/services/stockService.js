@@ -5,7 +5,7 @@ export const stockService = {
     try {
       const { data, error } = await supabase
         .from('products')
-        .select('*')
+        .select('id, name, description, quantity, purchase_price, selling_price, category, sku, created_at, updated_at')
         .eq('user_id', userId)
         .order('created_at', { ascending: false });
 
