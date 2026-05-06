@@ -46,10 +46,6 @@ self.addEventListener('fetch', (event) => {
   if (event.request.url.includes('supabase') || 
       event.request.url.includes('api') ||
       event.request.url.includes('/login') ||
-      event.request.url.includes('/dashboard') ||
-      event.request.url.includes('/stock') ||
-      event.request.url.includes('/sales') ||
-      event.request.url.includes('/finances') ||
       event.request.method !== 'GET') {
     return fetch(event.request);
   }
@@ -57,12 +53,12 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
-        // Network First pour les pages HTML - toujours aller au réseau pour éviter les problèmes de cache
+        // Network First pour les pages HTML
         if (event.request.destination === 'document') {
           return fetch(event.request)
             .then((networkResponse) => {
-              // Ne mettre en cache que la page d'accueil
-              if (networkResponse.ok && event.request.url.endsWith('/')) {
+              // Mettre en cache la réponse réseau
+              if (networkResponse.ok) {
                 const responseClone = networkResponse.clone();
                 caches.open(STATIC_CACHE).then((cache) => {
                   cache.put(event.request, responseClone);
@@ -71,11 +67,8 @@ self.addEventListener('fetch', (event) => {
               return networkResponse;
             })
             .catch(() => {
-              // Fallback au cache uniquement pour la page d'accueil
-              if (event.request.url.endsWith('/') && response) {
-                return response;
-              }
-              throw new Error('Network failed');
+              // Fallback au cache si réseau échoue
+              return response;
             });
         }
         
