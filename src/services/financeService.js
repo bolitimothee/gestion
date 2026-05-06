@@ -106,10 +106,10 @@ export const financeService = {
         return sum + (Math.round(Number(product.quantity)) * Math.round(Number(product.purchase_price)));
       }, 0) || 0;
 
-      // Les dépenses totales sont seulement les dépenses enregistrées (loyer, salaires, etc.)
-      const totalExpenses = expenseExpenses;
+      // Les dépenses totales incluent les dépenses opérationnelles + COGS
+      const totalExpenses = expenseExpenses + costOfGoodsSold;
 
-      // Le bénéfice net: Revenus - Dépenses enregistrées
+      // Le bénéfice net: Revenus - (Dépenses opérationnelles + COGS)
       const netProfit = totalRevenue - totalExpenses;
 
       return {
