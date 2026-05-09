@@ -12,7 +12,7 @@
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 9999; /* Z-index maximal pour être au-dessus de tout */
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   transition: all var(--transition-normal);
@@ -24,6 +24,9 @@
   background-attachment: fixed;
   will-change: transform, opacity;
   contain: layout style paint;
+  /* Éviter le masquage par le contenu */
+  isolation: isolate;
+  transform: translateZ(0);
 }
 
 /* Effet hover subtil */
@@ -352,9 +355,12 @@
     padding-top: env(safe-area-inset-top);
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
-    z-index: 1001; /* Priorité maximale */
+    z-index: 9999; /* Z-index maximal pour iOS PWA */
     background-clip: padding-box;
     -webkit-background-clip: padding-box;
+    /* Éviter le masquage par le contenu */
+    isolation: isolate;
+    transform: translateZ(0);
   }
   
   .navbar-container {
@@ -517,6 +523,13 @@
     /* Optimisation portrait */
     -webkit-overflow-scrolling: touch;
     overflow: hidden;
+    /* Éviter le masquage par le contenu */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    min-width: 100%;
   }
   
   .navbar-container {
