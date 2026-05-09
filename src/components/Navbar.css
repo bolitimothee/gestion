@@ -345,28 +345,82 @@
 @supports (padding: max(0px)) {
   .navbar {
     padding-top: env(safe-area-inset-top);
-    height: calc(80px + env(safe-area-inset-top));
+    height: 80px;
+    z-index: 1001; /* Assure navbar au-dessus de tout sur iOS PWA */
   }
   
   /* Mobile PWA adjustments */
   @media (max-width: 767px) {
     .navbar {
-      height: calc(60px + env(safe-area-inset-top));
+      height: 60px;
+      z-index: 1001;
     }
     
     .navbar-container {
-      height: calc(60px + env(safe-area-inset-top));
+      height: 60px;
     }
   }
   
   /* Tablet PWA adjustments */
   @media (min-width: 768px) and (max-width: 1023px) {
     .navbar {
-      height: calc(70px + env(safe-area-inset-top));
+      height: 70px;
+      z-index: 1001;
     }
     
     .navbar-container {
-      height: calc(70px + env(safe-area-inset-top));
+      height: 70px;
     }
+  }
+  
+  /* Large Desktop PWA adjustments */
+  @media (min-width: 1400px) {
+    .navbar {
+      height: 90px;
+      z-index: 1001;
+    }
+    
+    .navbar-container {
+      height: 90px;
+    }
+  }
+  
+  /* Ultra Wide PWA adjustments */
+  @media (min-width: 1920px) {
+    .navbar {
+      height: 100px;
+      z-index: 1001;
+    }
+    
+    .navbar-container {
+      height: 100px;
+    }
+  }
+  
+  /* 4K Ultra Wide PWA adjustments */
+  @media (min-width: 2560px) {
+    .navbar {
+      height: 120px;
+      z-index: 1001;
+    }
+    
+    .navbar-container {
+      height: 120px;
+    }
+  }
+}
+
+/* iOS PWA Specific Fix - Standalone Mode */
+@supports (-webkit-touch-callout: none) {
+  .navbar {
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+  
+  .navbar-container {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
   }
 }
