@@ -11,7 +11,7 @@
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   transition: all var(--transition-normal);
-  height: 80px;
+  /* Height sera géré par les media queries et @supports */
 }
 
 .navbar::before {
@@ -38,7 +38,7 @@
   justify-content: space-between;
   align-items: center;
   gap: var(--spacing-10);
-  height: 80px;
+  /* Height sera géré par les media queries et @supports */
   position: relative;
 }
 
@@ -341,19 +341,23 @@
   }
 }
 
-/* iOS PWA Safe Area Support */
+/* iOS PWA Safe Area Support - CORRECTED */
 @supports (padding: max(0px)) {
+  /* Base navbar with safe area */
   .navbar {
     padding-top: env(safe-area-inset-top);
-    height: 80px;
-    z-index: 1001; /* Assure navbar au-dessus de tout sur iOS PWA */
+    z-index: 1001;
   }
   
-  /* Mobile PWA adjustments */
+  /* Base container height */
+  .navbar-container {
+    height: 80px;
+  }
+  
+  /* Mobile PWA - height fixe, safe area en padding */
   @media (max-width: 767px) {
     .navbar {
-      height: 60px;
-      z-index: 1001;
+      height: 60px; /* Hauteur fixe pour mobile */
     }
     
     .navbar-container {
@@ -361,11 +365,10 @@
     }
   }
   
-  /* Tablet PWA adjustments */
+  /* Tablet PWA */
   @media (min-width: 768px) and (max-width: 1023px) {
     .navbar {
       height: 70px;
-      z-index: 1001;
     }
     
     .navbar-container {
@@ -373,11 +376,10 @@
     }
   }
   
-  /* Large Desktop PWA adjustments */
+  /* Large Desktop PWA */
   @media (min-width: 1400px) {
     .navbar {
       height: 90px;
-      z-index: 1001;
     }
     
     .navbar-container {
@@ -385,11 +387,10 @@
     }
   }
   
-  /* Ultra Wide PWA adjustments */
+  /* Ultra Wide PWA */
   @media (min-width: 1920px) {
     .navbar {
       height: 100px;
-      z-index: 1001;
     }
     
     .navbar-container {
@@ -397,11 +398,10 @@
     }
   }
   
-  /* 4K Ultra Wide PWA adjustments */
+  /* 4K Ultra Wide PWA */
   @media (min-width: 2560px) {
     .navbar {
       height: 120px;
-      z-index: 1001;
     }
     
     .navbar-container {
