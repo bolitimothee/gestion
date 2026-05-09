@@ -630,30 +630,18 @@ body {
   .layout {
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-  
-  .navbar {
-    padding-top: env(safe-area-inset-top);
-    height: calc(80px + env(safe-area-inset-top));
   }
   
   .main-content {
-    padding-top: calc(24px + env(safe-area-inset-top));
-    padding-bottom: calc(24px + env(safe-area-inset-bottom));
     padding-left: calc(24px + env(safe-area-inset-left));
     padding-right: calc(24px + env(safe-area-inset-right));
   }
   
   /* Mobile PWA adjustments */
   @media (max-width: 767px) {
-    .navbar {
-      height: calc(60px + env(safe-area-inset-top));
-    }
-    
     .main-content {
-      padding: calc(16px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-left)) calc(16px + env(safe-area-inset-bottom));
+      padding-left: calc(16px + env(safe-area-inset-left));
+      padding-right: calc(16px + env(safe-area-inset-right));
     }
   }
 }

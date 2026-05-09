@@ -788,3 +788,57 @@
     font-size: 11px;
   }
 }
+
+/* iOS PWA Safe Area Support */
+@supports (padding: max(0px)) {
+  .sidebar {
+    padding-top: env(safe-area-inset-top);
+    top: calc(80px + env(safe-area-inset-top));
+    height: calc(100vh - 80px - env(safe-area-inset-top));
+  }
+  
+  /* Mobile PWA adjustments */
+  @media (max-width: 767px) {
+    .sidebar {
+      top: calc(60px + env(safe-area-inset-top));
+      height: calc(100vh - 60px - env(safe-area-inset-top));
+    }
+    
+    .sidebar-overlay {
+      top: calc(60px + env(safe-area-inset-top));
+      height: calc(100vh - 60px - env(safe-area-inset-top));
+    }
+  }
+  
+  /* Tablet PWA adjustments */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .sidebar {
+      top: calc(70px + env(safe-area-inset-top));
+      height: calc(100vh - 70px - env(safe-area-inset-top));
+    }
+  }
+  
+  /* Large Desktop PWA adjustments */
+  @media (min-width: 1400px) {
+    .sidebar {
+      top: calc(90px + env(safe-area-inset-top));
+      height: calc(100vh - 90px - env(safe-area-inset-top));
+    }
+  }
+  
+  /* Ultra Wide PWA adjustments */
+  @media (min-width: 1920px) {
+    .sidebar {
+      top: calc(100px + env(safe-area-inset-top));
+      height: calc(100vh - 100px - env(safe-area-inset-top));
+    }
+  }
+  
+  /* 4K Ultra Wide PWA adjustments */
+  @media (min-width: 2560px) {
+    .sidebar {
+      top: calc(120px + env(safe-area-inset-top));
+      height: calc(100vh - 120px - env(safe-area-inset-top));
+    }
+  }
+}

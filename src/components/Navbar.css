@@ -11,6 +11,7 @@
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   transition: all var(--transition-normal);
+  height: 80px;
 }
 
 .navbar::before {
@@ -298,5 +299,35 @@
   .btn-logout-desktop {
     width: 60px;
     height: 60px;
+  }
+}
+
+/* iOS PWA Safe Area Support */
+@supports (padding: max(0px)) {
+  .navbar {
+    padding-top: env(safe-area-inset-top);
+    height: calc(80px + env(safe-area-inset-top));
+  }
+  
+  /* Mobile PWA adjustments */
+  @media (max-width: 767px) {
+    .navbar {
+      height: calc(60px + env(safe-area-inset-top));
+    }
+    
+    .navbar-container {
+      height: calc(60px + env(safe-area-inset-top));
+    }
+  }
+  
+  /* Tablet PWA adjustments */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .navbar {
+      height: calc(70px + env(safe-area-inset-top));
+    }
+    
+    .navbar-container {
+      height: calc(70px + env(safe-area-inset-top));
+    }
   }
 }
