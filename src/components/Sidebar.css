@@ -797,53 +797,91 @@
 /* iOS PWA Safe Area Support */
 @supports (padding: max(0px)) {
   .sidebar {
+    top: 80px;
+    height: calc(100vh - 80px);
     padding-top: env(safe-area-inset-top);
-    top: calc(80px + env(safe-area-inset-top));
-    height: calc(100vh - 80px - env(safe-area-inset-top));
+    z-index: 999; /* Assure que la sidebar est au-dessus de tout sur iOS PWA */
   }
   
   /* Mobile PWA adjustments */
   @media (max-width: 767px) {
     .sidebar {
-      top: calc(60px + env(safe-area-inset-top));
-      height: calc(100vh - 60px - env(safe-area-inset-top));
+      top: 60px;
+      height: calc(100vh - 60px);
+      padding-top: env(safe-area-inset-top);
+      z-index: 999;
     }
     
     .sidebar-overlay {
-      top: calc(60px + env(safe-area-inset-top));
-      height: calc(100vh - 60px - env(safe-area-inset-top));
+      top: 60px;
+      height: calc(100vh - 60px);
+      padding-top: env(safe-area-inset-top);
+      z-index: 998;
     }
   }
   
   /* Tablet PWA adjustments */
   @media (min-width: 768px) and (max-width: 1023px) {
     .sidebar {
-      top: calc(70px + env(safe-area-inset-top));
-      height: calc(100vh - 70px - env(safe-area-inset-top));
+      top: 70px;
+      height: calc(100vh - 70px);
+      padding-top: env(safe-area-inset-top);
+      z-index: 999;
     }
   }
   
   /* Large Desktop PWA adjustments */
   @media (min-width: 1400px) {
     .sidebar {
-      top: calc(90px + env(safe-area-inset-top));
-      height: calc(100vh - 90px - env(safe-area-inset-top));
+      top: 90px;
+      height: calc(100vh - 90px);
+      padding-top: env(safe-area-inset-top);
+      z-index: 999;
     }
   }
   
   /* Ultra Wide PWA adjustments */
   @media (min-width: 1920px) {
     .sidebar {
-      top: calc(100px + env(safe-area-inset-top));
-      height: calc(100vh - 100px - env(safe-area-inset-top));
+      top: 100px;
+      height: calc(100vh - 100px);
+      padding-top: env(safe-area-inset-top);
+      z-index: 999;
     }
   }
   
   /* 4K Ultra Wide PWA adjustments */
   @media (min-width: 2560px) {
     .sidebar {
-      top: calc(120px + env(safe-area-inset-top));
-      height: calc(100vh - 120px - env(safe-area-inset-top));
+      top: 120px;
+      height: calc(100vh - 120px);
+      padding-top: env(safe-area-inset-top);
+      z-index: 999;
+    }
+  }
+}
+
+/* iOS PWA Specific Fix - Standalone Mode */
+@supports (-webkit-touch-callout: none) {
+  .sidebar {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+  
+  .sidebar.active {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+  
+  @media (max-width: 767px) {
+    .sidebar {
+      -webkit-transform: translate3d(-100%, 0, 0);
+      transform: translate3d(-100%, 0, 0);
+    }
+    
+    .sidebar.active {
+      -webkit-transform: translate3d(0, 0, 0);
+      transform: translate3d(0, 0, 0);
     }
   }
 }
