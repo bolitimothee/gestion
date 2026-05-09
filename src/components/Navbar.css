@@ -1,3 +1,8 @@
+/* ========================================
+   NAVBAR UNIVERSELLE - iOS & ANDROID OPTIMISÉ
+   ======================================== */
+
+/* Base Navbar - Design Universel */
 .navbar {
   background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
   color: white;
@@ -11,12 +16,17 @@
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   transition: all var(--transition-normal);
-  /* Height sera géré par les media queries et @supports */
-  /* Optimisation iOS PWA : fond plus opaque pour éviter la transparence */
+  
+  /* Base height - sera ajusté par media queries */
+  height: 64px;
+  
+  /* Optimisations universelles */
   background-attachment: fixed;
   will-change: transform, opacity;
+  contain: layout style paint;
 }
 
+/* Effet hover subtil */
 .navbar::before {
   content: '';
   position: absolute;
@@ -33,26 +43,30 @@
   opacity: 1;
 }
 
+/* Container principal */
 .navbar-container {
   max-width: 1600px;
   margin: 0 auto;
-  padding: 0 var(--spacing-10);
+  padding: 0 var(--spacing-4);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: var(--spacing-10);
-  /* Height sera géré par les media queries et @supports */
+  gap: var(--spacing-4);
+  
+  /* Height synchronisé avec navbar */
+  height: 64px;
   position: relative;
 }
 
+/* Bouton menu hamburger */
 .navbar-toggle {
   display: none;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
   cursor: pointer;
-  font-size: 20px;
-  padding: var(--spacing-3);
+  font-size: 18px;
+  padding: var(--spacing-2);
   border-radius: var(--radius-lg);
   transition: all var(--transition-normal);
   flex-shrink: 0;
@@ -65,6 +79,7 @@
   justify-content: center;
 }
 
+/* Effet ripple pour le bouton */
 .navbar-toggle::before {
   content: '';
   position: absolute;
@@ -94,127 +109,76 @@
   transform: scale(0.95);
 }
 
+/* Brand/nom de l'application */
 .navbar-brand {
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
+  min-width: 0;
 }
 
 .navbar-brand h1 {
-  font-size: var(--font-size-3xl);
+  font-size: 20px;
   font-weight: var(--font-weight-bold);
   margin: 0;
   white-space: nowrap;
-  letter-spacing: -0.5px;
-  line-height: 1;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  position: relative;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  text-align: center;
 }
 
-.navbar-brand h1::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
-  border-radius: var(--radius-full);
-  transition: width var(--transition-normal);
-}
-
-.navbar-brand:hover h1::after {
-  width: 80%;
-}
-
+/* Bouton logout desktop */
 .navbar-user-desktop {
   display: flex;
   align-items: center;
 }
 
 .btn-logout-desktop {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
   cursor: pointer;
+  padding: var(--spacing-2);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-normal);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--transition-normal);
-  position: relative;
-  overflow: hidden;
-}
-
-.btn-logout-desktop::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left var(--transition-slow);
-}
-
-.btn-logout-desktop:hover::before {
-  left: 100%;
+  min-width: 44px;
+  min-height: 44px;
 }
 
 .btn-logout-desktop:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.5);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
 }
 
 .btn-logout-desktop:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: scale(0.95);
 }
 
-/* Tablette (768px - 1023px) */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .navbar-container {
-    padding: 0 16px;
-  }
+/* ========================================
+   RESPONSIVE DESIGN - TOUS APPAREILS
+   ======================================== */
 
-  .navbar-brand h1 {
-    font-size: 20px;
-  }
-
-  .btn-logout-desktop {
-    width: 40px;
-    height: 40px;
-  }
-}
-
-/* Mobile (≤767px) */
+/* Mobile (≤767px) - Base Android/iOS */
 @media (max-width: 767px) {
-  .navbar-container {
-    padding: 0 16px;
-    gap: 12px;
-    height: 60px;
-    justify-content: space-between;
-  }
-
   .navbar {
-    height: 60px;
+    height: 56px; /* Taille mobile standard */
+  }
+  
+  .navbar-container {
+    padding: 0 var(--spacing-3);
+    gap: var(--spacing-3);
+    height: 56px;
+    justify-content: space-between;
   }
 
   .navbar-toggle {
     display: flex;
-    align-items: center;
-    justify-content: center;
     order: 1;
     flex-shrink: 0;
   }
@@ -241,53 +205,131 @@
   }
 }
 
+/* Petits mobiles (≤480px) */
 @media (max-width: 480px) {
   .navbar-container {
-    padding: 0 12px;
-    gap: 8px;
+    padding: 0 var(--spacing-2);
+    gap: var(--spacing-2);
   }
 
   .navbar-brand h1 {
     font-size: 16px;
-    text-align: center;
   }
 
   .navbar-toggle {
-    width: 40px;
-    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    font-size: 16px;
   }
 }
 
-/* Très petits écrans (≤360px) */
+/* Très petits mobiles (≤360px) */
 @media (max-width: 360px) {
   .navbar-container {
-    padding: 0 8px;
-    gap: 6px;
+    padding: 0 var(--spacing-2);
+    gap: var(--spacing-2);
   }
 
   .navbar-brand h1 {
     font-size: 14px;
-    text-align: center;
     line-height: 1.2;
   }
 
   .navbar-toggle {
-    width: 36px;
-    height: 36px;
-    padding: 8px;
+    min-width: 36px;
+    min-height: 36px;
+    font-size: 14px;
+  }
+}
+
+/* Tablette (768px-1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .navbar {
+    height: 64px; /* Taille tablette */
+  }
+  
+  .navbar-container {
+    height: 64px;
+    padding: 0 var(--spacing-6);
   }
 
-  .navbar-toggle svg {
-    width: 20px;
-    height: 20px;
+  .navbar-brand h1 {
+    font-size: 22px;
+  }
+
+  .navbar-toggle {
+    display: flex;
+  }
+
+  .navbar-user-desktop {
+    display: flex;
+  }
+}
+
+/* Desktop (1024px-1399px) */
+@media (min-width: 1024px) and (max-width: 1399px) {
+  .navbar {
+    height: 72px; /* Taille desktop standard */
+  }
+  
+  .navbar-container {
+    height: 72px;
+    padding: 0 var(--spacing-8);
+  }
+
+  .navbar-brand h1 {
+    font-size: 24px;
+  }
+
+  .navbar-toggle {
+    display: none; /* Caché sur desktop */
+  }
+
+  .navbar-user-desktop {
+    display: flex;
   }
 }
 
 /* Large Desktop (≥1400px) */
 @media (min-width: 1400px) {
+  .navbar {
+    height: 80px; /* Taille large desktop */
+  }
+  
   .navbar-container {
-    padding: 0 60px;
+    height: 80px;
+    padding: 0 var(--spacing-10);
     max-width: 1800px;
+  }
+
+  .navbar-brand h1 {
+    font-size: 28px;
+  }
+
+  .navbar-toggle {
+    display: none;
+  }
+
+  .navbar-user-desktop {
+    display: flex;
+  }
+
+  .btn-logout-desktop {
+    min-width: 48px;
+    min-height: 48px;
+  }
+}
+
+/* Ultra Wide (≥1920px) */
+@media (min-width: 1920px) {
+  .navbar {
+    height: 88px; /* Taille ultra wide */
+  }
+  
+  .navbar-container {
+    height: 88px;
+    padding: 0 var(--spacing-12);
+    max-width: 2000px;
   }
 
   .navbar-brand h1 {
@@ -295,144 +337,167 @@
   }
 
   .btn-logout-desktop {
-    width: 52px;
-    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
   }
 }
 
-/* Ultra Wide (≥1920px) */
-@media (min-width: 1920px) {
-  .navbar-container {
-    padding: 0 80px;
-    max-width: 2000px;
-    height: 100px;
-  }
+/* ========================================
+   iOS PWA OPTIMISATIONS SPÉCIFIQUES
+   ======================================== */
 
-  .navbar {
-    height: 100px;
-  }
-
-  .navbar-brand h1 {
-    font-size: 36px;
-  }
-
-  .btn-logout-desktop {
-    width: 56px;
-    height: 56px;
-  }
-}
-
-/* 4K Ultra Wide (≥2560px) */
-@media (min-width: 2560px) {
-  .navbar-container {
-    padding: 0 100px;
-    max-width: 2400px;
-    height: 120px;
-  }
-
-  .navbar {
-    height: 120px;
-  }
-
-  .navbar-brand h1 {
-    font-size: 40px;
-  }
-
-  .btn-logout-desktop {
-    width: 60px;
-    height: 60px;
-  }
-}
-
-/* iOS PWA Safe Area Support - CORRECTED */
+/* Safe Areas iOS - Support complet */
 @supports (padding: max(0px)) {
-  /* Base navbar with safe area */
   .navbar {
     padding-top: env(safe-area-inset-top);
-    z-index: 1001;
-    /* Optimisation iOS PWA : évite le masquage du contenu */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    z-index: 1001; /* Priorité maximale */
     background-clip: padding-box;
     -webkit-background-clip: padding-box;
   }
   
-  /* Base container height */
   .navbar-container {
-    height: 80px;
+    /* Ajustement du container pour safe areas */
+    padding-left: calc(var(--spacing-4) + env(safe-area-inset-left));
+    padding-right: calc(var(--spacing-4) + env(safe-area-inset-right));
   }
   
-  /* Mobile PWA - height fixe, safe area en padding */
+  /* Mobile iOS PWA */
   @media (max-width: 767px) {
     .navbar {
-      height: 60px; /* Hauteur fixe pour mobile */
+      height: 56px; /* Fixe pour iOS mobile */
     }
     
     .navbar-container {
-      height: 60px;
+      height: 56px;
+      padding-left: calc(var(--spacing-3) + env(safe-area-inset-left));
+      padding-right: calc(var(--spacing-3) + env(safe-area-inset-right));
     }
   }
   
-  /* Tablet PWA */
+  /* Tablette iOS PWA */
   @media (min-width: 768px) and (max-width: 1023px) {
     .navbar {
-      height: 70px;
+      height: 64px;
     }
     
     .navbar-container {
-      height: 70px;
+      height: 64px;
+      padding-left: calc(var(--spacing-6) + env(safe-area-inset-left));
+      padding-right: calc(var(--spacing-6) + env(safe-area-inset-right));
     }
   }
   
-  /* Large Desktop PWA */
+  /* Desktop iOS PWA */
+  @media (min-width: 1024px) and (max-width: 1399px) {
+    .navbar {
+      height: 72px;
+    }
+    
+    .navbar-container {
+      height: 72px;
+      padding-left: calc(var(--spacing-8) + env(safe-area-inset-left));
+      padding-right: calc(var(--spacing-8) + env(safe-area-inset-right));
+    }
+  }
+  
+  /* Large Desktop iOS PWA */
   @media (min-width: 1400px) {
     .navbar {
-      height: 90px;
+      height: 80px;
     }
     
     .navbar-container {
-      height: 90px;
+      height: 80px;
+      padding-left: calc(var(--spacing-10) + env(safe-area-inset-left));
+      padding-right: calc(var(--spacing-10) + env(safe-area-inset-right));
     }
   }
   
-  /* Ultra Wide PWA */
+  /* Ultra Wide iOS PWA */
   @media (min-width: 1920px) {
     .navbar {
-      height: 100px;
+      height: 88px;
     }
     
     .navbar-container {
-      height: 100px;
-    }
-  }
-  
-  /* 4K Ultra Wide PWA */
-  @media (min-width: 2560px) {
-    .navbar {
-      height: 120px;
-    }
-    
-    .navbar-container {
-      height: 120px;
+      height: 88px;
+      padding-left: calc(var(--spacing-12) + env(safe-area-inset-left));
+      padding-right: calc(var(--spacing-12) + env(safe-area-inset-right));
     }
   }
 }
 
-/* iOS PWA Specific Fix - Standalone Mode */
+/* iOS PWA - Optimisations natives */
 @supports (-webkit-touch-callout: none) {
   .navbar {
     -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
-    /* Optimisation iOS PWA : évite le masquage du contenu */
     -webkit-appearance: none;
     appearance: none;
-    contain: layout style paint;
+    -webkit-tap-highlight-color: transparent;
   }
   
   .navbar-container {
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
-    /* Optimisation iOS PWA : contenu visible */
     contain: layout style paint;
+  }
+  
+  .navbar-toggle {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+}
+
+/* ========================================
+   ANDROID OPTIMISATIONS SPÉCIFIQUES
+   ======================================== */
+
+/* Android - Optimisations natives */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  .navbar {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  
+  .navbar-toggle {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* ========================================
+   ACCESSIBILITÉ ET PERFORMANCE
+   ======================================== */
+
+/* Focus visible pour accessibilité */
+.navbar-toggle:focus,
+.btn-logout-desktop:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
+}
+
+/* Animation réduite pour préférences utilisateur */
+@media (prefers-reduced-motion: reduce) {
+  .navbar,
+  .navbar-toggle,
+  .btn-logout-desktop,
+  .navbar-brand h1 {
+    transition: none;
+  }
+  
+  .navbar-toggle:hover,
+  .btn-logout-desktop:hover {
+    transform: none;
+  }
+}
+
+/* Mode sombre (si supporté) */
+@media (prefers-color-scheme: dark) {
+  .navbar {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
   }
 }
