@@ -99,6 +99,92 @@ export const iOSPWAHelper = {
     }
   },
 
+  // Ajuster la responsivité pour PWA iOS
+  adjustPWAResponsivity() {
+    if (this.isIOS() && this.isPWA()) {
+      // Détecter l'orientation et ajuster le layout
+      const handleOrientationChange = () => {
+        const isLandscape = window.innerWidth > window.innerHeight;
+        
+        // Ajuster les variables CSS pour l'orientation
+        const root = document.documentElement;
+        root.style.setProperty('--pwa-height', `${window.innerHeight}px`);
+        root.style.setProperty('--pwa-width', `${window.innerWidth}px`);
+        root.style.setProperty('--pwa-orientation', isLandscape ? 'landscape' : 'portrait');
+        
+        // Forcer le recalculage du viewport
+        this.configureViewport();
+        
+        // Ajuster le safe area après changement d'orientation
+        setTimeout(() => {
+          this.adjustSafeArea();
+          this.hideSafariNavbar();
+        }, 100);
+      };
+
+      // Écouter les changements d'orientation
+      window.addEventListener('orientationchange', handleOrientationChange);
+      window.addEventListener('resize', handleOrientationChange);
+      
+      // Exécuter une première fois
+      handleOrientationChange();
+    }
+  },
+
+  // Optimiser l'affichage pour les écrans iOS
+  optimizeDisplay() {
+    if (this.isIOS() && this.isPWA()) {
+      const root = document.documentElement;
+      
+      // Détecter le type d'appareil
+      const isIPhone = /iPhone/.test(navigator.userAgent);
+      const isIPad = /iPad/.test(navigator.userAgent);
+      
+      // Ajuster les variables CSS selon l'appareil
+      if (isIPhone) {
+        root.style.setProperty('--device-type', 'iphone');
+        // Ajustements spécifiques iPhone
+        const hasNotch = window.screen.height >= 812; // iPhone X et plus
+        root.style.setProperty('--has-notch', hasNotch ? '1' : '0');
+      } else if (isIPad) {
+        root.style.setProperty('--device-type', 'ipad');
+        // Ajustements spécifiques iPad
+        root.style.setProperty('--has-notch', '0');
+      }
+      
+      // Optimiser le main content pour PWA
+      const mainContent = document.querySelector('.main-content');
+      if (mainContent) {
+        mainContent.style.height = 'calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom))';
+        mainContent.style.overflowY = 'auto';
+        mainContent.style.overflowX = 'hidden';
+      }
+    }
+  },
+
+  // Gérer le focus sur iOS PWA
+  handleFocusManagement() {
+    if (this.isIOS() && this.isPWA()) {
+      // Empêcher le zoom sur les inputs
+      const inputs = document.querySelectorAll('input, textarea, select');
+      inputs.forEach(input => {
+        input.addEventListener('focus', () => {
+          // Adapter le viewport quand le clavier apparaît
+          setTimeout(() => {
+            window.scrollTo(0, 0);
+          }, 300);
+        });
+        
+        input.addEventListener('blur', () => {
+          // Restaurer le viewport quand le clavier disparaît
+          setTimeout(() => {
+            this.hideSafariNavbar();
+          }, 100);
+        });
+      });
+    }
+  },
+
   // Initialiser toutes les optimisations iOS PWA
   init() {
     if (this.isIOS()) {
@@ -112,6 +198,9 @@ export const iOSPWAHelper = {
           this.adjustSafeArea();
           this.hideSafariNavbar();
           this.disableZoomAndElasticScroll();
+          this.adjustPWAResponsivity();
+          this.optimizeDisplay();
+          this.handleFocusManagement();
         });
       } else {
         this.configureViewport();
@@ -119,12 +208,24 @@ export const iOSPWAHelper = {
         this.adjustSafeArea();
         this.hideSafariNavbar();
         this.disableZoomAndElasticScroll();
+        this.adjustPWAResponsivity();
+        this.optimizeDisplay();
+        this.handleFocusManagement();
       }
 
       // Cacher la barre de navigation après un délai
       setTimeout(() => {
         this.hideSafariNavbar();
+        this.optimizeDisplay();
       }, 1000);
+
+      // Optimiser après le chargement complet
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          this.adjustPWAResponsivity();
+          this.optimizeDisplay();
+        }, 500);
+      });
     }
   }
 };

@@ -631,6 +631,11 @@ body {
   --safe-area-inset-bottom: 0px;
   --safe-area-inset-left: 0px;
   --safe-area-inset-right: 0px;
+  --pwa-height: 100vh;
+  --pwa-width: 100vw;
+  --pwa-orientation: portrait;
+  --device-type: unknown;
+  --has-notch: 0;
 }
 
 /* iOS PWA Safe Area Support */
@@ -648,6 +653,98 @@ body {
   
   .main-content {
     padding-bottom: max(var(--spacing-8), var(--safe-area-inset-bottom));
+    height: calc(var(--pwa-height) - var(--safe-area-inset-top) - var(--safe-area-inset-bottom));
+  }
+}
+
+/* iOS PWA Responsivity Optimizations */
+@media (display-mode: standalone) {
+  body {
+    -webkit-text-size-adjust: 100%;
+  }
+  
+  /* iPhone optimizations */
+  :root {
+    --device-type: unknown;
+    --has-notch: 0;
+  }
+  
+  @supports (-webkit-touch-callout: none) {
+    .main-content {
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+  
+  /* Landscape mode optimizations */
+  @media (orientation: landscape) {
+    .layout-container {
+      padding-top: max(var(--spacing-0), var(--safe-area-inset-top));
+    }
+    
+    .main-content {
+      padding-left: max(var(--spacing-4), var(--safe-area-inset-left));
+      padding-right: max(var(--spacing-4), var(--safe-area-inset-right));
+    }
+  }
+  
+  /* Portrait mode optimizations */
+  @media (orientation: portrait) {
+    .sidebar {
+      height: calc(var(--pwa-height) - var(--safe-area-inset-top));
+    }
+    
+    .main-content {
+      margin-left: 0;
+      width: 100%;
+    }
+  }
+  
+  /* iPhone X+ notch optimizations */
+  @media screen and (min-width: 375px) and (min-height: 812px) {
+    :root {
+      --has-notch: 1;
+    }
+    
+    .navbar {
+      padding-top: max(var(--spacing-4), 44px);
+    }
+    
+    .main-content {
+      padding-top: var(--spacing-4);
+    }
+  }
+  
+  /* iPad optimizations */
+  @media screen and (min-width: 768px) {
+    :root {
+      --device-type: ipad;
+    }
+    
+    .main-content {
+      padding-left: max(var(--spacing-6), var(--safe-area-inset-left));
+      padding-right: max(var(--spacing-6), var(--safe-area-inset-right));
+    }
+  }
+  
+  /* iPhone optimizations */
+  @media screen and (max-width: 767px) {
+    :root {
+      --device-type: iphone;
+    }
+    
+    .layout-container {
+      min-height: var(--pwa-height);
+    }
+    
+    .main-content {
+      padding: var(--spacing-4);
+      margin-left: 0;
+    }
+    
+    .sidebar {
+      width: 100%;
+      max-width: 100%;
+    }
   }
 }
 
