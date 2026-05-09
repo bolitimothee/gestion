@@ -658,6 +658,28 @@ body {
       height: calc(-webkit-fill-available - 60px); /* Support iOS mobile */
     }
   }
+  
+  /* iOS PWA - Mode Portrait spécifique */
+  @media (max-width: 767px) and (orientation: portrait) {
+    .main-content {
+      height: calc(100vh - 60px); /* Height ajusté pour navbar portrait */
+      height: calc(-webkit-fill-available - 60px); /* Support iOS portrait */
+      min-height: calc(100vh - 60px);
+      min-height: calc(-webkit-fill-available - 60px);
+      padding-top: 12px; /* Espacement optimisé pour portrait */
+    }
+  }
+  
+  /* iOS PWA - Mode Landscape spécifique */
+  @media (max-width: 767px) and (orientation: landscape) {
+    .main-content {
+      height: calc(100vh - 48px); /* Height ajusté pour navbar landscape */
+      height: calc(-webkit-fill-available - 48px); /* Support iOS landscape */
+      min-height: calc(100vh - 48px);
+      min-height: calc(-webkit-fill-available - 48px);
+      padding-top: 8px; /* Espacement réduit pour landscape */
+    }
+  }
 }
 
 /* iOS PWA Full Screen Support */
