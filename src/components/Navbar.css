@@ -199,8 +199,9 @@
 @media (max-width: 767px) {
   .navbar-container {
     padding: 0 16px;
-    gap: 16px;
+    gap: 12px;
     height: 60px;
+    justify-content: space-between;
   }
 
   .navbar {
@@ -211,13 +212,25 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    order: -1;
+    order: 1;
+    flex-shrink: 0;
+  }
+
+  .navbar-brand {
+    flex: 1;
+    order: 2;
+    justify-content: center;
+    align-items: center;
+    min-width: 0;
   }
 
   .navbar-brand h1 {
-    flex: 1;
     font-size: 18px;
-    text-align: left;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
   }
 
   .navbar-user-desktop {
@@ -228,16 +241,42 @@
 @media (max-width: 480px) {
   .navbar-container {
     padding: 0 12px;
-    gap: 12px;
+    gap: 8px;
   }
 
   .navbar-brand h1 {
     font-size: 16px;
+    text-align: center;
   }
 
   .navbar-toggle {
     width: 40px;
     height: 40px;
+  }
+}
+
+/* Très petits écrans (≤360px) */
+@media (max-width: 360px) {
+  .navbar-container {
+    padding: 0 8px;
+    gap: 6px;
+  }
+
+  .navbar-brand h1 {
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .navbar-toggle {
+    width: 36px;
+    height: 36px;
+    padding: 8px;
+  }
+
+  .navbar-toggle svg {
+    width: 20px;
+    height: 20px;
   }
 }
 

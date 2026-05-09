@@ -756,6 +756,11 @@
 
 /* Très petits écrans (≤360px) */
 @media (max-width: 360px) {
+  .sidebar {
+    width: 90%;
+    max-width: 280px;
+  }
+  
   .sidebar-item {
     padding: 12px 14px;
     font-size: 12px;
