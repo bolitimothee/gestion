@@ -12,6 +12,9 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   transition: all var(--transition-normal);
   /* Height sera géré par les media queries et @supports */
+  /* Optimisation iOS PWA : fond plus opaque pour éviter la transparence */
+  background-attachment: fixed;
+  will-change: transform, opacity;
 }
 
 .navbar::before {
@@ -347,6 +350,9 @@
   .navbar {
     padding-top: env(safe-area-inset-top);
     z-index: 1001;
+    /* Optimisation iOS PWA : évite le masquage du contenu */
+    background-clip: padding-box;
+    -webkit-background-clip: padding-box;
   }
   
   /* Base container height */
@@ -417,10 +423,16 @@
     backdrop-filter: blur(20px);
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
+    /* Optimisation iOS PWA : évite le masquage du contenu */
+    -webkit-appearance: none;
+    appearance: none;
+    contain: layout style paint;
   }
   
   .navbar-container {
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
+    /* Optimisation iOS PWA : contenu visible */
+    contain: layout style paint;
   }
 }
