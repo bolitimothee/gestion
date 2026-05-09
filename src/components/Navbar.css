@@ -1,8 +1,3 @@
-/* ========================================
-   NAVBAR UNIVERSELLE - iOS & ANDROID OPTIMISÉ
-   ======================================== */
-
-/* Base Navbar - Design Universel */
 .navbar {
   background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
   color: white;
@@ -12,24 +7,12 @@
   top: 0;
   left: 0;
   right: 0;
-  z-index: 9999; /* Z-index maximal pour être au-dessus de tout */
+  z-index: 1000;
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   transition: all var(--transition-normal);
-  
-  /* Base height - sera ajusté par media queries */
-  height: 64px;
-  
-  /* Optimisations universelles */
-  background-attachment: fixed;
-  will-change: transform, opacity;
-  contain: layout style paint;
-  /* Éviter le masquage par le contenu */
-  isolation: isolate;
-  transform: translateZ(0);
 }
 
-/* Effet hover subtil */
 .navbar::before {
   content: '';
   position: absolute;
@@ -46,30 +29,26 @@
   opacity: 1;
 }
 
-/* Container principal */
 .navbar-container {
   max-width: 1600px;
   margin: 0 auto;
-  padding: 0 var(--spacing-4);
+  padding: 0 var(--spacing-10);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: var(--spacing-4);
-  
-  /* Height synchronisé avec navbar */
-  height: 64px;
+  gap: var(--spacing-10);
+  height: 80px;
   position: relative;
 }
 
-/* Bouton menu hamburger */
 .navbar-toggle {
   display: none;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
   cursor: pointer;
-  font-size: 18px;
-  padding: var(--spacing-2);
+  font-size: 20px;
+  padding: var(--spacing-3);
   border-radius: var(--radius-lg);
   transition: all var(--transition-normal);
   flex-shrink: 0;
@@ -82,7 +61,6 @@
   justify-content: center;
 }
 
-/* Effet ripple pour le bouton */
 .navbar-toggle::before {
   content: '';
   position: absolute;
@@ -112,95 +90,133 @@
   transform: scale(0.95);
 }
 
-/* Brand/nom de l'application */
 .navbar-brand {
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 0;
+  position: relative;
 }
 
 .navbar-brand h1 {
-  font-size: 20px;
+  font-size: var(--font-size-3xl);
   font-weight: var(--font-weight-bold);
   margin: 0;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  text-align: center;
+  letter-spacing: -0.5px;
+  line-height: 1;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
 }
 
-/* Bouton logout desktop */
+.navbar-brand h1::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+  border-radius: var(--radius-full);
+  transition: width var(--transition-normal);
+}
+
+.navbar-brand:hover h1::after {
+  width: 80%;
+}
+
 .navbar-user-desktop {
   display: flex;
   align-items: center;
 }
 
 .btn-logout-desktop {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
   cursor: pointer;
-  padding: var(--spacing-2);
-  border-radius: var(--radius-lg);
-  transition: all var(--transition-normal);
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 44px;
-  min-height: 44px;
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-logout-desktop::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left var(--transition-slow);
+}
+
+.btn-logout-desktop:hover::before {
+  left: 100%;
 }
 
 .btn-logout-desktop:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .btn-logout-desktop:active {
-  transform: scale(0.95);
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* ========================================
-   RESPONSIVE DESIGN - TOUS APPAREILS
-   ======================================== */
-
-/* Mobile (≤767px) - Base Android/iOS */
-@media (max-width: 767px) {
-  .navbar {
-    height: 56px; /* Taille mobile standard */
-  }
-  
+/* Tablette (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
   .navbar-container {
-    padding: 0 var(--spacing-3);
-    gap: var(--spacing-3);
-    height: 56px;
-    justify-content: space-between;
+    padding: 0 16px;
+  }
+
+  .navbar-brand h1 {
+    font-size: 20px;
+  }
+
+  .btn-logout-desktop {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Mobile (≤767px) */
+@media (max-width: 767px) {
+  .navbar-container {
+    padding: 0 16px;
+    gap: 16px;
+    height: 60px;
+  }
+
+  .navbar {
+    height: 60px;
   }
 
   .navbar-toggle {
     display: flex;
-    order: 1;
-    flex-shrink: 0;
-  }
-
-  .navbar-brand {
-    flex: 1;
-    order: 2;
-    justify-content: center;
     align-items: center;
-    min-width: 0;
+    justify-content: center;
+    order: -1;
   }
 
   .navbar-brand h1 {
+    flex: 1;
     font-size: 18px;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
+    text-align: left;
   }
 
   .navbar-user-desktop {
@@ -208,11 +224,10 @@
   }
 }
 
-/* Petits mobiles (≤480px) */
 @media (max-width: 480px) {
   .navbar-container {
-    padding: 0 var(--spacing-2);
-    gap: var(--spacing-2);
+    padding: 0 12px;
+    gap: 12px;
   }
 
   .navbar-brand h1 {
@@ -220,119 +235,16 @@
   }
 
   .navbar-toggle {
-    min-width: 40px;
-    min-height: 40px;
-    font-size: 16px;
-  }
-}
-
-/* Très petits mobiles (≤360px) */
-@media (max-width: 360px) {
-  .navbar-container {
-    padding: 0 var(--spacing-2);
-    gap: var(--spacing-2);
-  }
-
-  .navbar-brand h1 {
-    font-size: 14px;
-    line-height: 1.2;
-  }
-
-  .navbar-toggle {
-    min-width: 36px;
-    min-height: 36px;
-    font-size: 14px;
-  }
-}
-
-/* Tablette (768px-1023px) */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .navbar {
-    height: 64px; /* Taille tablette */
-  }
-  
-  .navbar-container {
-    height: 64px;
-    padding: 0 var(--spacing-6);
-  }
-
-  .navbar-brand h1 {
-    font-size: 22px;
-  }
-
-  .navbar-toggle {
-    display: flex;
-  }
-
-  .navbar-user-desktop {
-    display: flex;
-  }
-}
-
-/* Desktop (1024px-1399px) */
-@media (min-width: 1024px) and (max-width: 1399px) {
-  .navbar {
-    height: 72px; /* Taille desktop standard */
-  }
-  
-  .navbar-container {
-    height: 72px;
-    padding: 0 var(--spacing-8);
-  }
-
-  .navbar-brand h1 {
-    font-size: 24px;
-  }
-
-  .navbar-toggle {
-    display: none; /* Caché sur desktop */
-  }
-
-  .navbar-user-desktop {
-    display: flex;
+    width: 40px;
+    height: 40px;
   }
 }
 
 /* Large Desktop (≥1400px) */
 @media (min-width: 1400px) {
-  .navbar {
-    height: 80px; /* Taille large desktop */
-  }
-  
   .navbar-container {
-    height: 80px;
-    padding: 0 var(--spacing-10);
+    padding: 0 60px;
     max-width: 1800px;
-  }
-
-  .navbar-brand h1 {
-    font-size: 28px;
-  }
-
-  .navbar-toggle {
-    display: none;
-  }
-
-  .navbar-user-desktop {
-    display: flex;
-  }
-
-  .btn-logout-desktop {
-    min-width: 48px;
-    min-height: 48px;
-  }
-}
-
-/* Ultra Wide (≥1920px) */
-@media (min-width: 1920px) {
-  .navbar {
-    height: 88px; /* Taille ultra wide */
-  }
-  
-  .navbar-container {
-    height: 88px;
-    padding: 0 var(--spacing-12);
-    max-width: 2000px;
   }
 
   .navbar-brand h1 {
@@ -340,276 +252,51 @@
   }
 
   .btn-logout-desktop {
-    min-width: 52px;
-    min-height: 52px;
+    width: 52px;
+    height: 52px;
   }
 }
 
-/* ========================================
-   iOS PWA OPTIMISATIONS SPÉCIFIQUES
-   ======================================== */
-
-/* Safe Areas iOS - Support complet */
-@supports (padding: max(0px)) {
-  .navbar {
-    padding-top: env(safe-area-inset-top);
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-    z-index: 9999; /* Z-index maximal pour iOS PWA */
-    background-clip: padding-box;
-    -webkit-background-clip: padding-box;
-    /* Éviter le masquage par le contenu */
-    isolation: isolate;
-    transform: translateZ(0);
-  }
-  
+/* Ultra Wide (≥1920px) */
+@media (min-width: 1920px) {
   .navbar-container {
-    /* Ajustement du container pour safe areas */
-    padding-left: calc(var(--spacing-4) + env(safe-area-inset-left));
-    padding-right: calc(var(--spacing-4) + env(safe-area-inset-right));
+    padding: 0 80px;
+    max-width: 2000px;
+    height: 100px;
   }
-  
-  /* Mobile iOS PWA */
-  @media (max-width: 767px) {
-    .navbar {
-      height: 56px; /* Fixe pour iOS mobile */
-    }
-    
-    .navbar-container {
-      height: 56px;
-      padding-left: calc(var(--spacing-3) + env(safe-area-inset-left));
-      padding-right: calc(var(--spacing-3) + env(safe-area-inset-right));
-    }
+
+  .navbar {
+    height: 100px;
   }
-  
-  /* iOS PWA - Mode Portrait spécifique */
-  @media (max-width: 767px) and (orientation: portrait) {
-    .navbar {
-      height: 60px; /* Hauteur ajustée pour portrait */
-      min-height: 60px;
-      max-height: 60px;
-    }
-    
-    .navbar-container {
-      height: 60px;
-      min-height: 60px;
-      max-height: 60px;
-      padding-left: calc(var(--spacing-2) + env(safe-area-inset-left));
-      padding-right: calc(var(--spacing-2) + env(safe-area-inset-right));
-      padding-top: 0;
-      padding-bottom: 0;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-    }
-    
-    .navbar-toggle {
-      display: flex;
-      order: 1;
-      flex-shrink: 0;
-      min-width: 44px;
-      min-height: 44px;
-    }
-    
-    .navbar-brand {
-      flex: 1;
-      order: 2;
-      justify-content: center;
-      align-items: center;
-      min-width: 0;
-      padding: 0;
-    }
-    
-    .navbar-brand h1 {
-      font-size: 16px;
-      text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100%;
-      line-height: 1.3;
-      margin: 0;
-    }
-    
-    .navbar-user-desktop {
-      display: none;
-    }
+
+  .navbar-brand h1 {
+    font-size: 36px;
   }
-  
-  /* iOS PWA - Mode Landscape spécifique */
-  @media (max-width: 767px) and (orientation: landscape) {
-    .navbar {
-      height: 48px; /* Hauteur réduite pour landscape */
-      min-height: 48px;
-      max-height: 48px;
-    }
-    
-    .navbar-container {
-      height: 48px;
-      min-height: 48px;
-      max-height: 48px;
-      padding-left: calc(var(--spacing-2) + env(safe-area-inset-left));
-      padding-right: calc(var(--spacing-2) + env(safe-area-inset-right));
-    }
-    
-    .navbar-brand h1 {
-      font-size: 14px;
-    }
-  }
-  
-  /* Tablette iOS PWA */
-  @media (min-width: 768px) and (max-width: 1023px) {
-    .navbar {
-      height: 64px;
-    }
-    
-    .navbar-container {
-      height: 64px;
-      padding-left: calc(var(--spacing-6) + env(safe-area-inset-left));
-      padding-right: calc(var(--spacing-6) + env(safe-area-inset-right));
-    }
-  }
-  
-  /* Desktop iOS PWA */
-  @media (min-width: 1024px) and (max-width: 1399px) {
-    .navbar {
-      height: 72px;
-    }
-    
-    .navbar-container {
-      height: 72px;
-      padding-left: calc(var(--spacing-8) + env(safe-area-inset-left));
-      padding-right: calc(var(--spacing-8) + env(safe-area-inset-right));
-    }
-  }
-  
-  /* Large Desktop iOS PWA */
-  @media (min-width: 1400px) {
-    .navbar {
-      height: 80px;
-    }
-    
-    .navbar-container {
-      height: 80px;
-      padding-left: calc(var(--spacing-10) + env(safe-area-inset-left));
-      padding-right: calc(var(--spacing-10) + env(safe-area-inset-right));
-    }
-  }
-  
-  /* Ultra Wide iOS PWA */
-  @media (min-width: 1920px) {
-    .navbar {
-      height: 88px;
-    }
-    
-    .navbar-container {
-      height: 88px;
-      padding-left: calc(var(--spacing-12) + env(safe-area-inset-left));
-      padding-right: calc(var(--spacing-12) + env(safe-area-inset-right));
-    }
+
+  .btn-logout-desktop {
+    width: 56px;
+    height: 56px;
   }
 }
 
-/* iOS PWA - Optimisations natives */
-@supports (-webkit-touch-callout: none) {
-  .navbar {
-    -webkit-backdrop-filter: blur(20px);
-    backdrop-filter: blur(20px);
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
-    -webkit-appearance: none;
-    appearance: none;
-    -webkit-tap-highlight-color: transparent;
-    /* Optimisation portrait */
-    -webkit-overflow-scrolling: touch;
-    overflow: hidden;
-    /* Éviter le masquage par le contenu */
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    min-width: 100%;
-  }
-  
+/* 4K Ultra Wide (≥2560px) */
+@media (min-width: 2560px) {
   .navbar-container {
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
-    contain: layout style paint;
-    /* Optimisation portrait */
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
+    padding: 0 100px;
+    max-width: 2400px;
+    height: 120px;
   }
-  
-  .navbar-toggle {
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    /* Optimisation portrait */
-    -webkit-user-select: none;
-    user-select: none;
-  }
-  
-  .navbar-brand {
-    /* Optimisation portrait */
-    -webkit-user-select: none;
-    user-select: none;
-    -webkit-touch-callout: none;
-  }
-  
-  .navbar-brand h1 {
-    /* Optimisation portrait */
-    -webkit-user-select: none;
-    user-select: none;
-    -webkit-touch-callout: none;
-    pointer-events: none;
-  }
-}
 
-/* ========================================
-   ANDROID OPTIMISATIONS SPÉCIFIQUES
-   ======================================== */
-
-/* Android - Optimisations natives */
-@media screen and (-webkit-min-device-pixel-ratio: 0) {
   .navbar {
-    -webkit-appearance: none;
-    appearance: none;
+    height: 120px;
   }
-  
-  .navbar-toggle {
-    -webkit-tap-highlight-color: transparent;
-  }
-}
 
-/* ========================================
-   ACCESSIBILITÉ ET PERFORMANCE
-   ======================================== */
-
-/* Focus visible pour accessibilité */
-.navbar-toggle:focus,
-.btn-logout-desktop:focus {
-  outline: 2px solid rgba(255, 255, 255, 0.5);
-  outline-offset: 2px;
-}
-
-/* Animation réduite pour préférences utilisateur */
-@media (prefers-reduced-motion: reduce) {
-  .navbar,
-  .navbar-toggle,
-  .btn-logout-desktop,
   .navbar-brand h1 {
-    transition: none;
+    font-size: 40px;
   }
-  
-  .navbar-toggle:hover,
-  .btn-logout-desktop:hover {
-    transform: none;
-  }
-}
 
-/* Mode sombre (si supporté) */
-@media (prefers-color-scheme: dark) {
-  .navbar {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+  .btn-logout-desktop {
+    width: 60px;
+    height: 60px;
   }
 }

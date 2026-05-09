@@ -4,7 +4,7 @@
   "description": "Système de gestion des stocks et finances pour votre commerce",
   "start_url": "/",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "display_override": ["standalone", "minimal-ui", "window-controls-overlay"],
   "background_color": "#2563eb",
   "theme_color": "#2563eb",
   "orientation": "portrait-primary",

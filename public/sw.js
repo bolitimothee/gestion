@@ -1,21 +1,29 @@
-const CACHE_NAME = 'gestion-commerce-v2';
-const STATIC_CACHE = 'static-v2';
+const CACHE_NAME = 'gestion-commerce-v3';
+const STATIC_CACHE = 'static-v3';
+const DYNAMIC_CACHE = 'dynamic-v3';
 
-// URLs à mettre en cache (sera mis à jour automatiquement)
+// URLs à mettre en cache pour PWA iOS
 const urlsToCache = [
   '/',
   '/manifest.json',
-  '/index.html'
+  '/index.html',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/favicon.ico'
 ];
 
 // Installation du service worker
 self.addEventListener('install', (event) => {
-  console.log('Service Worker: Installation');
+  console.log('Service Worker: Installation PWA iOS');
   event.waitUntil(
     caches.open(STATIC_CACHE)
       .then((cache) => {
-        console.log('Service Worker: Mise en cache des assets');
+        console.log('Service Worker: Mise en cache des assets PWA');
         return cache.addAll(urlsToCache);
+      })
+      .then(() => {
+        console.log('Service Worker: Installation terminée');
+        return self.skipWaiting();
       })
       .catch((error) => {
         console.error('Service Worker: Erreur lors de l\'installation:', error);
@@ -25,17 +33,21 @@ self.addEventListener('install', (event) => {
 
 // Activation du service worker
 self.addEventListener('activate', (event) => {
-  console.log('Service Worker: Activation');
+  console.log('Service Worker: Activation PWA iOS');
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheName !== STATIC_CACHE && cacheName !== CACHE_NAME) {
+          if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
             console.log('Service Worker: Suppression de l\'ancien cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
+    })
+    .then(() => {
+      console.log('Service Worker: Activation terminée');
+      return self.clients.claim();
     })
   );
 });

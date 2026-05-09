@@ -756,11 +756,6 @@
 
 /* Très petits écrans (≤360px) */
 @media (max-width: 360px) {
-  .sidebar {
-    width: 90%;
-    max-width: 280px;
-  }
-  
   .sidebar-item {
     padding: 12px 14px;
     font-size: 12px;
@@ -791,97 +786,5 @@
 
   .btn-logout-sidebar span {
     font-size: 11px;
-  }
-}
-
-/* iOS PWA Safe Area Support */
-@supports (padding: max(0px)) {
-  .sidebar {
-    top: 80px;
-    height: calc(100vh - 80px);
-    padding-top: env(safe-area-inset-top);
-    z-index: 999; /* Assure que la sidebar est au-dessus de tout sur iOS PWA */
-  }
-  
-  /* Mobile PWA adjustments */
-  @media (max-width: 767px) {
-    .sidebar {
-      top: 60px;
-      height: calc(100vh - 60px);
-      padding-top: env(safe-area-inset-top);
-      z-index: 999;
-    }
-    
-    .sidebar-overlay {
-      top: 60px;
-      height: calc(100vh - 60px);
-      padding-top: env(safe-area-inset-top);
-      z-index: 998;
-    }
-  }
-  
-  /* Tablet PWA adjustments */
-  @media (min-width: 768px) and (max-width: 1023px) {
-    .sidebar {
-      top: 70px;
-      height: calc(100vh - 70px);
-      padding-top: env(safe-area-inset-top);
-      z-index: 999;
-    }
-  }
-  
-  /* Large Desktop PWA adjustments */
-  @media (min-width: 1400px) {
-    .sidebar {
-      top: 90px;
-      height: calc(100vh - 90px);
-      padding-top: env(safe-area-inset-top);
-      z-index: 999;
-    }
-  }
-  
-  /* Ultra Wide PWA adjustments */
-  @media (min-width: 1920px) {
-    .sidebar {
-      top: 100px;
-      height: calc(100vh - 100px);
-      padding-top: env(safe-area-inset-top);
-      z-index: 999;
-    }
-  }
-  
-  /* 4K Ultra Wide PWA adjustments */
-  @media (min-width: 2560px) {
-    .sidebar {
-      top: 120px;
-      height: calc(100vh - 120px);
-      padding-top: env(safe-area-inset-top);
-      z-index: 999;
-    }
-  }
-}
-
-/* iOS PWA Specific Fix - Standalone Mode */
-@supports (-webkit-touch-callout: none) {
-  .sidebar {
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
-  }
-  
-  .sidebar.active {
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
-  }
-  
-  @media (max-width: 767px) {
-    .sidebar {
-      -webkit-transform: translate3d(-100%, 0, 0);
-      transform: translate3d(-100%, 0, 0);
-    }
-    
-    .sidebar.active {
-      -webkit-transform: translate3d(0, 0, 0);
-      transform: translate3d(0, 0, 0);
-    }
   }
 }

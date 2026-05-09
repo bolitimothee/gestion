@@ -625,105 +625,38 @@ body {
   color: inherit;
 }
 
-/* iOS PWA Safe Area Support - CORRECTED */
+/* iOS PWA Safe Area Variables */
+:root {
+  --safe-area-inset-top: 0px;
+  --safe-area-inset-bottom: 0px;
+  --safe-area-inset-left: 0px;
+  --safe-area-inset-right: 0px;
+}
+
+/* iOS PWA Safe Area Support */
 @supports (padding: max(0px)) {
   .layout {
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-    padding-top: 0; /* Pas de padding top - géré par navbar */
-    height: 100vh; /* Height fixe pour iOS PWA */
-    height: -webkit-fill-available; /* Support iOS */
+    padding-top: max(var(--spacing-0), var(--safe-area-inset-top));
+    padding-bottom: max(var(--spacing-0), var(--safe-area-inset-bottom));
+    padding-left: max(var(--spacing-0), var(--safe-area-inset-left));
+    padding-right: max(var(--spacing-0), var(--safe-area-inset-right));
+  }
+  
+  .navbar {
+    padding-top: max(var(--spacing-0), var(--safe-area-inset-top));
   }
   
   .main-content {
-    padding-left: calc(24px + env(safe-area-inset-left));
-    padding-right: calc(24px + env(safe-area-inset-right));
-    padding-top: 24px; /* Espacement normal sous navbar */
-    height: calc(100vh - 80px); /* Height ajusté pour navbar desktop */
-    height: calc(-webkit-fill-available - 80px); /* Support iOS */
-  }
-  
-  /* Mobile PWA adjustments */
-  @media (max-width: 767px) {
-    .layout {
-      height: 100vh; /* Height fixe mobile */
-      height: -webkit-fill-available;
-    }
-    
-    .main-content {
-      padding-left: calc(16px + env(safe-area-inset-left));
-      padding-right: calc(16px + env(safe-area-inset-right));
-      padding-top: 16px; /* Espacement réduit sur mobile */
-      height: calc(100vh - 60px); /* Height ajusté pour navbar mobile */
-      height: calc(-webkit-fill-available - 60px); /* Support iOS mobile */
-    }
-  }
-  
-  /* iOS PWA - Mode Portrait spécifique */
-  @media (max-width: 767px) and (orientation: portrait) {
-    .main-content {
-      height: calc(100vh - 60px); /* Height ajusté pour navbar portrait */
-      height: calc(-webkit-fill-available - 60px); /* Support iOS portrait */
-      min-height: calc(100vh - 60px);
-      min-height: calc(-webkit-fill-available - 60px);
-      padding-top: 12px; /* Espacement optimisé pour portrait */
-    }
-  }
-  
-  /* iOS PWA - Mode Landscape spécifique */
-  @media (max-width: 767px) and (orientation: landscape) {
-    .main-content {
-      height: calc(100vh - 48px); /* Height ajusté pour navbar landscape */
-      height: calc(-webkit-fill-available - 48px); /* Support iOS landscape */
-      min-height: calc(100vh - 48px);
-      min-height: calc(-webkit-fill-available - 48px);
-      padding-top: 8px; /* Espacement réduit pour landscape */
-    }
+    padding-bottom: max(var(--spacing-8), var(--safe-area-inset-bottom));
   }
 }
 
-/* iOS PWA Full Screen Support */
-@supports (-webkit-touch-callout: none) {
-  html, body {
-    -webkit-text-size-adjust: 100%;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-user-select: none;
-    user-select: none;
-    -webkit-touch-callout: none;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  /* Prevent bounce scrolling in PWA */
-  body {
-    overscroll-behavior: none;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  /* Fix viewport height issues */
-  .layout {
-    height: 100vh;
-    height: -webkit-fill-available;
-    min-height: 100vh;
-    min-height: -webkit-fill-available;
-  }
-  
-  /* Prevent zoom on input focus */
-  input, textarea, select {
-    font-size: 16px !important;
-  }
-}
-
-/* RESPONSIVE LAYOUT - CORRECTED */
+/* RESPONSIVE LAYOUT */
 .layout {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
-  /* Height sera géré par @supports pour iOS PWA */
-  height: 100vh;
-  height: -webkit-fill-available;
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
 }
 
 .layout-container {
@@ -739,7 +672,6 @@ body {
   overflow-y: auto;
   width: 100%;
   margin-left: 0;
-  /* Height sera géré par @supports pour iOS PWA */
 }
 
 /* RESPONSIVE MEDIA QUERIES */
