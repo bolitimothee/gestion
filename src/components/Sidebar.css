@@ -554,12 +554,12 @@
   /* iPhone X, XS, XR, 11, 12, 13, 14, 15 - Notch devices */
   @media screen and (min-width: 375px) and (min-height: 812px) {
     .sidebar {
-      top: 88px; /* Matches navbar height */
-      height: calc(100vh - 88px);
+      top: 104px; /* Matches new navbar height */
+      height: calc(100vh - 104px);
     }
     
     .sidebar-overlay {
-      top: 88px;
+      top: 104px;
     }
     
     .sidebar-menu {
@@ -570,12 +570,12 @@
   /* iPhone 12 Pro, 13 Pro, 14, 15 - Larger notch */
   @media screen and (min-width: 390px) and (min-height: 844px) {
     .sidebar {
-      top: 94px;
-      height: calc(100vh - 94px);
+      top: 107px;
+      height: calc(100vh - 107px);
     }
     
     .sidebar-overlay {
-      top: 94px;
+      top: 107px;
     }
     
     .sidebar-menu {
@@ -586,12 +586,12 @@
   /* iPhone 12 Pro Max, 13 Pro Max, 14 Plus, 15 Plus - Larger devices */
   @media screen and (min-width: 428px) and (min-height: 926px) {
     .sidebar {
-      top: 96px;
-      height: calc(100vh - 96px);
+      top: 108px;
+      height: calc(100vh - 108px);
     }
     
     .sidebar-overlay {
-      top: 96px;
+      top: 108px;
     }
     
     .sidebar-menu {
@@ -602,12 +602,12 @@
   /* iPhone 14 Pro, 15 Pro - Dynamic Island */
   @media screen and (min-width: 393px) and (min-height: 852px) {
     .sidebar {
-      top: 92px;
-      height: calc(100vh - 92px);
+      top: 119px;
+      height: calc(100vh - 119px);
     }
     
     .sidebar-overlay {
-      top: 92px;
+      top: 119px;
     }
     
     .sidebar-menu {
@@ -623,12 +623,12 @@
   /* iPhone 14 Pro Max, 15 Pro Max - Dynamic Island Max */
   @media screen and (min-width: 430px) and (min-height: 932px) {
     .sidebar {
-      top: 98px;
-      height: calc(100vh - 98px);
+      top: 119px;
+      height: calc(100vh - 119px);
     }
     
     .sidebar-overlay {
-      top: 98px;
+      top: 119px;
     }
     
     .sidebar-menu {
@@ -644,12 +644,12 @@
   /* iPhone SE (3rd gen) - No notch, smaller safe area */
   @media screen and (max-width: 375px) and (max-height: 667px) {
     .sidebar {
-      top: 74px;
-      height: calc(100vh - 74px);
+      top: 80px;
+      height: calc(100vh - 80px);
     }
     
     .sidebar-overlay {
-      top: 74px;
+      top: 80px;
     }
     
     .sidebar-menu {
