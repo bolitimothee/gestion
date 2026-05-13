@@ -194,163 +194,76 @@
   }
 }
 
-/* iOS PWA Optimizations for iPhone X+ (Notch) and Dynamic Island */
+/* iOS PWA Optimizations - Use normal display behavior with safe area support */
 @media (display-mode: standalone) and (max-width: 767px) {
-  /* iPhone X, XS, XR, 11, 12, 13, 14, 15 - Notch devices */
+  /* Base PWA behavior - same as normal browser display */
+  .navbar {
+    height: 60px; /* Same as normal mobile */
+    padding-top: env(safe-area-inset-top); /* Add safe area only */
+  }
+  
+  .navbar-container {
+    height: 60px; /* Same as normal mobile */
+    padding: 0 16px; /* Same as normal mobile */
+    gap: 16px;
+  }
+  
+  .sidebar {
+    top: calc(60px + env(safe-area-inset-top)); /* Normal mobile top + safe area */
+    height: calc(100vh - 60px - env(safe-area-inset-top));
+  }
+  
+  .sidebar-overlay {
+    top: calc(60px + env(safe-area-inset-top));
+  }
+  
+  .navbar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    order: -1;
+  }
+  
+  .navbar-brand h1 {
+    flex: 1;
+    font-size: 18px;
+    text-align: left;
+  }
+  
+  .navbar-user-desktop {
+    display: none;
+  }
+  
+  /* iPhone-specific adjustments for safe area values */
   @media screen and (min-width: 375px) and (min-height: 812px) {
+    /* iPhone X+ with notch - ensure safe area is properly handled */
     .navbar {
-      height: 104px; /* 60px content + 44px safe area */
-      padding-top: env(safe-area-inset-top); /* Only safe area, no max() */
-    }
-    
-    .navbar-container {
-      height: 60px; /* Fixed content height */
-      padding-top: 0; /* Remove double padding */
-      padding-bottom: 44px; /* Safe area bottom */
-    }
-    
-    .sidebar {
-      top: 104px;
-      height: calc(100vh - 104px);
-    }
-    
-    .sidebar-overlay {
-      top: 104px;
-    }
-    
-    .main-content {
-      padding-top: var(--spacing-4); /* Normal padding */
-    }
-  }
-  
-  /* iPhone 12 Pro, 13 Pro, 14, 15 - Larger notch */
-  @media screen and (min-width: 390px) and (min-height: 844px) {
-    .navbar {
-      height: 107px; /* 60px content + 47px safe area */
+      /* env(safe-area-inset-top) will be 44px on these devices */
       padding-top: env(safe-area-inset-top);
     }
-    
-    .navbar-container {
-      height: 60px;
-      padding-top: 0;
-      padding-bottom: 47px;
-    }
-    
-    .sidebar {
-      top: 107px;
-      height: calc(100vh - 107px);
-    }
-    
-    .sidebar-overlay {
-      top: 107px;
-    }
   }
   
-  /* iPhone 12 Pro Max, 13 Pro Max, 14 Plus, 15 Plus - Larger devices */
-  @media screen and (min-width: 428px) and (min-height: 926px) {
-    .navbar {
-      height: 108px; /* 60px content + 48px safe area */
-      padding-top: env(safe-area-inset-top);
-    }
-    
-    .navbar-container {
-      height: 60px;
-      padding-top: 0;
-      padding-bottom: 48px;
-    }
-    
-    .sidebar {
-      top: 108px;
-      height: calc(100vh - 108px);
-    }
-    
-    .sidebar-overlay {
-      top: 108px;
-    }
-  }
-  
-  /* iPhone 14 Pro, 15 Pro - Dynamic Island */
   @media screen and (min-width: 393px) and (min-height: 852px) {
+    /* iPhone 14 Pro+ with Dynamic Island */
     .navbar {
-      height: 119px; /* 60px content + 59px safe area */
+      /* env(safe-area-inset-top) will be 59px on these devices */
       padding-top: env(safe-area-inset-top);
-    }
-    
-    .navbar-container {
-      height: 60px;
-      padding-top: 0;
-      padding-bottom: 59px;
-    }
-    
-    .navbar-toggle {
-      margin-top: 0; /* Remove extra margin */
-    }
-    
-    .navbar-brand h1 {
-      margin-top: 0; /* Remove extra margin */
-    }
-    
-    .sidebar {
-      top: 119px;
-      height: calc(100vh - 119px);
-    }
-    
-    .sidebar-overlay {
-      top: 119px;
     }
   }
   
-  /* iPhone 14 Pro Max, 15 Pro Max - Dynamic Island Max */
-  @media screen and (min-width: 430px) and (min-height: 932px) {
-    .navbar {
-      height: 119px; /* 60px content + 59px safe area */
-      padding-top: env(safe-area-inset-top);
-    }
-    
+  @media screen and (max-width: 480px) {
     .navbar-container {
-      height: 60px;
-      padding-top: 0;
-      padding-bottom: 59px;
-    }
-    
-    .navbar-toggle {
-      margin-top: 0;
+      padding: 0 12px;
+      gap: 12px;
     }
     
     .navbar-brand h1 {
-      margin-top: 0;
+      font-size: 16px;
     }
     
-    .sidebar {
-      top: 119px;
-      height: calc(100vh - 119px);
-    }
-    
-    .sidebar-overlay {
-      top: 119px;
-    }
-  }
-  
-  /* iPhone SE (3rd gen) - No notch, smaller safe area */
-  @media screen and (max-width: 375px) and (max-height: 667px) {
-    .navbar {
-      height: 80px; /* 60px content + 20px safe area */
-      padding-top: env(safe-area-inset-top);
-    }
-    
-    .navbar-container {
-      height: 60px;
-      padding-top: 0;
-      padding-bottom: 20px;
-    }
-    
-    .sidebar {
-      top: 80px;
-      height: calc(100vh - 80px);
-    }
-    
-    .sidebar-overlay {
-      top: 80px;
+    .navbar-toggle {
+      width: 40px;
+      height: 40px;
     }
   }
 }
