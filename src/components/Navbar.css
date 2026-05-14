@@ -270,6 +270,7 @@
   }
   
   .sidebar-overlay {
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -286,22 +287,6 @@
     to {
       opacity: 1;
     }
-  }
-  
-  .main-content {
-    position: absolute;
-    top: calc(var(--navbar-height) + var(--safe-area-top));
-    left: 0;
-    right: 0;
-    bottom: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-    transition: transform 0.3s ease;
-  }
-  
-  .main-content.sidebar-open {
-    transform: translateX(var(--sidebar-width));
   }
   
   .navbar-toggle {
@@ -353,10 +338,6 @@
     .navbar-safe-top {
       height: 59px;
     }
-    
-    .main-content {
-      top: calc(var(--navbar-height) + 59px);
-    }
   }
   
   /* iPhone 14 Pro Max, 15 Pro Max */
@@ -367,10 +348,6 @@
     
     .navbar-safe-top {
       height: 59px;
-    }
-    
-    .main-content {
-      top: calc(var(--navbar-height) + 59px);
     }
   }
   
@@ -394,16 +371,6 @@
     .navbar-brand h1 {
       font-size: 16px;
     }
-    
-    .main-content.sidebar-open {
-      transform: translateX(280px);
-    }
-    
-    .main-content {
-      padding-left: max(var(--spacing-6), env(safe-area-inset-left));
-      padding-right: max(var(--spacing-6), env(safe-area-inset-right));
-      padding-bottom: max(var(--spacing-4), env(safe-area-inset-bottom));
-    }
   }
   
   /* Support iOS < 11.3 */
@@ -414,10 +381,6 @@
     
     .navbar-safe-top {
       height: 20px;
-    }
-    
-    .main-content {
-      top: calc(var(--navbar-height) + 20px);
     }
   }
   
