@@ -656,6 +656,18 @@ body {
   
   /* Enhanced iOS PWA Safe Area for iPhone X+ and Dynamic Island */
   @media (display-mode: standalone) and (max-width: 767px) {
+    /* Base iOS PWA adjustments */
+    .main-content {
+      padding-top: calc(60px + env(safe-area-inset-top));
+      padding-left: max(var(--spacing-4), env(safe-area-inset-left));
+      padding-right: max(var(--spacing-4), env(safe-area-inset-right));
+      padding-bottom: max(var(--spacing-4), env(safe-area-inset-bottom));
+    }
+    
+    .page-header {
+      padding-top: var(--spacing-4);
+    }
+    
     /* iPhone X, XS, XR, 11, 12, 13, 14, 15 - Notch devices */
     @media screen and (min-width: 375px) and (min-height: 812px) {
       .navbar {
@@ -667,14 +679,7 @@ body {
       }
       
       .main-content {
-        padding-top: max(var(--spacing-4), calc(env(safe-area-inset-top) - 44px + var(--spacing-4)));
-        padding-left: max(var(--spacing-4), env(safe-area-inset-left));
-        padding-right: max(var(--spacing-4), env(safe-area-inset-right));
-        padding-bottom: max(var(--spacing-4), env(safe-area-inset-bottom));
-      }
-      
-      .page-header {
-        padding-top: max(var(--spacing-4), calc(env(safe-area-inset-top) - 44px + var(--spacing-4)));
+        padding-top: calc(60px + 44px);
       }
     }
     
@@ -689,14 +694,7 @@ body {
       }
       
       .main-content {
-        padding-top: max(var(--spacing-4), calc(env(safe-area-inset-top) - 47px + var(--spacing-4)));
-        padding-left: max(var(--spacing-4), env(safe-area-inset-left));
-        padding-right: max(var(--spacing-4), env(safe-area-inset-right));
-        padding-bottom: max(var(--spacing-4), env(safe-area-inset-bottom));
-      }
-      
-      .page-header {
-        padding-top: max(var(--spacing-4), calc(env(safe-area-inset-top) - 47px + var(--spacing-4)));
+        padding-top: calc(60px + 47px);
       }
     }
     
@@ -711,14 +709,7 @@ body {
       }
       
       .main-content {
-        padding-top: max(var(--spacing-4), calc(env(safe-area-inset-top) - 48px + var(--spacing-4)));
-        padding-left: max(var(--spacing-4), env(safe-area-inset-left));
-        padding-right: max(var(--spacing-4), env(safe-area-inset-right));
-        padding-bottom: max(var(--spacing-4), env(safe-area-inset-bottom));
-      }
-      
-      .page-header {
-        padding-top: max(var(--spacing-4), calc(env(safe-area-inset-top) - 48px + var(--spacing-4)));
+        padding-top: calc(60px + 48px);
       }
     }
     
@@ -733,23 +724,16 @@ body {
       }
       
       .main-content {
-        padding-top: max(var(--spacing-4), calc(env(safe-area-inset-top) - 59px + var(--spacing-4)));
-        padding-left: max(var(--spacing-4), env(safe-area-inset-left));
-        padding-right: max(var(--spacing-4), env(safe-area-inset-right));
-        padding-bottom: max(var(--spacing-4), env(safe-area-inset-bottom));
-      }
-      
-      .page-header {
-        padding-top: max(var(--spacing-4), calc(env(safe-area-inset-top) - 59px + var(--spacing-4)));
+        padding-top: calc(60px + 59px);
       }
       
       /* Dynamic Island curve adjustments */
       .form-card {
-        margin-top: max(var(--spacing-4), calc(env(safe-area-inset-top) - 59px + var(--spacing-4)));
+        margin-top: var(--spacing-4);
       }
       
       .stats-grid {
-        margin-top: max(var(--spacing-4), calc(env(safe-area-inset-top) - 59px + var(--spacing-4)));
+        margin-top: var(--spacing-4);
       }
     }
     
@@ -764,23 +748,16 @@ body {
       }
       
       .main-content {
-        padding-top: max(var(--spacing-4), calc(env(safe-area-inset-top) - 59px + var(--spacing-4)));
-        padding-left: max(var(--spacing-4), env(safe-area-inset-left));
-        padding-right: max(var(--spacing-4), env(safe-area-inset-right));
-        padding-bottom: max(var(--spacing-4), env(safe-area-inset-bottom));
-      }
-      
-      .page-header {
-        padding-top: max(var(--spacing-4), calc(env(safe-area-inset-top) - 59px + var(--spacing-4)));
+        padding-top: calc(60px + 59px);
       }
       
       /* Dynamic Island curve adjustments */
       .form-card {
-        margin-top: max(var(--spacing-4), calc(env(safe-area-inset-top) - 59px + var(--spacing-4)));
+        margin-top: var(--spacing-4);
       }
       
       .stats-grid {
-        margin-top: max(var(--spacing-4), calc(env(safe-area-inset-top) - 59px + var(--spacing-4)));
+        margin-top: var(--spacing-4);
       }
     }
     
@@ -795,14 +772,7 @@ body {
       }
       
       .main-content {
-        padding-top: max(var(--spacing-4), calc(env(safe-area-inset-top) - 20px + var(--spacing-4)));
-        padding-left: max(var(--spacing-4), env(safe-area-inset-left));
-        padding-right: max(var(--spacing-4), env(safe-area-inset-right));
-        padding-bottom: max(var(--spacing-4), env(safe-area-inset-bottom));
-      }
-      
-      .page-header {
-        padding-top: max(var(--spacing-4), calc(env(safe-area-inset-top) - 20px + var(--spacing-4)));
+        padding-top: calc(60px + 20px);
       }
     }
     

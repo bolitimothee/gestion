@@ -222,6 +222,7 @@
     height: var(--navbar-height);
     padding: 0 16px;
     position: relative;
+    padding-top: var(--safe-area-top);
   }
   
   .sidebar {
