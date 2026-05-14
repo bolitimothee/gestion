@@ -8,7 +8,6 @@ export const useIOSLayout = () => {
     if (!isIOS) return { deviceType: 'default', isDynamicIsland: false };
     
     const screenHeight = window.screen.height;
-    const screenWidth = window.screen.width;
     
     // Détection Dynamic Island (iPhone 14 Pro, 15 Pro)
     const isDynamicIsland = screenHeight === 852 || screenHeight === 932 || 
