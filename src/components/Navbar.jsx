@@ -2,11 +2,13 @@ import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useSidebar } from '../context/SidebarContext';
 import { LogOut, Menu, X } from 'lucide-react';
+import { useIOSLayout } from '../hooks/useIOSLayout';
 import './Navbar.css';
 
 export default function Navbar() {
   const { signOut } = useAuth();
   const { isSidebarOpen, toggleSidebar } = useSidebar();
+  const { isIOS, isStandalone, deviceType } = useIOSLayout();
 
   async function handleLogout() {
     await signOut();
@@ -14,7 +16,8 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="navbar">
+    <nav className={`navbar ${isIOS && isStandalone ? 'ios-pwa' : ''} ${deviceType}`}>
+      <div className="navbar-safe-top" />
       <div className="navbar-container">
         <button className="navbar-toggle" onClick={toggleSidebar} aria-label="Toggle menu">
           {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}

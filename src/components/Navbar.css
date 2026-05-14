@@ -194,27 +194,114 @@
   }
 }
 
-/* iOS PWA Optimizations - Use normal display behavior with safe area support */
+/* iOS PWA Optimizations - Structured Safe Area Approach */
 @media (display-mode: standalone) and (max-width: 767px) {
-  /* Base PWA behavior - same as normal browser display */
+  /* Base PWA behavior with structured safe areas */
   .navbar {
-    height: 60px; /* Same as normal mobile */
-    padding-top: env(safe-area-inset-top); /* Add safe area only */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    transform: translateZ(0);
+  }
+  
+  .navbar-safe-top {
+    height: var(--safe-area-top);
+    background: transparent;
   }
   
   .navbar-container {
-    height: 60px; /* Same as normal mobile */
-    padding: 0 16px; /* Same as normal mobile */
-    gap: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--navbar-height);
+    padding: 0 16px;
+    position: relative;
   }
   
   .sidebar {
-    top: calc(60px + env(safe-area-inset-top)); /* Normal mobile top + safe area */
-    height: calc(100vh - 60px - env(safe-area-inset-top));
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--sidebar-width);
+    background: white;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  
+  .sidebar-safe-top {
+    height: var(--safe-area-top);
+    background: white;
+    flex-shrink: 0;
+  }
+  
+  .sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding: 20px 0;
+  }
+  
+  /* Cache scrollbar mais garde fonctionnalité */
+  .sidebar-content::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+  }
+  
+  .sidebar-safe-bottom {
+    height: var(--safe-area-bottom);
+    background: white;
+    flex-shrink: 0;
   }
   
   .sidebar-overlay {
-    top: calc(60px + env(safe-area-inset-top));
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  .main-content {
+    position: absolute;
+    top: calc(var(--navbar-height) + var(--safe-area-top));
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    transition: transform 0.3s ease;
+  }
+  
+  .main-content.sidebar-open {
+    transform: translateX(var(--sidebar-width));
   }
   
   .navbar-toggle {
@@ -234,20 +321,103 @@
     display: none;
   }
   
-  /* iPhone-specific adjustments for safe area values */
-  @media screen and (min-width: 375px) and (min-height: 812px) {
-    /* iPhone X+ with notch - ensure safe area is properly handled */
+  /* iPhone-specific device detection media queries */
+  /* iPhone X, XS, 11 Pro, 12, 13, 14 */
+  @media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
     .navbar {
-      /* env(safe-area-inset-top) will be 44px on these devices */
-      padding-top: env(safe-area-inset-top);
+      padding-top: 44px;
+    }
+    
+    .navbar-safe-top {
+      height: 44px;
     }
   }
   
-  @media screen and (min-width: 393px) and (min-height: 852px) {
-    /* iPhone 14 Pro+ with Dynamic Island */
+  /* iPhone 12 Pro Max, 13 Pro Max, 14 Plus */
+  @media only screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) {
     .navbar {
-      /* env(safe-area-inset-top) will be 59px on these devices */
-      padding-top: env(safe-area-inset-top);
+      padding-top: 47px;
+    }
+    
+    .navbar-safe-top {
+      height: 47px;
+    }
+  }
+  
+  /* iPhone 14 Pro, 15 Pro */
+  @media only screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) {
+    .navbar {
+      padding-top: 59px;
+    }
+    
+    .navbar-safe-top {
+      height: 59px;
+    }
+    
+    .main-content {
+      top: calc(var(--navbar-height) + 59px);
+    }
+  }
+  
+  /* iPhone 14 Pro Max, 15 Pro Max */
+  @media only screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    .navbar {
+      padding-top: 59px;
+    }
+    
+    .navbar-safe-top {
+      height: 59px;
+    }
+    
+    .main-content {
+      top: calc(var(--navbar-height) + 59px);
+    }
+  }
+  
+  /* iPhone SE (3rd gen) - No notch, smaller safe area */
+  @media only screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) {
+    .navbar {
+      padding-top: 20px;
+    }
+    
+    .navbar-safe-top {
+      height: 20px;
+    }
+  }
+  
+  /* Mode paysage */
+  @media (orientation: landscape) {
+    .sidebar {
+      width: 280px;
+    }
+    
+    .navbar-brand h1 {
+      font-size: 16px;
+    }
+    
+    .main-content.sidebar-open {
+      transform: translateX(280px);
+    }
+    
+    .main-content {
+      padding-left: max(var(--spacing-6), env(safe-area-inset-left));
+      padding-right: max(var(--spacing-6), env(safe-area-inset-right));
+      padding-bottom: max(var(--spacing-4), env(safe-area-inset-bottom));
+    }
+  }
+  
+  /* Support iOS < 11.3 */
+  @supports not (padding-top: env(safe-area-inset-top)) {
+    .navbar {
+      padding-top: 20px;
+    }
+    
+    .navbar-safe-top {
+      height: 20px;
+    }
+    
+    .main-content {
+      top: calc(var(--navbar-height) + 20px);
     }
   }
   

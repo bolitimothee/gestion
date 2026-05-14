@@ -627,15 +627,13 @@ body {
 
 /* iOS PWA Safe Area Variables */
 :root {
-  --safe-area-inset-top: 0px;
-  --safe-area-inset-bottom: 0px;
-  --safe-area-inset-left: 0px;
-  --safe-area-inset-right: 0px;
-  --pwa-height: 100vh;
-  --pwa-width: 100vw;
-  --pwa-orientation: portrait;
-  --device-type: unknown;
-  --has-notch: 0;
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+  --navbar-height: 60px;
+  --dynamic-island-height: 54px;
+  --sidebar-width: 280px;
 }
 
 /* iOS PWA Safe Area Support */
