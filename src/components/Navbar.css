@@ -314,8 +314,22 @@
     }
   }
   
+  /* iPhone X, XS, 11 Pro, 12, 13, 14, 15 - Notch devices LANDSCAPE (44px safe area) */
+  @media only screen and (device-width: 812px) and (device-height: 375px) and (-webkit-device-pixel-ratio: 3) {
+    .navbar-safe-top {
+      height: 44px;
+    }
+  }
+  
   /* iPhone 12 Pro, 13 Pro, 14, 15 - Larger notch (47px safe area) */
   @media only screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) {
+    .navbar-safe-top {
+      height: 47px;
+    }
+  }
+  
+  /* iPhone 12 Pro, 13 Pro, 14, 15 - Larger notch LANDSCAPE (47px safe area) */
+  @media only screen and (device-width: 844px) and (device-height: 390px) and (-webkit-device-pixel-ratio: 3) {
     .navbar-safe-top {
       height: 47px;
     }
@@ -328,8 +342,22 @@
     }
   }
   
+  /* iPhone 12 Pro Max, 13 Pro Max, 14 Plus, 15 Plus - Larger devices LANDSCAPE (47px safe area) */
+  @media only screen and (device-width: 926px) and (device-height: 428px) and (-webkit-device-pixel-ratio: 3) {
+    .navbar-safe-top {
+      height: 47px;
+    }
+  }
+  
   /* iPhone 14 Pro, 15 Pro - Dynamic Island (59px safe area) */
   @media only screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) {
+    .navbar-safe-top {
+      height: 59px;
+    }
+  }
+  
+  /* iPhone 14 Pro, 15 Pro - Dynamic Island LANDSCAPE (59px safe area) */
+  @media only screen and (device-width: 852px) and (device-height: 393px) and (-webkit-device-pixel-ratio: 3) {
     .navbar-safe-top {
       height: 59px;
     }
@@ -342,8 +370,22 @@
     }
   }
   
+  /* iPhone 14 Pro Max, 15 Pro Max - Dynamic Island Max LANDSCAPE (59px safe area) */
+  @media only screen and (device-width: 932px) and (device-height: 430px) and (-webkit-device-pixel-ratio: 3) {
+    .navbar-safe-top {
+      height: 59px;
+    }
+  }
+  
   /* iPhone SE (3rd gen) - No notch, smaller safe area (20px) */
   @media only screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) {
+    .navbar-safe-top {
+      height: 20px;
+    }
+  }
+  
+  /* iPhone SE (3rd gen) - No notch, smaller safe area LANDSCAPE (20px) */
+  @media only screen and (device-width: 667px) and (device-height: 375px) and (-webkit-device-pixel-ratio: 2) {
     .navbar-safe-top {
       height: 20px;
     }
