@@ -562,7 +562,7 @@
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
     transform: translateX(-100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 1001;
+    z-index: var(--z-sidebar);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -605,7 +605,7 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
+    z-index: var(--z-sidebar-overlay);
     animation: fadeIn 0.3s ease;
   }
   
@@ -615,91 +615,6 @@
     }
     to {
       opacity: 1;
-    }
-  }
-  
-  /* iPhone-specific device detection media queries */
-  /* iPhone X, XS, 11 Pro, 12, 13, 14, 15 - Notch devices (44px safe area) */
-  @media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
-    .sidebar-safe-top {
-      height: 44px;
-    }
-  }
-  
-  /* iPhone X, XS, 11 Pro, 12, 13, 14, 15 - Notch devices LANDSCAPE (44px safe area) */
-  @media only screen and (device-width: 812px) and (device-height: 375px) and (-webkit-device-pixel-ratio: 3) {
-    .sidebar-safe-top {
-      height: 44px;
-    }
-  }
-  
-  /* iPhone 12 Pro, 13 Pro, 14, 15 - Larger notch (47px safe area) */
-  @media only screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) {
-    .sidebar-safe-top {
-      height: 47px;
-    }
-  }
-  
-  /* iPhone 12 Pro, 13 Pro, 14, 15 - Larger notch LANDSCAPE (47px safe area) */
-  @media only screen and (device-width: 844px) and (device-height: 390px) and (-webkit-device-pixel-ratio: 3) {
-    .sidebar-safe-top {
-      height: 47px;
-    }
-  }
-  
-  /* iPhone 12 Pro Max, 13 Pro Max, 14 Plus, 15 Plus - Larger devices (47px safe area) */
-  @media only screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) {
-    .sidebar-safe-top {
-      height: 47px;
-    }
-  }
-  
-  /* iPhone 12 Pro Max, 13 Pro Max, 14 Plus, 15 Plus - Larger devices LANDSCAPE (47px safe area) */
-  @media only screen and (device-width: 926px) and (device-height: 428px) and (-webkit-device-pixel-ratio: 3) {
-    .sidebar-safe-top {
-      height: 47px;
-    }
-  }
-  
-  /* iPhone 14 Pro, 15 Pro - Dynamic Island (59px safe area) */
-  @media only screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) {
-    .sidebar-safe-top {
-      height: 59px;
-    }
-  }
-  
-  /* iPhone 14 Pro, 15 Pro - Dynamic Island LANDSCAPE (59px safe area) */
-  @media only screen and (device-width: 852px) and (device-height: 393px) and (-webkit-device-pixel-ratio: 3) {
-    .sidebar-safe-top {
-      height: 59px;
-    }
-  }
-  
-  /* iPhone 14 Pro Max, 15 Pro Max - Dynamic Island Max (59px safe area) */
-  @media only screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    .sidebar-safe-top {
-      height: 59px;
-    }
-  }
-  
-  /* iPhone 14 Pro Max, 15 Pro Max - Dynamic Island Max LANDSCAPE (59px safe area) */
-  @media only screen and (device-width: 932px) and (device-height: 430px) and (-webkit-device-pixel-ratio: 3) {
-    .sidebar-safe-top {
-      height: 59px;
-    }
-  }
-  
-  /* iPhone SE (3rd gen) - No notch, smaller safe area (20px) */
-  @media only screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) {
-    .sidebar-safe-top {
-      height: 20px;
-    }
-  }
-  
-  /* iPhone SE (3rd gen) - No notch, smaller safe area LANDSCAPE (20px) */
-  @media only screen and (device-width: 667px) and (device-height: 375px) and (-webkit-device-pixel-ratio: 2) {
-    .sidebar-safe-top {
-      height: 20px;
     }
   }
   
@@ -739,7 +654,7 @@
     transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
     border-right: none;
-    z-index: 950; /* En dessous de navbar (1000) mais au-dessus du contenu */
+    z-index: var(--z-sidebar-mobile);
     backdrop-filter: blur(20px);
     will-change: transform;
     backface-visibility: hidden;
@@ -758,7 +673,7 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.6);
-    z-index: 945; /* Juste en dessous de la sidebar */
+    z-index: var(--z-sidebar-overlay-mobile);
     pointer-events: auto;
     opacity: 0;
     transition: opacity 0.25s ease;
