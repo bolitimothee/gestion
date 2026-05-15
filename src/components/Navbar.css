@@ -222,7 +222,6 @@
     height: var(--navbar-height);
     padding: 0 16px;
     position: relative;
-    padding-top: var(--safe-area-top);
   }
   
   .sidebar {
@@ -308,56 +307,43 @@
   }
   
   /* iPhone-specific device detection media queries */
-  /* iPhone X, XS, 11 Pro, 12, 13, 14 */
+  /* iPhone X, XS, 11 Pro, 12, 13, 14, 15 - Notch devices (44px safe area) */
   @media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
-    .navbar {
-      padding-top: 44px;
-    }
-    
     .navbar-safe-top {
       height: 44px;
     }
   }
   
-  /* iPhone 12 Pro Max, 13 Pro Max, 14 Plus */
-  @media only screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) {
-    .navbar {
-      padding-top: 47px;
-    }
-    
+  /* iPhone 12 Pro, 13 Pro, 14, 15 - Larger notch (47px safe area) */
+  @media only screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) {
     .navbar-safe-top {
       height: 47px;
     }
   }
   
-  /* iPhone 14 Pro, 15 Pro */
+  /* iPhone 12 Pro Max, 13 Pro Max, 14 Plus, 15 Plus - Larger devices (47px safe area) */
+  @media only screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) {
+    .navbar-safe-top {
+      height: 47px;
+    }
+  }
+  
+  /* iPhone 14 Pro, 15 Pro - Dynamic Island (59px safe area) */
   @media only screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) {
-    .navbar {
-      padding-top: 59px;
-    }
-    
     .navbar-safe-top {
       height: 59px;
     }
   }
   
-  /* iPhone 14 Pro Max, 15 Pro Max */
+  /* iPhone 14 Pro Max, 15 Pro Max - Dynamic Island Max (59px safe area) */
   @media only screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    .navbar {
-      padding-top: 59px;
-    }
-    
     .navbar-safe-top {
       height: 59px;
     }
   }
   
-  /* iPhone SE (3rd gen) - No notch, smaller safe area */
+  /* iPhone SE (3rd gen) - No notch, smaller safe area (20px) */
   @media only screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) {
-    .navbar {
-      padding-top: 20px;
-    }
-    
     .navbar-safe-top {
       height: 20px;
     }

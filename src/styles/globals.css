@@ -656,7 +656,7 @@ body {
   
   /* Enhanced iOS PWA Safe Area for iPhone X+ and Dynamic Island */
   @media (display-mode: standalone) and (max-width: 767px) {
-    /* Base iOS PWA adjustments */
+    /* Base iOS PWA adjustments - géré par Navbar.css et Sidebar.css */
     .main-content {
       padding-top: calc(60px + env(safe-area-inset-top));
       padding-left: max(var(--spacing-4), env(safe-area-inset-left));
@@ -668,130 +668,12 @@ body {
       padding-top: var(--spacing-4);
     }
     
-    /* iPhone X, XS, XR, 11, 12, 13, 14, 15 - Notch devices */
-    @media screen and (min-width: 375px) and (min-height: 812px) {
-      .navbar {
-        padding-top: max(44px, env(safe-area-inset-top));
-      }
-      
-      .navbar-container {
-        padding-top: max(44px, env(safe-area-inset-top));
-      }
-      
-      .main-content {
-        padding-top: calc(60px + 44px);
-      }
-    }
-    
-    /* iPhone 12 Pro, 13 Pro, 14, 15 - Larger notch */
-    @media screen and (min-width: 390px) and (min-height: 844px) {
-      .navbar {
-        padding-top: max(47px, env(safe-area-inset-top));
-      }
-      
-      .navbar-container {
-        padding-top: max(47px, env(safe-area-inset-top));
-      }
-      
-      .main-content {
-        padding-top: calc(60px + 47px);
-      }
-    }
-    
-    /* iPhone 12 Pro Max, 13 Pro Max, 14 Plus, 15 Plus - Larger devices */
-    @media screen and (min-width: 428px) and (min-height: 926px) {
-      .navbar {
-        padding-top: max(48px, env(safe-area-inset-top));
-      }
-      
-      .navbar-container {
-        padding-top: max(48px, env(safe-area-inset-top));
-      }
-      
-      .main-content {
-        padding-top: calc(60px + 48px);
-      }
-    }
-    
-    /* iPhone 14 Pro, 15 Pro - Dynamic Island */
-    @media screen and (min-width: 393px) and (min-height: 852px) {
-      .navbar {
-        padding-top: max(59px, env(safe-area-inset-top));
-      }
-      
-      .navbar-container {
-        padding-top: max(59px, env(safe-area-inset-top));
-      }
-      
-      .main-content {
-        padding-top: calc(60px + 59px);
-      }
-      
-      /* Dynamic Island curve adjustments */
-      .form-card {
-        margin-top: var(--spacing-4);
-      }
-      
-      .stats-grid {
-        margin-top: var(--spacing-4);
-      }
-    }
-    
-    /* iPhone 14 Pro Max, 15 Pro Max - Dynamic Island Max */
-    @media screen and (min-width: 430px) and (min-height: 932px) {
-      .navbar {
-        padding-top: max(59px, env(safe-area-inset-top));
-      }
-      
-      .navbar-container {
-        padding-top: max(59px, env(safe-area-inset-top));
-      }
-      
-      .main-content {
-        padding-top: calc(60px + 59px);
-      }
-      
-      /* Dynamic Island curve adjustments */
-      .form-card {
-        margin-top: var(--spacing-4);
-      }
-      
-      .stats-grid {
-        margin-top: var(--spacing-4);
-      }
-    }
-    
-    /* iPhone SE (3rd gen) - No notch, smaller safe area */
-    @media screen and (max-width: 375px) and (max-height: 667px) {
-      .navbar {
-        padding-top: max(20px, env(safe-area-inset-top));
-      }
-      
-      .navbar-container {
-        padding-top: max(20px, env(safe-area-inset-top));
-      }
-      
-      .main-content {
-        padding-top: calc(60px + 20px);
-      }
-    }
-    
     /* Landscape mode adjustments for all iPhone models */
     @media (orientation: landscape) {
       .main-content {
         padding-left: max(var(--spacing-6), env(safe-area-inset-left));
         padding-right: max(var(--spacing-6), env(safe-area-inset-right));
         padding-bottom: max(var(--spacing-4), env(safe-area-inset-bottom));
-      }
-      
-      .page-header {
-        padding-left: max(var(--spacing-6), env(safe-area-inset-left));
-        padding-right: max(var(--spacing-6), env(safe-area-inset-right));
-      }
-      
-      .form-card {
-        margin-left: max(var(--spacing-4), env(safe-area-inset-left));
-        margin-right: max(var(--spacing-4), env(safe-area-inset-right));
       }
     }
   }

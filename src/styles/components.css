@@ -1003,6 +1003,20 @@ select {
   }
 }
 
+/* iOS PWA Mobile Layout - Override pour éviter les conflits */
+@media (display-mode: standalone) and (max-width: 767px) {
+  .layout-container {
+    padding-top: 0; /* Géré par navbar-safe-top */
+  }
+  
+  .main-content {
+    padding-top: calc(60px + env(safe-area-inset-top)); /* Géré par globals.css */
+    padding-left: max(var(--spacing-4), env(safe-area-inset-left));
+    padding-right: max(var(--spacing-4), env(safe-area-inset-right));
+    padding-bottom: max(var(--spacing-4), env(safe-area-inset-bottom));
+  }
+}
+
 /* Tablette Layout */
 @media (min-width: 768px) and (max-width: 1023px) {
   .layout-container {
