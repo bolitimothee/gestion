@@ -9,6 +9,7 @@ export function AuthProvider({ children }) {
   const [account, setAccount] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAuthReady, setIsAuthReady] = useState(false);
+  const [isAccountExpired, setIsAccountExpired] = useState(false);
   const sessionCheckRef = useRef(false);
 
   const loadAccountDetails = useCallback(async (userId) => {
@@ -56,6 +57,16 @@ export function AuthProvider({ children }) {
         if (data?.session) {
           setUser(data.session.user);
           await loadAccountDetails(data.session.user.id);
+          
+          // Vérifier la validité du compte
+          const validityCheck = await authService.checkAccountValidity(data.session.user.id);
+          if (!validityCheck.isValid) {
+            setIsAccountExpired(true);
+            // Déconnecter l'utilisateur si le compte est expiré
+            await supabase.auth.signOut();
+            setUser(null);
+            setAccount(null);
+          }
         }
       } catch (_err) {
         console.error('Error checking session:', _err);
@@ -74,9 +85,20 @@ export function AuthProvider({ children }) {
       if (session?.user) {
         setUser(session.user);
         await loadAccountDetails(session.user.id);
+        
+        // Vérifier la validité du compte
+        const validityCheck = await authService.checkAccountValidity(session.user.id);
+        if (!validityCheck.isValid) {
+          setIsAccountExpired(true);
+          // Déconnecter l'utilisateur si le compte est expiré
+          await supabase.auth.signOut();
+          setUser(null);
+          setAccount(null);
+        }
       } else {
         setUser(null);
         setAccount(null);
+        setIsAccountExpired(false);
       }
       setLoading(false);
       setIsAuthReady(true);
@@ -92,6 +114,7 @@ export function AuthProvider({ children }) {
     account,
     loading,
     isAuthReady,
+    isAccountExpired,
     signUp: async (email, password, accountName, validityDate) => {
       try {
         const result = await authService.signUp(email, password, accountName, validityDate);
@@ -123,6 +146,7 @@ export function AuthProvider({ children }) {
         // Mettre à jour les états localement
         if (result.data?.user) {
           setUser(result.data.user);
+          setIsAccountExpired(false); // Réinitialiser l'état d'expiration
           // Charger les détails du compte et attendre
           await loadAccountDetails(result.data.user.id);
           // S'assurer que le state est mis à jour

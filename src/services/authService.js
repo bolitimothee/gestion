@@ -127,5 +127,51 @@ export const authService = {
       return { data: { user_id: userId, account_name: 'Utilisateur', email: '' }, error: null };
     }
   },
+
+  async checkAccountValidity(userId) {
+    try {
+      const { data, error } = await supabase
+        .from('accounts')
+        .select('*')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      if (error) {
+        console.warn('Impossible de vérifier la validité du compte:', error.message);
+        return { isValid: true, error: null }; // Par défaut, considérer valide si erreur
+      }
+
+      if (!data) {
+        return { isValid: true, error: null }; // Par défaut, considérer valide si pas de données
+      }
+
+      // Vérifier la date de validité
+      if (data.validity_date) {
+        const validityDate = new Date(data.validity_date);
+        const today = new Date();
+        if (today > validityDate) {
+          return { 
+            isValid: false, 
+            error: new Error('Votre compte a expiré. Veuillez contacter l\'administrateur.'),
+            account: data
+          };
+        }
+      }
+
+      // Vérifier si le compte est actif
+      if (!data.is_active) {
+        return { 
+          isValid: false, 
+          error: new Error('Votre compte est désactivé.'),
+          account: data
+        };
+      }
+
+      return { isValid: true, error: null, account: data };
+    } catch (err) {
+      console.warn('Erreur checkAccountValidity:', err);
+      return { isValid: true, error: null }; // Par défaut, considérer valide si erreur
+    }
+  },
 };
 export default authService;

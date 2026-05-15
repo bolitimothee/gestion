@@ -1,23 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Mail, Lock, AlertCircle } from 'lucide-react';
 import './Auth.css';
 
 export default function Login() {
+  const location = useLocation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [error, setError] = useState(location.state?.expired ? 'Votre compte a expiré. Veuillez contacter l\'administrateur.' : '');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { signIn, user } = useAuth();
+  const { signIn, user, isAccountExpired } = useAuth();
+
+  // Nettoyer l'état de navigation pour éviter de réafficher le message
+  useEffect(() => {
+    if (location.state?.expired) {
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
 
   // Rediriger automatiquement si déjà connecté
   useEffect(() => {
-    if (user) {
+    if (user && !isAccountExpired) {
       navigate('/dashboard', { replace: true });
     }
-  }, [user, navigate]);
+  }, [user, isAccountExpired, navigate]);
 
   async function handleSubmit(e) {
     e.preventDefault();

@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export function ProtectedRoute({ children }) {
-  const { user, loading } = useAuth();
+  const { user, loading, isAccountExpired } = useAuth();
 
   if (loading) {
     return (
@@ -39,6 +39,11 @@ export function ProtectedRoute({ children }) {
     return <Navigate to="/login" replace />;
   }
 
-  // L'utilisateur est connecté, afficher le contenu
+  // Vérifier si le compte est expiré
+  if (isAccountExpired) {
+    return <Navigate to="/login" state={{ expired: true }} replace />;
+  }
+
+  // L'utilisateur est connecté et le compte est valide, afficher le contenu
   return children;
 }
