@@ -1010,10 +1010,12 @@ select {
   }
   
   .main-content {
-    padding-top: calc(60px + env(safe-area-inset-top)); /* Géré par globals.css */
+    padding-top: calc(60px + var(--safe-area-top)); /* Navbar height + safe area */
     padding-left: max(var(--spacing-4), env(safe-area-inset-left));
     padding-right: max(var(--spacing-4), env(safe-area-inset-right));
     padding-bottom: max(var(--spacing-4), env(safe-area-inset-bottom));
+    position: relative;
+    z-index: 1;
   }
 }
 

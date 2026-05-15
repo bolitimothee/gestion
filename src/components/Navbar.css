@@ -202,7 +202,7 @@
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1000;
+    z-index: 9999;
     background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
