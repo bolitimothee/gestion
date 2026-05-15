@@ -44,35 +44,30 @@ export const authService = {
 
       if (error) throw error;
 
-      // Vérifier si le compte est actif et valide (optionnel si table n'existe pas)
+      // Vérifier si le compte est actif et valide
       if (data.user) {
-        try {
-          const { data: accountData, error: accountError } = await supabase
-            .from('accounts')
-            .select('*')
-            .eq('user_id', data.user.id)
-            .maybeSingle();
+        const { data: accountData, error: accountError } = await supabase
+          .from('accounts')
+          .select('*')
+          .eq('user_id', data.user.id)
+          .maybeSingle();
 
-          if (!accountError && accountData) {
-            // Vérifier la date de validité
-            if (accountData.validity_date) {
-              const validityDate = new Date(accountData.validity_date);
-              const today = new Date();
-              if (today > validityDate) {
-                throw new Error('Votre compte a expiré. Veuillez contacter l\'administrateur.');
-              }
+        if (!accountError && accountData) {
+          // Vérifier la date de validité
+          if (accountData.validity_date) {
+            const validityDate = new Date(accountData.validity_date);
+            const today = new Date();
+            if (today > validityDate) {
+              throw new Error('Votre compte a expiré. Veuillez contacter l\'administrateur.');
             }
-
-            if (!accountData.is_active) {
-              throw new Error('Votre compte est désactivé.');
-            }
-          } else if (accountError) {
-            console.warn('Avertissement: Impossible de vérifier le compte:', accountError.message);
-            // Ne pas bloquer la connexion si la table n'existe pas
           }
-        } catch (accError) {
-          console.warn('Erreur lors de la vérification du compte:', accError.message);
-          // Continuer quand même - la table peut ne pas exister encore
+
+          if (!accountData.is_active) {
+            throw new Error('Votre compte est désactivé.');
+          }
+        } else if (accountError) {
+          console.warn('Avertissement: Impossible de vérifier le compte:', accountError.message);
+          // Ne pas bloquer la connexion si la table n'existe pas
         }
       }
 
