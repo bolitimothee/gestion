@@ -2,14 +2,13 @@ const CACHE_NAME = 'gestion-commerce-v3';
 const STATIC_CACHE = 'static-v3';
 const DYNAMIC_CACHE = 'dynamic-v3';
 
-// URLs à mettre en cache pour PWA iOS
+// URLs à mettre en cache pour PWA
 const urlsToCache = [
   '/',
   '/manifest.json',
   '/index.html',
   '/icon-192.png',
-  '/icon-512.png',
-  '/favicon.ico'
+  '/icon-512.png'
 ];
 
 // Installation du service worker
