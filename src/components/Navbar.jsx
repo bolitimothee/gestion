@@ -11,8 +11,14 @@ export default function Navbar() {
   const { isIOS, isStandalone, deviceType } = useIOSLayout();
 
   async function handleLogout() {
-    await signOut();
-    window.location.href = '/login';
+    try {
+      await signOut();
+      window.location.href = '/login';
+    } catch (error) {
+      console.error('Erreur lors de la déconnexion:', error);
+      // En cas d'erreur, quand même rediriger vers login
+      window.location.href = '/login';
+    }
   }
 
   return (
