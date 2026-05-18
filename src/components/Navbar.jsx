@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useSidebar } from '../context/SidebarContext';
 import { LogOut, Menu, X } from 'lucide-react';
@@ -9,6 +9,45 @@ export default function Navbar() {
   const { signOut } = useAuth();
   const { isSidebarOpen, toggleSidebar } = useSidebar();
   const { isIOS, isStandalone, deviceType } = useIOSLayout();
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [isInstallAvailable, setIsInstallAvailable] = useState(false);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (event) => {
+      event.preventDefault();
+      setDeferredPrompt(event);
+      setIsInstallAvailable(true);
+    };
+
+    const handleAppInstalled = () => {
+      setDeferredPrompt(null);
+      setIsInstallAvailable(false);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
+
+  async function handleInstallPWA() {
+    if (!deferredPrompt) return;
+
+    deferredPrompt.prompt();
+    const choiceResult = await deferredPrompt.userChoice;
+
+    if (choiceResult.outcome === 'accepted') {
+      console.log('PWA installation accepted');
+    } else {
+      console.log('PWA installation dismissed');
+    }
+
+    setDeferredPrompt(null);
+    setIsInstallAvailable(false);
+  }
 
   async function handleLogout() {
     try {
@@ -33,10 +72,18 @@ export default function Navbar() {
           <h1>Gestion Commerce</h1>
         </div>
 
-        <div className="navbar-user-desktop">
-          <button onClick={handleLogout} className="btn-logout-desktop">
-            <LogOut size={20} />
-          </button>
+        <div className="navbar-actions">
+          {isInstallAvailable && (
+            <button onClick={handleInstallPWA} className="btn-install-pwa">
+              Installer l'app
+            </button>
+          )}
+
+          <div className="navbar-user-desktop">
+            <button onClick={handleLogout} className="btn-logout-desktop">
+              <LogOut size={20} />
+            </button>
+          </div>
         </div>
       </div>
     </nav>
