@@ -214,7 +214,7 @@
   
   .navbar-safe-top {
     height: var(--safe-area-top);
-    background: transparent;
+    background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
   }
   
   .navbar-container {
