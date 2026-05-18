@@ -59,7 +59,11 @@ export function AuthProvider({ children }) {
 
     const checkSession = async () => {
       try {
-        const { data } = await supabase.auth.getSession();
+        const timeoutPromise = new Promise((resolve) =>
+          setTimeout(() => resolve({ data: { session: null } }), 10000)
+        );
+        const sessionPromise = supabase.auth.getSession();
+        const { data } = await Promise.race([sessionPromise, timeoutPromise]);
 
         if (data?.session) {
           if (isSessionExpired(data.session)) {

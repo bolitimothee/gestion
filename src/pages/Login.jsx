@@ -41,6 +41,7 @@ export default function Login() {
         // Attendre que le state se mette à jour avant de naviguer
         // Le useEffect ci-dessus va gérer la redirection
         await new Promise(resolve => setTimeout(resolve, 200));
+        setLoading(false);
       }
     } catch (err) {
       setError(err.message || 'Erreur lors de la connexion. Veuillez contacter l\'administrateur.');
