@@ -59,15 +59,8 @@ export function AuthProvider({ children }) {
 
     const checkSession = async () => {
       try {
-        // Ajouter un timeout pour éviter le blocage infini (augmenté à 10s)
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Timeout de connexion')), 10000)
-        );
+        const { data } = await supabase.auth.getSession();
 
-        const sessionPromise = supabase.auth.getSession();
-        
-        const { data } = await Promise.race([sessionPromise, timeoutPromise]);
-        
         if (data?.session) {
           if (isSessionExpired(data.session)) {
             console.warn('Session expirée détectée, déconnexion en cours.');
