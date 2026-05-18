@@ -58,11 +58,13 @@ export const authService = {
             const validityDate = new Date(accountData.validity_date);
             const today = new Date();
             if (today > validityDate) {
+              await supabase.auth.signOut();
               throw new Error('Votre compte a expiré. Veuillez contacter l\'administrateur.');
             }
           }
 
           if (!accountData.is_active) {
+            await supabase.auth.signOut();
             throw new Error('Votre compte est désactivé.');
           }
         } else if (accountError) {

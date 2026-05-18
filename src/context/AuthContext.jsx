@@ -38,6 +38,20 @@ export function AuthProvider({ children }) {
     return null;
   }, []);
 
+  const isSessionExpired = (session) => {
+    if (!session) return true;
+
+    if (typeof session.expires_at === 'number') {
+      return Date.now() / 1000 >= session.expires_at;
+    }
+
+    if (typeof session.expires_in === 'number') {
+      return session.expires_in <= 0;
+    }
+
+    return false;
+  };
+
   useEffect(() => {
     // Vérifier la session au chargement (une seule fois)
     if (sessionCheckRef.current) return;
@@ -55,17 +69,22 @@ export function AuthProvider({ children }) {
         const { data } = await Promise.race([sessionPromise, timeoutPromise]);
         
         if (data?.session) {
-          setUser(data.session.user);
-          await loadAccountDetails(data.session.user.id);
-          
-          // Vérifier la validité du compte
-          const validityCheck = await authService.checkAccountValidity(data.session.user.id);
-          if (!validityCheck.isValid) {
-            setIsAccountExpired(true);
-            // Déconnecter l'utilisateur si le compte est expiré
+          if (isSessionExpired(data.session)) {
+            console.warn('Session expirée détectée, déconnexion en cours.');
             await supabase.auth.signOut();
             setUser(null);
             setAccount(null);
+          } else {
+            const validityCheck = await authService.checkAccountValidity(data.session.user.id);
+            if (!validityCheck.isValid) {
+              setIsAccountExpired(true);
+              await supabase.auth.signOut();
+              setUser(null);
+              setAccount(null);
+            } else {
+              setUser(data.session.user);
+              await loadAccountDetails(data.session.user.id);
+            }
           }
         }
       } catch (_err) {
@@ -83,17 +102,24 @@ export function AuthProvider({ children }) {
     // Écouter les changements d'authentification
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
-        setUser(session.user);
-        await loadAccountDetails(session.user.id);
-        
-        // Vérifier la validité du compte
-        const validityCheck = await authService.checkAccountValidity(session.user.id);
-        if (!validityCheck.isValid) {
-          setIsAccountExpired(true);
-          // Déconnecter l'utilisateur si le compte est expiré
+        if (isSessionExpired(session)) {
+          console.warn('Session expirée détectée dans onAuthStateChange, déconnexion en cours.');
           await supabase.auth.signOut();
           setUser(null);
           setAccount(null);
+          setIsAccountExpired(false);
+        } else {
+          const validityCheck = await authService.checkAccountValidity(session.user.id);
+          if (!validityCheck.isValid) {
+            setIsAccountExpired(true);
+            await supabase.auth.signOut();
+            setUser(null);
+            setAccount(null);
+          } else {
+            setUser(session.user);
+            await loadAccountDetails(session.user.id);
+            setIsAccountExpired(false);
+          }
         }
       } else {
         setUser(null);
