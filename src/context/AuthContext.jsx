@@ -161,7 +161,9 @@ export function AuthProvider({ children }) {
     },
     signIn: async (email, password) => {
       try {
+        console.debug('[AuthContext] signIn start', { email });
         const result = await authService.signIn(email, password);
+        console.debug('[AuthContext] signIn result', result);
         if (result.error) {
           await authService.signOut();
           setUser(null);

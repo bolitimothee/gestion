@@ -33,18 +33,21 @@ export default function Login() {
     setLoading(true);
 
     try {
+      console.debug('Login submit', { email });
       const result = await signIn(email, password);
-      if (result.error) {
+      console.debug('Login result', result);
+      if (result?.error) {
         setError(result.error.message || 'Erreur de connexion. Veuillez contacter l\'administrateur.');
-        setLoading(false);
-      } else {
-        // Attendre que le state se mette à jour avant de naviguer
-        // Le useEffect ci-dessus va gérer la redirection
-        await new Promise(resolve => setTimeout(resolve, 200));
-        setLoading(false);
+        return;
       }
+
+      // Attendre que le state se mette à jour avant de naviguer
+      // Le useEffect ci-dessus va gérer la redirection
+      await new Promise(resolve => setTimeout(resolve, 200));
     } catch (err) {
+      console.error('Login error', err);
       setError(err.message || 'Erreur lors de la connexion. Veuillez contacter l\'administrateur.');
+    } finally {
       setLoading(false);
     }
   }

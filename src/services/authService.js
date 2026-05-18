@@ -37,10 +37,12 @@ export const authService = {
 
   async signIn(email, password) {
     try {
+      console.debug('[authService] signIn request for', email);
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
+      console.debug('[authService] signIn response', { data, error });
 
       if (error) {
         const message = error.status === 400 || error.status === 401
@@ -58,11 +60,13 @@ export const authService = {
           .maybeSingle();
 
         if (accountError) {
+          console.error('[authService] account lookup error', accountError);
           await supabase.auth.signOut();
           throw new Error('Impossible de vérifier la validité de ce compte. Veuillez contacter l\'administrateur.');
         }
 
         if (!accountData) {
+          console.warn('[authService] account not found for user', data.user?.id);
           await supabase.auth.signOut();
           throw new Error('Compte introuvable ou invalide. Veuillez contacter l\'administrateur.');
         }
