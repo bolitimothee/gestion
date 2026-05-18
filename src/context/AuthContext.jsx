@@ -71,14 +71,14 @@ export function AuthProvider({ children }) {
         if (data?.session) {
           if (isSessionExpired(data.session)) {
             console.warn('Session expirée détectée, déconnexion en cours.');
-            await supabase.auth.signOut();
+            await authService.signOut();
             setUser(null);
             setAccount(null);
           } else {
             const validityCheck = await authService.checkAccountValidity(data.session.user.id);
             if (!validityCheck.isValid) {
               setIsAccountExpired(true);
-              await supabase.auth.signOut();
+              await authService.signOut();
               setUser(null);
               setAccount(null);
             } else {
@@ -104,7 +104,7 @@ export function AuthProvider({ children }) {
       if (session?.user) {
         if (isSessionExpired(session)) {
           console.warn('Session expirée détectée dans onAuthStateChange, déconnexion en cours.');
-          await supabase.auth.signOut();
+          await authService.signOut();
           setUser(null);
           setAccount(null);
           setIsAccountExpired(false);
@@ -112,7 +112,7 @@ export function AuthProvider({ children }) {
           const validityCheck = await authService.checkAccountValidity(session.user.id);
           if (!validityCheck.isValid) {
             setIsAccountExpired(true);
-            await supabase.auth.signOut();
+            await authService.signOut();
             setUser(null);
             setAccount(null);
           } else {
@@ -166,6 +166,10 @@ export function AuthProvider({ children }) {
       try {
         const result = await authService.signIn(email, password);
         if (result.error) {
+          await authService.signOut();
+          setUser(null);
+          setAccount(null);
+          setIsAccountExpired(false);
           return { data: null, error: result.error };
         }
 
@@ -181,6 +185,10 @@ export function AuthProvider({ children }) {
 
         return result;
       } catch (error) {
+        await authService.signOut();
+        setUser(null);
+        setAccount(null);
+        setIsAccountExpired(false);
         return { data: null, error };
       }
     },

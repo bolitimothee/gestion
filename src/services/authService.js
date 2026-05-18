@@ -80,11 +80,33 @@ export const authService = {
   },
 
   async signOut() {
+    const cleanupLocalSession = () => {
+      try {
+        localStorage.removeItem('supabase.auth.token');
+      } catch (err) {
+        console.warn('Impossible de nettoyer le storage local Supabase:', err);
+      }
+    };
+
     try {
       const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      if (error) {
+        if (error.status === 403 || error.message?.toLowerCase().includes('forbidden')) {
+          console.warn('Suppression de session bloquée par Supabase, ignorer le code 403.');
+          cleanupLocalSession();
+          return { error: null };
+        }
+        throw error;
+      }
+      cleanupLocalSession();
       return { error: null };
     } catch (error) {
+      if (error?.status === 403 || error?.message?.toLowerCase().includes('forbidden')) {
+        console.warn('Suppression de session bloquée par Supabase, ignorer le code 403.');
+        cleanupLocalSession();
+        return { error: null };
+      }
+      cleanupLocalSession();
       return { error };
     }
   },

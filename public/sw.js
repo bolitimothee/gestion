@@ -53,6 +53,13 @@ self.addEventListener('activate', (event) => {
 
 // Stratégie de cache: Network First with fallback
 self.addEventListener('fetch', (event) => {
+  const requestUrl = new URL(event.request.url);
+
+  // Ne pas traiter les schémas non supportés par Cache API
+  if (requestUrl.protocol !== 'https:' && requestUrl.protocol !== 'http:') {
+    return fetch(event.request);
+  }
+
   // Ne pas mettre en cache les requêtes API et pages d'authentification
   if (event.request.url.includes('supabase') || 
       event.request.url.includes('api') ||
