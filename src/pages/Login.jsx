@@ -35,7 +35,7 @@ export default function Login() {
     try {
       const result = await signIn(email, password);
       if (result.error) {
-        setError(result.error.message || 'Erreur de connexion');
+        setError(result.error.message || 'Erreur de connexion. Veuillez contacter l\'administrateur.');
         setLoading(false);
       } else {
         // Attendre que le state se mette à jour avant de naviguer
@@ -43,7 +43,7 @@ export default function Login() {
         await new Promise(resolve => setTimeout(resolve, 200));
       }
     } catch (err) {
-      setError(err.message || 'Erreur lors de la connexion');
+      setError(err.message || 'Erreur lors de la connexion. Veuillez contacter l\'administrateur.');
       setLoading(false);
     }
   }

@@ -42,7 +42,12 @@ export const authService = {
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        const message = error.status === 400 || error.status === 401
+          ? 'Email ou mot de passe incorrect. Si le problème persiste, contactez l\'administrateur.'
+          : 'Impossible de se connecter. Veuillez contacter l\'administrateur.';
+        throw new Error(message);
+      }
 
       // Vérifier si le compte est actif et valide
       if (data.user) {
@@ -52,24 +57,29 @@ export const authService = {
           .eq('user_id', data.user.id)
           .maybeSingle();
 
-        if (!accountError && accountData) {
-          // Vérifier la date de validité
-          if (accountData.validity_date) {
-            const validityDate = new Date(accountData.validity_date);
-            const today = new Date();
-            if (today > validityDate) {
-              await supabase.auth.signOut();
-              throw new Error('Votre compte a expiré. Veuillez contacter l\'administrateur.');
-            }
-          }
+        if (accountError) {
+          await supabase.auth.signOut();
+          throw new Error('Impossible de vérifier la validité de ce compte. Veuillez contacter l\'administrateur.');
+        }
 
-          if (!accountData.is_active) {
+        if (!accountData) {
+          await supabase.auth.signOut();
+          throw new Error('Compte introuvable ou invalide. Veuillez contacter l\'administrateur.');
+        }
+
+        // Vérifier la date de validité
+        if (accountData.validity_date) {
+          const validityDate = new Date(accountData.validity_date);
+          const today = new Date();
+          if (today > validityDate) {
             await supabase.auth.signOut();
-            throw new Error('Votre compte est désactivé.');
+            throw new Error('Votre compte a expiré. Veuillez contacter l\'administrateur.');
           }
-        } else if (accountError) {
-          console.warn('Avertissement: Impossible de vérifier le compte:', accountError.message);
-          // Ne pas bloquer la connexion si la table n'existe pas
+        }
+
+        if (!accountData.is_active) {
+          await supabase.auth.signOut();
+          throw new Error('Votre compte est désactivé.');
         }
       }
 
@@ -157,11 +167,11 @@ export const authService = {
 
       if (error) {
         console.warn('Impossible de vérifier la validité du compte:', error.message);
-        return { isValid: true, error: null }; // Par défaut, considérer valide si erreur
+        return { isValid: false, error: new Error('Impossible de vérifier la validité du compte.'), account: null };
       }
 
       if (!data) {
-        return { isValid: true, error: null }; // Par défaut, considérer valide si pas de données
+        return { isValid: false, error: new Error('Compte introuvable ou invalide.'), account: null };
       }
 
       // Vérifier la date de validité
