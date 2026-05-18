@@ -48,7 +48,6 @@ export default function Sales() {
 
   // Get date filter options
   const getDateFilters = useCallback(() => {
-    const today = new Date();
     const filters = [
       { value: 'today', label: "Aujourd'hui" },
       { value: 'week', label: 'Cette semaine' },

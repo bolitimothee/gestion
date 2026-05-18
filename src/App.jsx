@@ -5,6 +5,7 @@ import { SidebarProvider } from './context/SidebarContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import LoadingSpinner from './components/LoadingSpinner';
 import Login from './pages/Login';
+import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Stock from './pages/Stock';
 import Sales from './pages/Sales';
@@ -57,7 +58,9 @@ function AppContent() {
               </ProtectedRoute>
             }
           />
+          <Route path="/register" element={<Register />} />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </SidebarProvider>
     </Router>

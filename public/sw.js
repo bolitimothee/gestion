@@ -63,12 +63,12 @@ self.addEventListener('fetch', (event) => {
 
   event.respondWith(
     caches.match(event.request)
-      .then((response) => {
-        // Network First pour les pages HTML
-        if (event.request.destination === 'document') {
+      .then((cachedResponse) => {
+        const isNavigation = event.request.mode === 'navigate' || event.request.destination === 'document';
+
+        if (isNavigation) {
           return fetch(event.request)
             .then((networkResponse) => {
-              // Mettre en cache la réponse réseau
               if (networkResponse.ok) {
                 const responseClone = networkResponse.clone();
                 caches.open(STATIC_CACHE).then((cache) => {
@@ -78,22 +78,18 @@ self.addEventListener('fetch', (event) => {
               return networkResponse;
             })
             .catch(() => {
-              // Fallback au cache si réseau échoue
-              return response;
+              return cachedResponse || caches.match('/index.html') || caches.match('/');
             });
         }
-        
-        // Cache First pour les assets statiques
-        if (response) {
-          return response;
+
+        if (cachedResponse) {
+          return cachedResponse;
         }
-        
-        // Sinon, faire la requête réseau
+
         return fetch(event.request)
           .then((networkResponse) => {
-            // Mettre en cache les assets statiques
-            if (networkResponse.ok && 
-                (event.request.destination === 'script' || 
+            if (networkResponse.ok &&
+                (event.request.destination === 'script' ||
                  event.request.destination === 'style' ||
                  event.request.destination === 'image')) {
               const responseClone = networkResponse.clone();
@@ -102,11 +98,10 @@ self.addEventListener('fetch', (event) => {
               });
             }
             return networkResponse;
+          })
+          .catch(() => {
+            return new Response('Erreur réseau', { status: 500 });
           });
-      })
-      .catch((error) => {
-        console.error('Service Worker: Erreur de fetch:', error);
-        return new Response('Erreur réseau', { status: 500 });
       })
   );
 });

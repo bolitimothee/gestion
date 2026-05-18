@@ -364,10 +364,10 @@ body {
 .cursor-not-allowed { cursor: not-allowed; }
 
 /* User Select */
-.select-none { user-select: none; }
-.select-text { user-select: text; }
-.select-all { user-select: all; }
-.select-auto { user-select: auto; }
+.select-none { -webkit-user-select: none; user-select: none; }
+.select-text { -webkit-user-select: text; user-select: text; }
+.select-all { -webkit-user-select: all; user-select: all; }
+.select-auto { -webkit-user-select: auto; user-select: auto; }
 
 /* Pointer Events */
 .pointer-events-none { pointer-events: none; }
@@ -549,12 +549,14 @@ body {
 /* Glass Effects */
 .glass {
   background: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .glass-dark {
   background: rgba(0, 0, 0, 0.1);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -781,20 +783,10 @@ body {
 
 /* iOS PWA Responsivity Optimizations */
 @media (display-mode: standalone) {
-  body {
-    -webkit-text-size-adjust: 100%;
-  }
-  
   /* iPhone optimizations */
   :root {
     --device-type: unknown;
     --has-notch: 0;
-  }
-  
-  @supports (-webkit-touch-callout: none) {
-    .main-content {
-      -webkit-overflow-scrolling: touch;
-    }
   }
   
   /* Landscape mode optimizations */

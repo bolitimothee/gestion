@@ -12,6 +12,7 @@
   flex-direction: column;
   box-shadow: 6px 0 32px rgba(0, 0, 0, 0.08);
   flex-shrink: 0;
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
               box-shadow 0.3s ease,
@@ -144,6 +145,7 @@
   padding: 32px 24px;
   margin-top: auto;
   background: linear-gradient(180deg, rgba(248, 250, 252, 0.8) 0%, rgba(241, 245, 249, 0.9) 100%);
+  -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
   position: relative;
 }
@@ -169,6 +171,7 @@
   text-align: center;
   word-break: break-all;
   font-weight: 600;
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   position: relative;
@@ -582,7 +585,6 @@
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
     padding: 20px 0;
   }
   
@@ -646,29 +648,30 @@
   .sidebar {
     position: fixed;
     left: 0;
-    top: 60px; /* Commence sous la navbar mobile */
+    top: calc(60px + var(--safe-area-top)); /* Commence sous la navbar mobile + safe area */
     width: 85%;
     max-width: 320px;
-    height: calc(100vh - 60px); /* Hauteur restante après navbar */
+    height: calc(100vh - 60px - var(--safe-area-bottom)); /* Hauteur restante après navbar et safe area */
     transform: translateX(-100%) translateZ(0);
     transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
     border-right: none;
     z-index: var(--z-sidebar-mobile);
+    -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     will-change: transform;
     backface-visibility: hidden;
     -webkit-font-smoothing: antialiased;
   }
 
-  .sidebar.active {
+  .sidebar.open {
     transform: translateX(0) translateZ(0);
   }
 
   .sidebar-overlay {
     display: block;
     position: fixed;
-    top: 60px; /* Commence sous la navbar mobile */
+    top: calc(60px + var(--safe-area-top)); /* Commence sous la navbar mobile + safe area */
     left: 0;
     right: 0;
     bottom: 0;
@@ -765,7 +768,7 @@
     z-index: 950;
   }
 
-  .sidebar.active {
+  .sidebar.open {
     transform: translateX(0);
   }
 

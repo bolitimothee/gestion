@@ -19,8 +19,8 @@ export default function Finances() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [_searchTerm, setSearchTerm] = useState('');
+  const [_selectedCategory, setSelectedCategory] = useState('');
   const [formData, setFormData] = useState({
     description: '',
     amount: 0,

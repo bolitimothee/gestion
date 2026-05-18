@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Mail, Lock, AlertCircle } from 'lucide-react';
 import './Auth.css';
@@ -101,7 +101,7 @@ export default function Login() {
 
         <div className="auth-footer">
           <p className="auth-info">
-            Pour créer un nouveau compte, contactez votre administrateur
+            Vous n'avez pas de compte ? <Link to="/register">Créer un compte</Link>
           </p>
         </div>
       </div>
