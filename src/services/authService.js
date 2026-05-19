@@ -1,5 +1,19 @@
 import { supabase } from './supabaseClient';
 
+const withTimeout = async (promise, ms, errorMessage) => {
+  let timeoutId;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise((_, reject) => {
+        timeoutId = setTimeout(() => reject(new Error(errorMessage)), ms);
+      }),
+    ]);
+  } finally {
+    clearTimeout(timeoutId);
+  }
+};
+
 export const authService = {
   async signUp(email, password, accountName, validityDate) {
     try {
@@ -38,10 +52,14 @@ export const authService = {
   async signIn(email, password) {
     try {
       console.debug('[authService] signIn request for', email);
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { data, error } = await withTimeout(
+        supabase.auth.signInWithPassword({
+          email,
+          password,
+        }),
+        15000,
+        'Connexion Supabase trop longue. Vérifiez votre connexion réseau.'
+      );
       console.debug('[authService] signIn response', { data, error });
 
       if (error) {
@@ -51,16 +69,24 @@ export const authService = {
         throw new Error(message);
       }
 
+      if (!data || (!data.user && !data.session?.user)) {
+        throw new Error('Impossible de récupérer les informations de connexion. Veuillez réessayer.');
+      }
+
       // Support response shape where user may be under data.user or data.session.user
       const user = data.user || data.session?.user;
 
       // Vérifier si le compte est actif et valide
       if (user) {
-        const { data: accountData, error: accountError } = await supabase
-          .from('accounts')
-          .select('*')
-          .eq('user_id', user.id)
-          .maybeSingle();
+        const { data: accountData, error: accountError } = await withTimeout(
+          supabase
+            .from('accounts')
+            .select('*')
+            .eq('user_id', user.id)
+            .maybeSingle(),
+          7000,
+          'Vérification du compte trop longue. Veuillez réessayer.'
+        );
 
         if (accountError) {
           console.error('[authService] account lookup error', accountError);
