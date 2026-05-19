@@ -3,7 +3,10 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './styles/globals.css'
 import './styles/components.css'
-import './utils/supabaseCheck.js' // Vérification de la configuration Supabase au démarrage
+// Vérification Supabase en dev uniquement (évite appels réseau superflus en prod)
+if (import.meta.env.DEV) {
+  import('./utils/supabaseCheck.js');
+}
 import { iOSPWAHelper } from './utils/iosPWAHelper.js' // Optimisation PWA iOS
 
 // Enregistrement du Service Worker pour PWA
