@@ -20,7 +20,7 @@ export function AuthProvider({ children }) {
     try {
       // Ajouter un timeout pour éviter le blocage
       const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Timeout chargement compte')), 5000)
+        setTimeout(() => reject(new Error('Timeout chargement compte')), 4000)
       );
       const accountPromise = authService.getAccountDetails(userId);
       const { data } = await Promise.race([accountPromise, timeoutPromise]);
@@ -59,7 +59,7 @@ export function AuthProvider({ children }) {
     const checkSession = async () => {
       try {
         const timeoutPromise = new Promise((resolve) =>
-          setTimeout(() => resolve({ data: { session: null } }), 5000)
+          setTimeout(() => resolve({ data: { session: null } }), 4000)
         );
         const sessionPromise = supabase.auth.getSession();
         const { data } = await Promise.race([sessionPromise, timeoutPromise]);
@@ -98,8 +98,8 @@ export function AuthProvider({ children }) {
 
     checkSession();
 
-    // Écouter les changements d'authentification
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    // Écouter les changements d'authentification (défensif)
+    const res = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
         if (isSessionExpired(session)) {
           console.warn('Session expirée détectée dans onAuthStateChange, déconnexion en cours.');
@@ -131,6 +131,7 @@ export function AuthProvider({ children }) {
       setLoading(false);
       setIsAuthReady(true);
     });
+    const subscription = res?.data?.subscription;
 
     return () => {
       subscription?.unsubscribe();
