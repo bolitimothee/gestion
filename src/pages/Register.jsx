@@ -38,9 +38,7 @@ export default function Register() {
         setError(result.error.message || 'Erreur lors de l\'inscription');
         setLoading(false);
       } else {
-        // Attendre que le state se mette à jour avant de naviguer
         // Le useEffect ci-dessus va gérer la redirection
-        await new Promise(resolve => setTimeout(resolve, 200));
       }
     } catch (err) {
       setError(err.message || 'Erreur lors de l\'inscription');

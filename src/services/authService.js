@@ -51,12 +51,15 @@ export const authService = {
         throw new Error(message);
       }
 
+      // Support response shape where user may be under data.user or data.session.user
+      const user = data.user || data.session?.user;
+
       // Vérifier si le compte est actif et valide
-      if (data.user) {
+      if (user) {
         const { data: accountData, error: accountError } = await supabase
           .from('accounts')
           .select('*')
-          .eq('user_id', data.user.id)
+          .eq('user_id', user.id)
           .maybeSingle();
 
         if (accountError) {
@@ -66,7 +69,7 @@ export const authService = {
         }
 
         if (!accountData) {
-          console.warn('[authService] account not found for user', data.user?.id);
+          console.warn('[authService] account not found for user', user?.id);
           await supabase.auth.signOut();
           throw new Error('Compte introuvable ou invalide. Veuillez contacter l\'administrateur.');
         }
@@ -87,7 +90,12 @@ export const authService = {
         }
       }
 
-      return { data, error: null };
+      const normalizedData = {
+        ...data,
+        user: user || null,
+      };
+
+      return { data: normalizedData, error: null };
     } catch (error) {
       return { data: null, error };
     }

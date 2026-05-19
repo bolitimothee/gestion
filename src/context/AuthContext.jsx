@@ -18,14 +18,13 @@ export function AuthProvider({ children }) {
       return null;
     }
     try {
-      // Ajouter un timeout pour éviter le blocage (augmenté à 10s)
+      // Ajouter un timeout pour éviter le blocage
       const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Timeout chargement compte')), 10000)
+        setTimeout(() => reject(new Error('Timeout chargement compte')), 5000)
       );
-
       const accountPromise = authService.getAccountDetails(userId);
       const { data } = await Promise.race([accountPromise, timeoutPromise]);
-      
+
       if (data) {
         setAccount(data);
         return data;
@@ -60,7 +59,7 @@ export function AuthProvider({ children }) {
     const checkSession = async () => {
       try {
         const timeoutPromise = new Promise((resolve) =>
-          setTimeout(() => resolve({ data: { session: null } }), 10000)
+          setTimeout(() => resolve({ data: { session: null } }), 5000)
         );
         const sessionPromise = supabase.auth.getSession();
         const { data } = await Promise.race([sessionPromise, timeoutPromise]);
@@ -80,7 +79,10 @@ export function AuthProvider({ children }) {
               setAccount(null);
             } else {
               setUser(data.session.user);
-              await loadAccountDetails(data.session.user.id);
+              setLoading(false);
+              setIsAuthReady(true);
+              loadAccountDetails(data.session.user.id).catch((err) => console.warn('Erreur chargement compte asynchrone:', err));
+              return;
             }
           }
         }
@@ -114,8 +116,11 @@ export function AuthProvider({ children }) {
             setAccount(null);
           } else {
             setUser(session.user);
-            await loadAccountDetails(session.user.id);
             setIsAccountExpired(false);
+            setLoading(false);
+            setIsAuthReady(true);
+            loadAccountDetails(session.user.id).catch((err) => console.warn('Erreur chargement compte asynchrone:', err));
+            return;
           }
         }
       } else {
@@ -146,12 +151,10 @@ export function AuthProvider({ children }) {
         }
 
         // Mettre à jour les états localement
-        if (result.data?.user) {
-          setUser(result.data.user);
-          // Charger les détails du compte et attendre
-          await loadAccountDetails(result.data.user.id);
-          // S'assurer que le state est mis à jour
-          await new Promise(resolve => setTimeout(resolve, 100));
+        const createdUser = result.data?.user || result.data?.session?.user;
+        if (createdUser) {
+          setUser(createdUser);
+          loadAccountDetails(createdUser.id).catch((err) => console.warn('Erreur chargement compte asynchrone:', err));
         }
 
         return result;
@@ -173,13 +176,11 @@ export function AuthProvider({ children }) {
         }
 
         // Mettre à jour les états localement
-        if (result.data?.user) {
-          setUser(result.data.user);
+        const loggedUser = result.data?.user || result.data?.session?.user;
+        if (loggedUser) {
+          setUser(loggedUser);
           setIsAccountExpired(false); // Réinitialiser l'état d'expiration
-          // Charger les détails du compte et attendre
-          await loadAccountDetails(result.data.user.id);
-          // S'assurer que le state est mis à jour
-          await new Promise(resolve => setTimeout(resolve, 100));
+          loadAccountDetails(loggedUser.id).catch((err) => console.warn('Erreur chargement compte asynchrone:', err));
         }
 
         return result;
