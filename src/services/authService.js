@@ -57,8 +57,8 @@ export const authService = {
           email,
           password,
         }),
-        15000,
-        'Connexion Supabase trop longue. Vérifiez votre connexion réseau.'
+        8000,
+        'Connexion trop longue — vérifiez votre réseau et réessayez.'
       );
       console.debug('[authService] signIn response', { data, error });
 
@@ -83,9 +83,9 @@ export const authService = {
             .from('accounts')
             .select('*')
             .eq('user_id', user.id)
-            .maybeSingle(),
-          7000,
-          'Vérification du compte trop longue. Veuillez réessayer.'
+              .maybeSingle(),
+            4000,
+            'Vérification du compte trop longue — réessayez.'
         );
 
         if (accountError) {

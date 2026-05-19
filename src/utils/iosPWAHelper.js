@@ -119,7 +119,7 @@ export const iOSPWAHelper = {
         setTimeout(() => {
           this.adjustSafeArea();
           this.hideSafariNavbar();
-        }, 100);
+        }, 50);
       };
 
       // Écouter les changements d'orientation
@@ -172,14 +172,14 @@ export const iOSPWAHelper = {
           // Adapter le viewport quand le clavier apparaît
           setTimeout(() => {
             window.scrollTo(0, 0);
-          }, 300);
+          }, 150);
         });
         
         input.addEventListener('blur', () => {
           // Restaurer le viewport quand le clavier disparaît
           setTimeout(() => {
             this.hideSafariNavbar();
-          }, 100);
+          }, 75);
         });
       });
     }
@@ -213,18 +213,18 @@ export const iOSPWAHelper = {
         this.handleFocusManagement();
       }
 
-      // Cacher la barre de navigation après un délai
+      // Cacher la barre de navigation après un délai (réduit pour réactivité)
       setTimeout(() => {
         this.hideSafariNavbar();
         this.optimizeDisplay();
-      }, 1000);
+      }, 300);
 
-      // Optimiser après le chargement complet
+      // Optimiser après le chargement complet (réduit)
       window.addEventListener('load', () => {
         setTimeout(() => {
           this.adjustPWAResponsivity();
           this.optimizeDisplay();
-        }, 500);
+        }, 200);
       });
     }
   }
