@@ -53,11 +53,16 @@ export const authService = {
     try {
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       const supabaseAnonKeyPresent = Boolean(import.meta.env.VITE_SUPABASE_ANON_KEY);
-      console.debug('[authService] signIn request for', email, {
+      console.log('[authService] ========== START LOGIN ==========');
+      console.log('[authService] signIn request for', email, {
         supabaseUrl,
         supabaseAnonKeyPresent,
+        timestamp: new Date().toISOString(),
       });
 
+      console.log('[authService] Calling supabase.auth.signInWithPassword...');
+      const startTime = Date.now();
+      
       const { data, error } = await withTimeout(
         supabase.auth.signInWithPassword({
           email,
@@ -66,9 +71,13 @@ export const authService = {
         30000,
         'Connexion trop longue — vérifiez votre réseau et réessayez.'
       );
-      console.debug('[authService] signIn response', {
-        data,
-        error,
+      
+      const endTime = Date.now();
+      console.log('[authService] signInWithPassword response received after', (endTime - startTime) + 'ms', {
+        dataReceived: Boolean(data),
+        errorReceived: Boolean(error),
+        errorMessage: error?.message,
+        errorStatus: error?.status,
       });
 
       if (error) {
@@ -84,12 +93,15 @@ export const authService = {
 
       // Support response shape where user may be under data.user or data.session.user
       const user = data.user || data.session?.user;
-      console.debug('[authService] user extracted', { userId: user?.id });
+      console.log('[authService] user extracted', { userId: user?.id, email: user?.email });
 
       // Vérifier si le compte est actif et valide
       if (user) {
-        console.debug('[authService] starting account validation for user', user.id);
+        console.log('[authService] starting account validation for user', user.id);
         try {
+          console.log('[authService] Querying accounts table...');
+          const startAccountCheck = Date.now();
+          
           const { data: accountData, error: accountError } = await withTimeout(
             supabase
               .from('accounts')
@@ -99,7 +111,13 @@ export const authService = {
               10000,
               'Vérification du compte trop longue — réessayez.'
           );
-          console.debug('[authService] account lookup completed', { accountData, accountError });
+          
+          const endAccountCheck = Date.now();
+          console.log('[authService] account lookup completed after', (endAccountCheck - startAccountCheck) + 'ms', {
+            accountDataReceived: Boolean(accountData),
+            accountErrorReceived: Boolean(accountError),
+            accountErrorMessage: accountError?.message,
+          });
 
           if (accountError) {
             console.error('[authService] account lookup error', accountError);
@@ -112,6 +130,8 @@ export const authService = {
             await supabase.auth.signOut();
             throw new Error('Compte introuvable ou invalide. Veuillez contacter l\'administrateur.');
           }
+
+          console.log('[authService] account data retrieved', { id: accountData.id, isActive: accountData.is_active, validityDate: accountData.validity_date });
 
           // Vérifier la date de validité
           if (accountData.validity_date) {
@@ -127,7 +147,7 @@ export const authService = {
             await supabase.auth.signOut();
             throw new Error('Votre compte est désactivé.');
           }
-          console.debug('[authService] account validation passed');
+          console.log('[authService] ========== ACCOUNT VALIDATION PASSED ==========');
         } catch (validationError) {
           console.error('[authService] account validation error:', validationError.message);
           throw validationError;
@@ -139,8 +159,10 @@ export const authService = {
         user: user || null,
       };
 
+      console.log('[authService] ========== LOGIN SUCCESS ==========');
       return { data: normalizedData, error: null };
     } catch (error) {
+      console.error('[authService] ========== LOGIN FAILED ==========');
       console.error('[authService] signIn caught error:', {
         message: error?.message,
         status: error?.status,
