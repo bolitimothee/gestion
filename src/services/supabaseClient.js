@@ -15,6 +15,20 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
   throw new Error(errorMsg);
 }
 
+// Test de connectivité à Supabase
+console.log('[supabaseClient] Testing Supabase connectivity...');
+fetch(SUPABASE_URL + '/rest/v1/', {
+  headers: {
+    'apikey': SUPABASE_ANON_KEY,
+  }
+})
+  .then(r => {
+    console.log('[supabaseClient] Supabase connectivity test response:', r.status, r.statusText);
+    return r.text();
+  })
+  .then(text => console.log('[supabaseClient] Response body:', text.substring(0, 100)))
+  .catch(err => console.error('[supabaseClient] Supabase connectivity test failed:', err.message));
+
 // Créer une instance unique pour éviter les avertissements de multiples instances
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {

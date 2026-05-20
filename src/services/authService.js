@@ -3,12 +3,24 @@ import { supabase } from './supabaseClient';
 const withTimeout = async (promise, ms, errorMessage) => {
   let timeoutId;
   try {
-    return await Promise.race([
-      promise,
+    console.log('[withTimeout] Starting timeout wrapper for', ms + 'ms');
+    const result = await Promise.race([
+      promise.then(r => {
+        console.log('[withTimeout] Promise resolved before timeout');
+        return r;
+      }).catch(err => {
+        console.error('[withTimeout] Promise rejected before timeout:', err.message);
+        throw err;
+      }),
       new Promise((_, reject) => {
-        timeoutId = setTimeout(() => reject(new Error(errorMessage)), ms);
+        timeoutId = setTimeout(() => {
+          console.error('[withTimeout] TIMEOUT after', ms + 'ms');
+          reject(new Error(errorMessage));
+        }, ms);
       }),
     ]);
+    console.log('[withTimeout] Race completed successfully');
+    return result;
   } finally {
     clearTimeout(timeoutId);
   }
