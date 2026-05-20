@@ -155,6 +155,8 @@ export function AuthProvider({ children }) {
         const createdUser = result.data?.user || result.data?.session?.user;
         if (createdUser) {
           setUser(createdUser);
+          setLoading(false);
+          setIsAuthReady(true);
           loadAccountDetails(createdUser.id).catch((err) => console.warn('Erreur chargement compte asynchrone:', err));
         }
 
@@ -181,6 +183,8 @@ export function AuthProvider({ children }) {
         if (loggedUser) {
           setUser(loggedUser);
           setIsAccountExpired(false); // Réinitialiser l'état d'expiration
+          setLoading(false);
+          setIsAuthReady(true);
           loadAccountDetails(loggedUser.id).catch((err) => console.warn('Erreur chargement compte asynchrone:', err));
         }
 
