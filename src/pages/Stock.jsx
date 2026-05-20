@@ -17,8 +17,7 @@ export default function Stock() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState('');
-  const [_searchTerm, setSearchTerm] = useState('');
-  const [_selectedCategory, setSelectedCategory] = useState('');
+  const [maxStockThreshold] = useState(100); // Seuil configurable pour le statut de stock
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -56,9 +55,6 @@ export default function Stock() {
 
   // Handle search and filter
   const handleSearch = useCallback((search, category) => {
-    setSearchTerm(search);
-    setSelectedCategory(category);
-    
     let filtered = products;
     
     // Filter by search term
@@ -106,8 +102,8 @@ export default function Stock() {
       setError('Le prix de revente doit être supérieur à 0');
       return;
     }
-    if (formData.quantity <= 0) {
-      setError('La quantité doit être supérieure à 0');
+    if (formData.quantity < 0) {
+      setError('La quantité ne peut pas être négative');
       return;
     }
 
@@ -340,7 +336,7 @@ export default function Stock() {
           ) : (
             <div className="products-grid">
               {filteredProducts.map((product) => {
-                const stockStatus = getStockStatus(product.quantity, 100);
+                const stockStatus = getStockStatus(product.quantity, maxStockThreshold);
                 return (
                 <div key={product.id} className="product-card">
                   <div className="product-header">

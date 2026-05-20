@@ -19,8 +19,6 @@ export default function Finances() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState('');
-  const [_searchTerm, setSearchTerm] = useState('');
-  const [_selectedCategory, setSelectedCategory] = useState('');
   const [formData, setFormData] = useState({
     description: '',
     amount: 0,
@@ -52,9 +50,6 @@ export default function Finances() {
 
   // Handle search and filter
   const handleSearch = useCallback((search, category) => {
-    setSearchTerm(search);
-    setSelectedCategory(category);
-    
     let filtered = expenses;
     
     // Filter by search term
@@ -104,8 +99,8 @@ export default function Finances() {
       setEditingId(null);
       setShowForm(false);
       await loadData();
-    } catch {
-      // erreur ignorée
+    } catch (error) {
+      console.error('Erreur handleSubmit dépenses:', error);
       setError(editingId ? 'Erreur lors de la modification de la dépense' : 'Erreur lors de l\'ajout de la dépense');
     }
   }
@@ -289,7 +284,7 @@ export default function Finances() {
                       min="0"
                       required
                     />
-                    <span className="form-hint">Montant de la dépense en euros</span>
+                    <span className="form-hint">Montant de la dépense en FCFA</span>
                   </div>
 
                   <div className="form-group">

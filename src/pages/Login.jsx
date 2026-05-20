@@ -37,6 +37,10 @@ export default function Login() {
       // Appel direct à signIn; les timeouts internes sont gérés dans le service
       const result = await signIn(email, password);
       console.debug('Login result', result);
+      console.debug('Login result data/error', {
+        data: result?.data,
+        error: result?.error,
+      });
       if (result?.error) {
         setError(result.error.message || 'Erreur de connexion. Veuillez contacter l\'administrateur.');
         return;

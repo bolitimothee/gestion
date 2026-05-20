@@ -51,7 +51,13 @@ export const authService = {
 
   async signIn(email, password) {
     try {
-      console.debug('[authService] signIn request for', email);
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKeyPresent = Boolean(import.meta.env.VITE_SUPABASE_ANON_KEY);
+      console.debug('[authService] signIn request for', email, {
+        supabaseUrl,
+        supabaseAnonKeyPresent,
+      });
+
       const { data, error } = await withTimeout(
         supabase.auth.signInWithPassword({
           email,
@@ -60,7 +66,10 @@ export const authService = {
         8000,
         'Connexion trop longue — vérifiez votre réseau et réessayez.'
       );
-      console.debug('[authService] signIn response', { data, error });
+      console.debug('[authService] signIn response', {
+        data,
+        error,
+      });
 
       if (error) {
         const message = error.status === 400 || error.status === 401

@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { salesService } from '../services/salesService';
 import { stockService } from '../services/stockService';
 import Navbar from '../components/Navbar';
@@ -12,6 +13,7 @@ import './Sales.css';
 
 export default function Sales() {
   const { user, account } = useAuth();
+  const navigate = useNavigate();
   const [sales, setSales] = useState([]);
   const [filteredSales, setFilteredSales] = useState([]);
   const [products, setProducts] = useState([]);
@@ -19,8 +21,6 @@ export default function Sales() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState('');
-  const [_searchTerm, setSearchTerm] = useState('');
-  const [_selectedDateFilter, setSelectedDateFilter] = useState('');
   const [formData, setFormData] = useState({
     product_id: '',
     quantity: 1,
@@ -59,9 +59,6 @@ export default function Sales() {
 
   // Handle search and filter
   const handleSearch = useCallback((search, dateFilter) => {
-    setSearchTerm(search);
-    setSelectedDateFilter(dateFilter);
-    
     let filtered = sales;
     
     // Filter by search term
@@ -138,11 +135,7 @@ export default function Sales() {
     }
 
     try {
-      console.log('FormData product_id:', formData.product_id);
-      console.log('Available products:', products.map(p => ({ id: p.id, name: p.name })));
-      
-      const product = products.find((p) => String(p.id) === String(formData.product_id));
-      console.log('Found product:', product);
+      const product = products.find((p) => p.id === formData.product_id);
       
       if (!product) {
         setError('Produit non trouvé. Veuillez sélectionner un produit valide.');
@@ -445,7 +438,7 @@ export default function Sales() {
               <h3>Aucun produit disponible</h3>
               <p>Vous devez d'abord ajouter des produits en stock avant de pouvoir enregistrer des ventes.</p>
               <button 
-                onClick={() => window.location.href = '/stock'}
+                onClick={() => navigate('/stock')}
                 className="btn btn-primary"
               >
                 Aller à la gestion des stocks
