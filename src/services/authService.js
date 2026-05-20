@@ -3,24 +3,12 @@ import { supabase } from './supabaseClient';
 const withTimeout = async (promise, ms, errorMessage) => {
   let timeoutId;
   try {
-    console.log('[withTimeout] Starting timeout wrapper for', ms + 'ms');
-    const result = await Promise.race([
-      promise.then(r => {
-        console.log('[withTimeout] Promise resolved before timeout');
-        return r;
-      }).catch(err => {
-        console.error('[withTimeout] Promise rejected before timeout:', err.message);
-        throw err;
-      }),
+    return await Promise.race([
+      promise,
       new Promise((_, reject) => {
-        timeoutId = setTimeout(() => {
-          console.error('[withTimeout] TIMEOUT after', ms + 'ms');
-          reject(new Error(errorMessage));
-        }, ms);
+        timeoutId = setTimeout(() => reject(new Error(errorMessage)), ms);
       }),
     ]);
-    console.log('[withTimeout] Race completed successfully');
-    return result;
   } finally {
     clearTimeout(timeoutId);
   }
@@ -65,16 +53,11 @@ export const authService = {
     try {
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       const supabaseAnonKeyPresent = Boolean(import.meta.env.VITE_SUPABASE_ANON_KEY);
-      console.log('[authService] ========== START LOGIN ==========');
-      console.log('[authService] signIn request for', email, {
+      console.debug('[authService] signIn request for', email, {
         supabaseUrl,
         supabaseAnonKeyPresent,
-        timestamp: new Date().toISOString(),
       });
 
-      console.log('[authService] Calling supabase.auth.signInWithPassword...');
-      const startTime = Date.now();
-      
       const { data, error } = await withTimeout(
         supabase.auth.signInWithPassword({
           email,
@@ -83,14 +66,8 @@ export const authService = {
         30000,
         'Connexion trop longue — vérifiez votre réseau et réessayez.'
       );
-      
-      const endTime = Date.now();
-      console.log('[authService] signInWithPassword response received after', (endTime - startTime) + 'ms', {
-        dataReceived: Boolean(data),
-        errorReceived: Boolean(error),
-        errorMessage: error?.message,
-        errorStatus: error?.status,
-      });
+
+      console.debug('[authService] signIn response', { data, error });
 
       if (error) {
         const message = error.status === 400 || error.status === 401
@@ -105,45 +82,30 @@ export const authService = {
 
       // Support response shape where user may be under data.user or data.session.user
       const user = data.user || data.session?.user;
-      console.log('[authService] user extracted', { userId: user?.id, email: user?.email });
+      console.debug('[authService] user extracted', { userId: user?.id });
 
       // Vérifier si le compte est actif et valide
       if (user) {
-        console.log('[authService] starting account validation for user', user.id);
         try {
-          console.log('[authService] Querying accounts table...');
-          const startAccountCheck = Date.now();
-          
           const { data: accountData, error: accountError } = await withTimeout(
             supabase
               .from('accounts')
               .select('*')
               .eq('user_id', user.id)
                 .maybeSingle(),
-              10000,
-              'Vérification du compte trop longue — réessayez.'
+            10000,
+            'Vérification du compte trop longue — réessayez.'
           );
-          
-          const endAccountCheck = Date.now();
-          console.log('[authService] account lookup completed after', (endAccountCheck - startAccountCheck) + 'ms', {
-            accountDataReceived: Boolean(accountData),
-            accountErrorReceived: Boolean(accountError),
-            accountErrorMessage: accountError?.message,
-          });
 
           if (accountError) {
-            console.error('[authService] account lookup error', accountError);
             await supabase.auth.signOut();
             throw new Error('Impossible de vérifier la validité de ce compte. Veuillez contacter l\'administrateur.');
           }
 
           if (!accountData) {
-            console.warn('[authService] account not found for user', user?.id);
             await supabase.auth.signOut();
             throw new Error('Compte introuvable ou invalide. Veuillez contacter l\'administrateur.');
           }
-
-          console.log('[authService] account data retrieved', { id: accountData.id, isActive: accountData.is_active, validityDate: accountData.validity_date });
 
           // Vérifier la date de validité
           if (accountData.validity_date) {
@@ -159,9 +121,7 @@ export const authService = {
             await supabase.auth.signOut();
             throw new Error('Votre compte est désactivé.');
           }
-          console.log('[authService] ========== ACCOUNT VALIDATION PASSED ==========');
         } catch (validationError) {
-          console.error('[authService] account validation error:', validationError.message);
           throw validationError;
         }
       }
@@ -171,10 +131,8 @@ export const authService = {
         user: user || null,
       };
 
-      console.log('[authService] ========== LOGIN SUCCESS ==========');
       return { data: normalizedData, error: null };
     } catch (error) {
-      console.error('[authService] ========== LOGIN FAILED ==========');
       console.error('[authService] signIn caught error:', {
         message: error?.message,
         status: error?.status,
