@@ -86,43 +86,39 @@ export const authService = {
 
       // Vérifier si le compte est actif et valide
       if (user) {
-        try {
-          const { data: accountData, error: accountError } = await withTimeout(
-            supabase
-              .from('accounts')
-              .select('*')
-              .eq('user_id', user.id)
-                .maybeSingle(),
-            10000,
-            'Vérification du compte trop longue — réessayez.'
-          );
+        const { data: accountData, error: accountError } = await withTimeout(
+          supabase
+            .from('accounts')
+            .select('*')
+            .eq('user_id', user.id)
+              .maybeSingle(),
+          10000,
+          'Vérification du compte trop longue — réessayez.'
+        );
 
-          if (accountError) {
+        if (accountError) {
+          await supabase.auth.signOut();
+          throw new Error('Impossible de vérifier la validité de ce compte. Veuillez contacter l\'administrateur.');
+        }
+
+        if (!accountData) {
+          await supabase.auth.signOut();
+          throw new Error('Compte introuvable ou invalide. Veuillez contacter l\'administrateur.');
+        }
+
+        // Vérifier la date de validité
+        if (accountData.validity_date) {
+          const validityDate = new Date(accountData.validity_date);
+          const today = new Date();
+          if (today > validityDate) {
             await supabase.auth.signOut();
-            throw new Error('Impossible de vérifier la validité de ce compte. Veuillez contacter l\'administrateur.');
+            throw new Error('Votre compte a expiré. Veuillez contacter l\'administrateur.');
           }
+        }
 
-          if (!accountData) {
-            await supabase.auth.signOut();
-            throw new Error('Compte introuvable ou invalide. Veuillez contacter l\'administrateur.');
-          }
-
-          // Vérifier la date de validité
-          if (accountData.validity_date) {
-            const validityDate = new Date(accountData.validity_date);
-            const today = new Date();
-            if (today > validityDate) {
-              await supabase.auth.signOut();
-              throw new Error('Votre compte a expiré. Veuillez contacter l\'administrateur.');
-            }
-          }
-
-          if (!accountData.is_active) {
-            await supabase.auth.signOut();
-            throw new Error('Votre compte est désactivé.');
-          }
-        } catch (validationError) {
-          throw validationError;
+        if (!accountData.is_active) {
+          await supabase.auth.signOut();
+          throw new Error('Votre compte est désactivé.');
         }
       }
 
