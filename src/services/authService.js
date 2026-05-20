@@ -84,44 +84,53 @@ export const authService = {
 
       // Support response shape where user may be under data.user or data.session.user
       const user = data.user || data.session?.user;
+      console.debug('[authService] user extracted', { userId: user?.id });
 
       // Vérifier si le compte est actif et valide
       if (user) {
-        const { data: accountData, error: accountError } = await withTimeout(
-          supabase
-            .from('accounts')
-            .select('*')
-            .eq('user_id', user.id)
-              .maybeSingle(),
-            4000,
-            'Vérification du compte trop longue — réessayez.'
-        );
+        console.debug('[authService] starting account validation for user', user.id);
+        try {
+          const { data: accountData, error: accountError } = await withTimeout(
+            supabase
+              .from('accounts')
+              .select('*')
+              .eq('user_id', user.id)
+                .maybeSingle(),
+              4000,
+              'Vérification du compte trop longue — réessayez.'
+          );
+          console.debug('[authService] account lookup completed', { accountData, accountError });
 
-        if (accountError) {
-          console.error('[authService] account lookup error', accountError);
-          await supabase.auth.signOut();
-          throw new Error('Impossible de vérifier la validité de ce compte. Veuillez contacter l\'administrateur.');
-        }
-
-        if (!accountData) {
-          console.warn('[authService] account not found for user', user?.id);
-          await supabase.auth.signOut();
-          throw new Error('Compte introuvable ou invalide. Veuillez contacter l\'administrateur.');
-        }
-
-        // Vérifier la date de validité
-        if (accountData.validity_date) {
-          const validityDate = new Date(accountData.validity_date);
-          const today = new Date();
-          if (today > validityDate) {
+          if (accountError) {
+            console.error('[authService] account lookup error', accountError);
             await supabase.auth.signOut();
-            throw new Error('Votre compte a expiré. Veuillez contacter l\'administrateur.');
+            throw new Error('Impossible de vérifier la validité de ce compte. Veuillez contacter l\'administrateur.');
           }
-        }
 
-        if (!accountData.is_active) {
-          await supabase.auth.signOut();
-          throw new Error('Votre compte est désactivé.');
+          if (!accountData) {
+            console.warn('[authService] account not found for user', user?.id);
+            await supabase.auth.signOut();
+            throw new Error('Compte introuvable ou invalide. Veuillez contacter l\'administrateur.');
+          }
+
+          // Vérifier la date de validité
+          if (accountData.validity_date) {
+            const validityDate = new Date(accountData.validity_date);
+            const today = new Date();
+            if (today > validityDate) {
+              await supabase.auth.signOut();
+              throw new Error('Votre compte a expiré. Veuillez contacter l\'administrateur.');
+            }
+          }
+
+          if (!accountData.is_active) {
+            await supabase.auth.signOut();
+            throw new Error('Votre compte est désactivé.');
+          }
+          console.debug('[authService] account validation passed');
+        } catch (validationError) {
+          console.error('[authService] account validation error:', validationError.message);
+          throw validationError;
         }
       }
 
@@ -132,6 +141,11 @@ export const authService = {
 
       return { data: normalizedData, error: null };
     } catch (error) {
+      console.error('[authService] signIn caught error:', {
+        message: error?.message,
+        status: error?.status,
+        fullError: error
+      });
       return { data: null, error };
     }
   },
