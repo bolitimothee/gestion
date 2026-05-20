@@ -20,7 +20,7 @@ export function AuthProvider({ children }) {
     try {
       // Ajouter un timeout pour éviter le blocage
       const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Timeout chargement compte')), 4000)
+        setTimeout(() => reject(new Error('Timeout chargement compte')), 10000)
       );
       const accountPromise = authService.getAccountDetails(userId);
       const { data } = await Promise.race([accountPromise, timeoutPromise]);
@@ -59,7 +59,7 @@ export function AuthProvider({ children }) {
     const checkSession = async () => {
       try {
         const timeoutPromise = new Promise((resolve) =>
-          setTimeout(() => resolve({ data: { session: null } }), 4000)
+          setTimeout(() => resolve({ data: { session: null } }), 10000)
         );
         const sessionPromise = supabase.auth.getSession();
         const { data } = await Promise.race([sessionPromise, timeoutPromise]);

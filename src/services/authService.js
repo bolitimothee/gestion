@@ -63,7 +63,7 @@ export const authService = {
           email,
           password,
         }),
-        8000,
+        30000,
         'Connexion trop longue — vérifiez votre réseau et réessayez.'
       );
       console.debug('[authService] signIn response', {
@@ -96,7 +96,7 @@ export const authService = {
               .select('*')
               .eq('user_id', user.id)
                 .maybeSingle(),
-              4000,
+              10000,
               'Vérification du compte trop longue — réessayez.'
           );
           console.debug('[authService] account lookup completed', { accountData, accountError });
