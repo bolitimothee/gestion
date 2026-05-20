@@ -1,17 +1,19 @@
 .navbar {
   background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
+  background-color: #1e293b;
+  background-attachment: fixed;
   color: white;
-  padding: 0;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  padding: max(0px, env(safe-area-inset-top)) max(0px, env(safe-area-inset-right)) 0 max(0px, env(safe-area-inset-left));
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
-  -webkit-backdrop-filter: blur(20px);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   transition: all var(--transition-normal);
+  opacity: 1 !important;
+  -webkit-font-smoothing: antialiased;
 }
 
 .navbar::before {
@@ -33,13 +35,14 @@
 .navbar-container {
   max-width: 1600px;
   margin: 0 auto;
-  padding: 0 var(--spacing-10);
+  padding: var(--spacing-4) var(--spacing-10);
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: var(--spacing-10);
   height: 80px;
   position: relative;
+  max-height: 80px;
 }
 
 .navbar-toggle {
@@ -232,155 +235,91 @@
   }
 }
 
-/* iOS PWA Optimizations - Structured Safe Area Approach */
+/* iOS PWA Optimizations - Standalone Mode */
 @media (display-mode: standalone) and (max-width: 767px) {
-  /* Base PWA behavior with structured safe areas */
   .navbar {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    z-index: var(--z-navbar);
+    z-index: 9999;
     background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
-    -webkit-backdrop-filter: blur(20px);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background-color: #1e293b;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
     transform: translateZ(0);
-  }
-  
-  .navbar-safe-top {
-    height: var(--safe-area-top);
-    background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
+    opacity: 1 !important;
   }
   
   .navbar-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: var(--navbar-height);
-    padding: 0 16px;
-    position: relative;
+    padding: max(0px, env(safe-area-inset-top)) 16px 0 16px;
+    height: 80px;
   }
+}
   
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.navbar-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  order: -1;
+}
+
+.navbar-brand h1 {
+  flex: 1;
+  font-size: 18px;
+  text-align: left;
+}
+
+.navbar-user-desktop {
+  display: none;
+}
+
+/* Mode paysage */
+@media (orientation: landscape) {
   .sidebar {
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: var(--sidebar-width);
-    background: white;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-    transform: translateX(-100%);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 1001;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  
-  .sidebar.open {
-    transform: translateX(0);
-  }
-  
-  .sidebar-safe-top {
-    height: var(--safe-area-top);
-    background: white;
-    flex-shrink: 0;
-  }
-  
-  .sidebar-content {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding: 20px 0;
-  }
-  
-  /* Cache scrollbar mais garde fonctionnalité */
-  .sidebar-content::-webkit-scrollbar {
-    width: 0;
-    background: transparent;
-  }
-  
-  .sidebar-safe-bottom {
-    height: var(--safe-area-bottom);
-    background: white;
-    flex-shrink: 0;
-  }
-  
-  .sidebar-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    animation: fadeIn 0.3s ease;
-  }
-  
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  
-  .navbar-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    order: -1;
+    width: 280px;
   }
   
   .navbar-brand h1 {
-    flex: 1;
-    font-size: 18px;
-    text-align: left;
-  }
-  
-  .navbar-user-desktop {
-    display: none;
-  }
-  
-  /* Mode paysage */
-  @media (orientation: landscape) {
-    .sidebar {
-      width: 280px;
-    }
-    
-    .navbar-brand h1 {
-      font-size: 16px;
-    }
-  }
-  
-  /* Support iOS < 11.3 */
-  @supports not (padding-top: env(safe-area-inset-top)) {
-    .navbar {
-      padding-top: 20px;
-    }
-    
-    .navbar-safe-top {
-      height: 20px;
-    }
-  }
-  
-  @media screen and (max-width: 480px) {
-    .navbar-container {
-      padding: 0 12px;
-      gap: 12px;
-    }
-    
-    .navbar-brand h1 {
-      font-size: 16px;
-    }
-    
-    .navbar-toggle {
-      width: 40px;
-      height: 40px;
-    }
+    font-size: 16px;
   }
 }
+
+/* Support iOS < 11.3 */
+@supports not (padding-top: env(safe-area-inset-top)) {
+  .navbar {
+    padding-top: 20px;
+  }
+  
+  .navbar-safe-top {
+    height: 20px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .navbar-container {
+    padding: 0 12px;
+    gap: 12px;
+  }
+  
+  .navbar-brand h1 {
+    font-size: 16px;
+  }
+  
+  .navbar-toggle {
+    width: 40px;
+    height: 40px;
+  }
+}
+
 
 /* Mobile (≤767px) */
 @media (max-width: 767px) {

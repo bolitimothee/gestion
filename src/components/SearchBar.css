@@ -7,11 +7,14 @@
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
+  flex-wrap: wrap;
+  align-items: stretch;
 }
 
 .search-input-container {
   position: relative;
   flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
   background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
@@ -101,6 +104,7 @@
 /* Filter Button */
 .search-filter-container {
   position: relative;
+  min-width: 0;
 }
 
 .search-filter-btn {
@@ -119,6 +123,7 @@
   position: relative;
   overflow: hidden;
   min-height: 48px;
+  min-width: 0;
 }
 
 .search-filter-btn::before {
@@ -174,7 +179,7 @@
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
   -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
-  z-index: var(--z-dropdown);
+  z-index: calc(var(--z-dropdown) + 1);
   min-width: 200px;
   overflow: hidden;
   animation: slideInDown var(--transition-normal) ease-out;

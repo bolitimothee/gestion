@@ -67,7 +67,7 @@ export default function SearchBar({
           placeholder={placeholder}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyPress}
         />
         {(searchTerm || selectedFilter) && (
           <button
