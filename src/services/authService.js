@@ -178,7 +178,8 @@ export const authService = {
     try {
       const { data, error } = await supabase.auth.getUser();
       if (error) throw error;
-      return { data, error: null };
+      // `data` shape: { user }
+      return { data: { user: data?.user ?? null }, error: null };
     } catch (error) {
       return { data: null, error };
     }
@@ -186,11 +187,15 @@ export const authService = {
 
   async getAccountDetails(userId) {
     try {
-      const { data, error } = await supabase
-        .from('accounts')
-        .select('*')
-        .eq('user_id', userId)
-        .maybeSingle();
+      const { data, error } = await withTimeout(
+        supabase
+          .from('accounts')
+          .select('*')
+          .eq('user_id', userId)
+          .maybeSingle(),
+        10000,
+        'Chargement des détails du compte trop longue.'
+      );
 
       // Si table n'existe pas ou erreur, retourner objet vide
       if (error) {
@@ -212,11 +217,15 @@ export const authService = {
 
   async checkAccountValidity(userId) {
     try {
-      const { data, error } = await supabase
-        .from('accounts')
-        .select('*')
-        .eq('user_id', userId)
-        .maybeSingle();
+      const { data, error } = await withTimeout(
+        supabase
+          .from('accounts')
+          .select('*')
+          .eq('user_id', userId)
+          .maybeSingle(),
+        10000,
+        'Vérification du compte trop longue.'
+      );
 
       if (error) {
         console.warn('Impossible de vérifier la validité du compte:', error.message);

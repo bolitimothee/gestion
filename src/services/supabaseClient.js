@@ -18,9 +18,6 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     // Ajouter une clé unique pour éviter les conflits
     storageKey: 'supabase.auth.token',
   },
-  db: {
-    schema: 'public',
-  },
   // Ajouter des options pour éviter les conflits d'instances
   global: {
     headers: {

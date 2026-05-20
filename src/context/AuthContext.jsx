@@ -58,11 +58,13 @@ export function AuthProvider({ children }) {
 
     const checkSession = async () => {
       try {
+        // Augmenter le timeout à 30 secondes pour les connexions lentes
+        // En cas de timeout, on essaie quand même de récupérer la session depuis le localStorage
         const timeoutPromise = new Promise((resolve) =>
-          setTimeout(() => resolve({ data: { session: null } }), 10000)
+          setTimeout(() => resolve({ data: { session: null }, timeout: true }), 30000)
         );
         const sessionPromise = supabase.auth.getSession();
-        const { data } = await Promise.race([sessionPromise, timeoutPromise]);
+        const { data, timeout } = await Promise.race([sessionPromise, timeoutPromise]);
 
         if (data?.session) {
           if (isSessionExpired(data.session)) {
@@ -85,11 +87,43 @@ export function AuthProvider({ children }) {
               return;
             }
           }
+        } else if (timeout) {
+          // En cas de timeout, vérifier si on a une session dans localStorage
+          console.warn('Session check timeout, attempting to recover from localStorage');
+          try {
+            const { data: localSession } = await supabase.auth.getSession();
+            if (localSession?.session && !isSessionExpired(localSession.session)) {
+              const validityCheck = await authService.checkAccountValidity(localSession.session.user.id);
+              if (validityCheck.isValid) {
+                setUser(localSession.session.user);
+                setLoading(false);
+                setIsAuthReady(true);
+                loadAccountDetails(localSession.session.user.id).catch((err) => console.warn('Erreur chargement compte asynchrone:', err));
+                return;
+              }
+            }
+          } catch (localErr) {
+            console.warn('Failed to recover session from localStorage:', localErr);
+          }
         }
       } catch (_err) {
         console.error('Error checking session:', _err);
-        // En cas d'erreur, considérer que l'authentification est prête
-        // pour permettre à l'application de continuer
+        // En cas d'erreur, essayer de récupérer la session depuis localStorage
+        try {
+          const { data: localSession } = await supabase.auth.getSession();
+          if (localSession?.session && !isSessionExpired(localSession.session)) {
+            const validityCheck = await authService.checkAccountValidity(localSession.session.user.id);
+            if (validityCheck.isValid) {
+              setUser(localSession.session.user);
+              setLoading(false);
+              setIsAuthReady(true);
+              loadAccountDetails(localSession.session.user.id).catch((err) => console.warn('Erreur chargement compte asynchrone:', err));
+              return;
+            }
+          }
+        } catch (localErr) {
+          console.warn('Failed to recover session from localStorage after error:', localErr);
+        }
       } finally {
         setLoading(false);
         setIsAuthReady(true);
