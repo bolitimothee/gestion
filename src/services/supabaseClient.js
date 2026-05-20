@@ -15,19 +15,39 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
   throw new Error(errorMsg);
 }
 
-// Test de connectivité à Supabase
-console.log('[supabaseClient] Testing Supabase connectivity...');
-fetch(SUPABASE_URL + '/rest/v1/', {
+// Test de connectivité à Supabase avec la clé anon
+console.log('[supabaseClient] Testing Supabase auth connectivity with anon key...');
+fetch(SUPABASE_URL + '/auth/v1/health', {
   headers: {
     'apikey': SUPABASE_ANON_KEY,
+    'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
   }
 })
   .then(r => {
-    console.log('[supabaseClient] Supabase connectivity test response:', r.status, r.statusText);
-    return r.text();
+    console.log('[supabaseClient] Auth health check response:', r.status, r.statusText);
+    return r.json();
   })
-  .then(text => console.log('[supabaseClient] Response body:', text.substring(0, 100)))
-  .catch(err => console.error('[supabaseClient] Supabase connectivity test failed:', err.message));
+  .then(data => console.log('[supabaseClient] Auth health data:', data))
+  .catch(err => console.error('[supabaseClient] Auth health check failed:', err.message, err));
+
+// Test avec XHR pour vérifier CORS
+console.log('[supabaseClient] Testing direct XHR request...');
+const xhr = new XMLHttpRequest();
+xhr.onload = () => console.log('[supabaseClient] XHR onload:', xhr.status, xhr.statusText);
+xhr.onerror = () => console.error('[supabaseClient] XHR error - CORS ou problème réseau');
+xhr.onprogress = () => console.log('[supabaseClient] XHR progress');
+xhr.addEventListener('loadstart', () => console.log('[supabaseClient] XHR loadstart'));
+xhr.addEventListener('loadend', () => console.log('[supabaseClient] XHR loadend'));
+xhr.open('GET', SUPABASE_URL + '/auth/v1/health', true);
+xhr.setRequestHeader('apikey', SUPABASE_ANON_KEY);
+xhr.timeout = 5000;
+xhr.ontimeout = () => console.error('[supabaseClient] XHR timeout');
+try {
+  xhr.send();
+  console.log('[supabaseClient] XHR request sent');
+} catch (err) {
+  console.error('[supabaseClient] XHR send error:', err.message);
+}
 
 // Créer une instance unique pour éviter les avertissements de multiples instances
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
