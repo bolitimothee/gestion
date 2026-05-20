@@ -27,6 +27,13 @@ export default function Login() {
     }
   }, [user, isAccountExpired, navigate]);
 
+  // Vérifier que Supabase est bien configuré
+  useEffect(() => {
+    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+      setError('ERREUR: Supabase n\'est pas configuré correctement. Les variables d\'environnement VITE_SUPABASE_URL et VITE_SUPABASE_ANON_KEY doivent être définis.');
+    }
+  }, []);
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');

@@ -3,10 +3,16 @@ import { createClient } from '@supabase/supabase-js';
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
+console.log('[supabaseClient] Initializing with:', {
+  url: SUPABASE_URL,
+  keyPresent: Boolean(SUPABASE_ANON_KEY),
+  envKeys: Object.keys(import.meta.env).filter(k => k.includes('SUPABASE'))
+});
+
 if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-  console.error(
-    'Supabase client initialization failed: VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY must be defined.'
-  );
+  const errorMsg = 'ERREUR CRITIQUE: Variables Supabase non définies. VITE_SUPABASE_URL=' + SUPABASE_URL + ', VITE_SUPABASE_ANON_KEY=' + (SUPABASE_ANON_KEY ? 'défini' : 'undefined');
+  console.error('[supabaseClient]', errorMsg);
+  throw new Error(errorMsg);
 }
 
 // Créer une instance unique pour éviter les avertissements de multiples instances
