@@ -34,13 +34,8 @@ export default function Login() {
 
     try {
       console.debug('Login submit', { email });
-      // Protéger la requête signIn par un timeout (15s)
-      const signinPromise = signIn(email, password);
-      const timeoutPromise = new Promise((resolve) =>
-        setTimeout(() => resolve({ data: null, error: new Error('Timeout de connexion (client)') }), 15000)
-      );
-
-      const result = await Promise.race([signinPromise, timeoutPromise]);
+      // Appel direct à signIn; les timeouts internes sont gérés dans le service
+      const result = await signIn(email, password);
       console.debug('Login result', result);
       if (result?.error) {
         setError(result.error.message || 'Erreur de connexion. Veuillez contacter l\'administrateur.');
