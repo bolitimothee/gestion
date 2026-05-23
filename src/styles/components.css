@@ -1073,6 +1073,36 @@ select {
   }
 }
 
+/* Center page titles and page header content on desktop */
+.page-header {
+  align-items: center;
+}
+
+.page-header-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+  align-items: center;
+  text-align: center;
+  max-width: 100%;
+  width: 100%;
+}
+
+.page-header h1,
+.page-header p {
+  width: 100%;
+}
+
+.navbar-brand {
+  justify-content: center;
+}
+
+.navbar-brand h1 {
+  text-align: center;
+  width: 100%;
+}
+
 /* iOS PWA Standalone Mode - Fix navbar and content display */
 @supports (padding: max(0px)) {
   @media (display-mode: standalone) and (max-width: 767px) {
