@@ -266,7 +266,7 @@
 }
 
 .navbar-toggle {
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   order: -1;

@@ -138,11 +138,36 @@ body {
   --z-toast: 1080;
   
   /* Breakpoints */
-  --breakpoint-sm: 640px;
+  --breakpoint-xs: 320px;
+  --breakpoint-sm: 480px;
   --breakpoint-md: 768px;
   --breakpoint-lg: 1024px;
   --breakpoint-xl: 1280px;
   --breakpoint-2xl: 1536px;
+  --breakpoint-3xl: 1920px;
+  --breakpoint-4k: 2560px;
+  
+  /* Responsive Sizes */
+  --navbar-height-xs: 56px;
+  --navbar-height-sm: 60px;
+  --navbar-height-md: 70px;
+  --navbar-height-lg: 80px;
+  --navbar-height-xl: 80px;
+  --navbar-height-2xl: 90px;
+  
+  --sidebar-width-xs: 0px;
+  --sidebar-width-sm: 0px;
+  --sidebar-width-md: 240px;
+  --sidebar-width-lg: 280px;
+  --sidebar-width-xl: 320px;
+  --sidebar-width-2xl: 380px;
+  
+  /* Mobile optimizations */
+  --touch-target: 44px;
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
 }
 
 /* Scrollbar */

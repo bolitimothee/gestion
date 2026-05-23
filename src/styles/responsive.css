@@ -1,0 +1,355 @@
+/* ============================================ */
+/* COMPREHENSIVE RESPONSIVE DESIGN SYSTEM     */
+/* Covers all screen sizes and platforms       */
+/* ============================================ */
+
+/* ============================================ */
+/* EXTRA SMALL SCREENS (< 360px) - Very Old Phones */
+/* ============================================ */
+@media (max-width: 359px) {
+  :root {
+    --navbar-height: var(--navbar-height-xs);
+    --sidebar-width: var(--sidebar-width-xs);
+  }
+  
+  .layout-container {
+    padding-top: var(--navbar-height-xs);
+  }
+  
+  .main-content {
+    padding: var(--spacing-2);
+    margin-left: 0;
+  }
+  
+  body {
+    font-size: 13px;
+  }
+}
+
+/* ============================================ */
+/* SMALL SCREENS (360px - 480px) - Mobile Phones */
+/* ============================================ */
+@media (min-width: 360px) and (max-width: 480px) {
+  :root {
+    --navbar-height: var(--navbar-height-sm);
+    --sidebar-width: var(--sidebar-width-sm);
+  }
+  
+  .layout-container {
+    padding-top: var(--navbar-height-sm);
+  }
+  
+  .main-content {
+    padding: var(--spacing-3);
+    margin-left: 0;
+  }
+  
+  body {
+    font-size: 14px;
+  }
+}
+
+/* ============================================ */
+/* MEDIUM SCREENS (480px - 768px) - Larger Phones/Small Tablets */
+/* ============================================ */
+@media (min-width: 480px) and (max-width: 767px) {
+  :root {
+    --navbar-height: var(--navbar-height-md);
+    --sidebar-width: var(--sidebar-width-sm);
+  }
+  
+  .layout-container {
+    padding-top: var(--navbar-height-md);
+  }
+  
+  .main-content {
+    padding: var(--spacing-4);
+    margin-left: 0;
+  }
+  
+  body {
+    font-size: 14px;
+  }
+}
+
+/* ============================================ */
+/* LARGE SCREENS (768px - 1024px) - Tablets */
+/* ============================================ */
+@media (min-width: 768px) and (max-width: 1023px) {
+  :root {
+    --navbar-height: var(--navbar-height-md);
+    --sidebar-width: var(--sidebar-width-md);
+  }
+  
+  .layout-container {
+    padding-top: var(--navbar-height-md);
+  }
+  
+  .main-content {
+    padding: var(--spacing-6);
+    margin-left: var(--sidebar-width-md);
+  }
+  
+  body {
+    font-size: 14px;
+  }
+}
+
+/* ============================================ */
+/* XL SCREENS (1024px - 1280px) - Laptops */
+/* ============================================ */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  :root {
+    --navbar-height: var(--navbar-height-lg);
+    --sidebar-width: var(--sidebar-width-lg);
+  }
+  
+  .layout-container {
+    padding-top: var(--navbar-height-lg);
+  }
+  
+  .main-content {
+    padding: var(--spacing-8);
+    margin-left: var(--sidebar-width-lg);
+  }
+  
+  body {
+    font-size: 14px;
+  }
+}
+
+/* ============================================ */
+/* 2XL SCREENS (1280px - 1536px) - Desktop */
+/* ============================================ */
+@media (min-width: 1280px) and (max-width: 1535px) {
+  :root {
+    --navbar-height: var(--navbar-height-lg);
+    --sidebar-width: var(--sidebar-width-xl);
+  }
+  
+  .layout-container {
+    padding-top: var(--navbar-height-lg);
+  }
+  
+  .main-content {
+    padding: var(--spacing-10);
+    margin-left: var(--sidebar-width-xl);
+  }
+  
+  body {
+    font-size: 15px;
+  }
+}
+
+/* ============================================ */
+/* 3XL SCREENS (1536px - 1920px) - Large Desktop */
+/* ============================================ */
+@media (min-width: 1536px) and (max-width: 1919px) {
+  :root {
+    --navbar-height: var(--navbar-height-2xl);
+    --sidebar-width: var(--sidebar-width-2xl);
+  }
+  
+  .layout-container {
+    padding-top: var(--navbar-height-2xl);
+  }
+  
+  .main-content {
+    padding: var(--spacing-12);
+    margin-left: var(--sidebar-width-2xl);
+  }
+  
+  body {
+    font-size: 15px;
+  }
+}
+
+/* ============================================ */
+/* 4K+ SCREENS (1920px+) - Ultra-wide Desktop */
+/* ============================================ */
+@media (min-width: 1920px) {
+  :root {
+    --navbar-height: var(--navbar-height-2xl);
+    --sidebar-width: var(--sidebar-width-2xl);
+  }
+  
+  .layout-container {
+    padding-top: var(--navbar-height-2xl);
+  }
+  
+  .main-content {
+    padding: var(--spacing-16);
+    margin-left: var(--sidebar-width-2xl);
+  }
+  
+  body {
+    font-size: 16px;
+  }
+}
+
+/* ============================================ */
+/* iOS PWA SPECIFIC ADJUSTMENTS */
+/* ============================================ */
+@supports (padding: max(0px)) {
+  /* iOS PWA - All sizes */
+  @media (display-mode: standalone) {
+    html, body {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    
+    .layout {
+      height: 100dvh;
+      overflow: hidden;
+    }
+    
+    .layout-container {
+      height: calc(100dvh - var(--navbar-height));
+      overflow: hidden;
+    }
+    
+    .main-content {
+      overflow-y: auto;
+      height: 100%;
+    }
+  }
+  
+  /* iOS PWA - Small screens (< 480px) */
+  @media (display-mode: standalone) and (max-width: 479px) {
+    .layout-container {
+      padding-top: calc(var(--navbar-height-sm) + max(0px, env(safe-area-inset-top)));
+    }
+    
+    .main-content {
+      padding-top: 0;
+      padding-left: max(var(--spacing-3), max(0px, env(safe-area-inset-left)));
+      padding-right: max(var(--spacing-3), max(0px, env(safe-area-inset-right)));
+      padding-bottom: max(var(--spacing-3), max(0px, env(safe-area-inset-bottom)));
+    }
+  }
+  
+  /* iOS PWA - Medium screens (480px - 768px) */
+  @media (display-mode: standalone) and (min-width: 480px) and (max-width: 767px) {
+    .layout-container {
+      padding-top: calc(var(--navbar-height-md) + max(0px, env(safe-area-inset-top)));
+    }
+    
+    .main-content {
+      padding-top: 0;
+      padding-left: max(var(--spacing-4), max(0px, env(safe-area-inset-left)));
+      padding-right: max(var(--spacing-4), max(0px, env(safe-area-inset-right)));
+      padding-bottom: max(var(--spacing-4), max(0px, env(safe-area-inset-bottom)));
+    }
+  }
+}
+
+/* ============================================ */
+/* ANDROID SPECIFIC ADJUSTMENTS */
+/* ============================================ */
+@media (pointer: coarse) and (max-width: 767px) {
+  /* Touch targets for Android */
+  button, input, select, textarea, a {
+    min-height: var(--touch-target);
+    min-width: var(--touch-target);
+  }
+  
+  /* Android status bar handling */
+  .navbar {
+    padding-top: 0;
+  }
+}
+
+/* ============================================ */
+/* LANDSCAPE ORIENTATION */
+/* ============================================ */
+@media (orientation: landscape) and (max-height: 500px) {
+  .navbar-container {
+    height: 50px;
+  }
+  
+  .main-content {
+    padding-top: 50px;
+    padding-bottom: var(--spacing-2);
+  }
+}
+
+@media (orientation: landscape) and (min-width: 1024px) {
+  .main-content {
+    padding: var(--spacing-8);
+  }
+}
+
+/* ============================================ */
+/* PORTRAIT ORIENTATION */
+/* ============================================ */
+@media (orientation: portrait) and (max-width: 480px) {
+  .main-content {
+    padding: var(--spacing-3);
+  }
+}
+
+/* ============================================ */
+/* HIGH DPI / RETINA SCREENS */
+/* ============================================ */
+@media (-webkit-min-device-pixel-ratio: 2),
+       (min-resolution: 192dpi) {
+  /* Thinner borders on high DPI */
+  border-width: 0.5px;
+}
+
+/* ============================================ */
+/* NOTCH AND SAFE AREA HANDLING */
+/* ============================================ */
+@supports (padding: max(0px)) {
+  .navbar {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+  
+  .main-content {
+    padding-left: max(var(--spacing-4), max(0px, env(safe-area-inset-left)));
+    padding-right: max(var(--spacing-4), max(0px, env(safe-area-inset-right)));
+    padding-bottom: max(var(--spacing-4), max(0px, env(safe-area-inset-bottom)));
+  }
+}
+
+/* ============================================ */
+/* REDUCED MOTION */
+/* ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================ */
+/* DARK MODE SUPPORT */
+/* ============================================ */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #1a1a1a;
+    color: #f0f0f0;
+  }
+  
+  .layout {
+    background: linear-gradient(135deg, #1a1a1a 0%, #222222 100%);
+  }
+}
+
+/* ============================================ */
+/* LIGHT MODE */
+/* ============================================ */
+@media (prefers-color-scheme: light) {
+  body {
+    background-color: #f5f7fa;
+    color: #333;
+  }
+  
+  .layout {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  }
+}

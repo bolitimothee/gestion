@@ -995,13 +995,8 @@ select {
   padding-left: calc(280px + max(0px, env(safe-area-inset-left)));
   padding-right: max(0px, env(safe-area-inset-right));
   padding-bottom: max(var(--spacing-8), max(0px, env(safe-area-inset-bottom)));
-  min-height: auto;
-  transition: margin-left 0.3s ease;
-  position: relative;
-  z-index: 1;
 }
 
-/* Mobile Layout */
 @media (max-width: 767px) {
   .layout-container {
     padding-top: 60px; /* Navbar plus petite sur mobile */
@@ -1108,7 +1103,6 @@ select {
     .main-content {
       overflow-y: auto;
       overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
       margin-left: 0;
       padding-bottom: max(var(--spacing-8), max(0px, env(safe-area-inset-bottom)));
     }

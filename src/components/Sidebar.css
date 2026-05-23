@@ -557,10 +557,11 @@
   /* Base PWA behavior with structured safe areas */
   .sidebar {
     position: fixed;
-    top: 0;
+    top: calc(var(--navbar-height) + var(--safe-area-top));
     left: 0;
     bottom: 0;
-    width: var(--sidebar-width);
+    width: 85%;
+    max-width: 320px;
     background: white;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
     transform: translateX(-100%);
@@ -602,7 +603,7 @@
   
   .sidebar-overlay {
     position: fixed;
-    top: 0;
+    top: calc(var(--navbar-height) + var(--safe-area-top));
     left: 0;
     right: 0;
     bottom: 0;
@@ -651,7 +652,7 @@
     top: calc(60px + var(--safe-area-top)); /* Commence sous la navbar mobile + safe area */
     width: 85%;
     max-width: 320px;
-    height: calc(100vh - 60px - var(--safe-area-bottom)); /* Hauteur restante après navbar et safe area */
+    bottom: 0;
     transform: translateX(-100%) translateZ(0);
     transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);

@@ -57,58 +57,55 @@ self.addEventListener('fetch', (event) => {
 
   // Ne pas traiter les schémas non supportés par Cache API
   if (requestUrl.protocol !== 'https:' && requestUrl.protocol !== 'http:') {
-    return fetch(event.request);
+    return;
   }
 
-  // Ne pas mettre en cache les requêtes API et pages d'authentification
-  if (event.request.url.includes('supabase') || 
-      event.request.url.includes('api') ||
+  // Ne pas mettre en cache les requêtes API, les pages d'authentification ou les requêtes non GET
+  if (event.request.method !== 'GET' ||
+      event.request.url.includes('supabase') ||
       event.request.url.includes('/login') ||
-      event.request.method !== 'GET') {
-    return fetch(event.request);
+      event.request.url.includes('/register') ||
+      event.request.url.includes('/api')) {
+    return;
+  }
+
+  const isNavigation = event.request.mode === 'navigate' || event.request.destination === 'document';
+
+  if (isNavigation) {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse.ok) {
+            const responseClone = networkResponse.clone();
+            event.waitUntil(
+              caches.open(DYNAMIC_CACHE).then((cache) => cache.put(event.request, responseClone))
+            );
+          }
+          return networkResponse;
+        })
+        .catch(() => caches.match(event.request)
+          .then((cachedResponse) => cachedResponse || caches.match('/index.html') || caches.match('/'))
+        )
+    );
+    return;
   }
 
   event.respondWith(
-    caches.match(event.request)
-      .then((cachedResponse) => {
-        const isNavigation = event.request.mode === 'navigate' || event.request.destination === 'document';
+    caches.match(event.request).then((cachedResponse) => {
+      const networkPromise = fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse.ok &&
+              ['script', 'style', 'image', 'font', 'document'].includes(event.request.destination)) {
+            const responseClone = networkResponse.clone();
+            event.waitUntil(
+              caches.open(DYNAMIC_CACHE).then((cache) => cache.put(event.request, responseClone))
+            );
+          }
+          return networkResponse;
+        })
+        .catch(() => null);
 
-        if (isNavigation) {
-          return fetch(event.request)
-            .then((networkResponse) => {
-              if (networkResponse.ok) {
-                const responseClone = networkResponse.clone();
-                caches.open(STATIC_CACHE).then((cache) => {
-                  cache.put(event.request, responseClone);
-                });
-              }
-              return networkResponse;
-            })
-            .catch(() => {
-              return cachedResponse || caches.match('/index.html') || caches.match('/');
-            });
-        }
-
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-
-        return fetch(event.request)
-          .then((networkResponse) => {
-            if (networkResponse.ok &&
-                (event.request.destination === 'script' ||
-                 event.request.destination === 'style' ||
-                 event.request.destination === 'image')) {
-              const responseClone = networkResponse.clone();
-              caches.open(STATIC_CACHE).then((cache) => {
-                cache.put(event.request, responseClone);
-              });
-            }
-            return networkResponse;
-          })
-          .catch(() => {
-            return new Response('Erreur réseau', { status: 500 });
-          });
-      })
+      return cachedResponse || networkPromise.then((response) => response || new Response('Erreur réseau', { status: 500 }));
+    })
   );
 });

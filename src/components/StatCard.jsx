@@ -1,7 +1,9 @@
 import React from 'react';
 import './StatCard.css';
 
-export default function StatCard({ title, value, icon: Icon, color, trend }) {
+export default function StatCard({ title, value, icon, color, trend }) {
+  const Icon = icon;
+
   return (
     <div className={`stat-card stat-card-${color}`}>
       <div className="stat-icon">
