@@ -10,8 +10,6 @@ import Dashboard from './pages/Dashboard';
 import Stock from './pages/Stock';
 import Sales from './pages/Sales';
 import Finances from './pages/Finances';
-import './styles/globals.css';
-import './styles/components.css';
 
 function AppContent() {
   const { loading, isAuthReady } = useAuth();

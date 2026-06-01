@@ -74,7 +74,9 @@
   outline: none;
   font-size: var(--font-size-base);
   color: var(--text-primary);
+  -webkit-text-fill-color: var(--text-primary);
   padding: 0 var(--spacing-3);
+  min-width: 0;
   z-index: 1;
 }
 

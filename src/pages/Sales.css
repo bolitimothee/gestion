@@ -317,57 +317,7 @@ select:focus {
   margin-bottom: var(--spacing-4);
 }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2);
-}
-
-.form-group.full-width {
-  grid-column: 1 / -1;
-}
-
-.form-group label {
-  font-weight: var(--font-weight-semibold);
-  color: var(--text-primary);
-  font-size: var(--font-size-sm);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-1);
-}
-
-.form-group label::after {
-  content: '*';
-  color: #ef4444;
-  font-size: var(--font-size-xs);
-  margin-left: var(--spacing-1);
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-  padding: var(--spacing-3) var(--spacing-4);
-  border: 2px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  font-size: var(--font-size-base);
-  font-family: inherit;
-  width: 100%;
-  background: white;
-  transition: all var(--transition-normal);
-  position: relative;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: #10b981;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-  transform: translateY(-1px);
-}
-
-.form-group input:hover,
-.form-group select:hover,
+/* Note: .form-group styles are defined in components.css */
 .form-group textarea:hover {
   border-color: #d1d5db;
   background: #fafafa;

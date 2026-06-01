@@ -430,34 +430,10 @@
   .form-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: var(--spacing-3);
   }
 
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .form-group label {
-    font-size: 14px;
-    font-weight: 600;
-    color: #333;
-  }
-
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    padding: 12px;
-    font-size: 16px;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    width: 100%;
-    font-family: inherit;
-  }
-
-  .form-group input:focus,
-  .form-group select:focus,
+  /* Note: .form-group mobile overrides are in globals.css */
   .form-group textarea:focus {
     outline: none;
     border-color: var(--primary-color);

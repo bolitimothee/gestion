@@ -1,12 +1,12 @@
 .stat-card {
   background: white;
-  border-radius: 12px;
-  padding: 24px;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
   border-left: 4px solid;
   box-shadow: var(--shadow);
   display: flex;
   align-items: flex-start;
-  gap: 20px;
+  gap: var(--spacing-5);
   transition: all 0.3s ease;
 }
 
@@ -66,19 +66,19 @@
 }
 
 .stat-title {
-  font-size: 12px;
+  font-size: var(--font-size-sm);
   color: #999;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin-bottom: 8px;
+  margin-bottom: var(--spacing-2);
   font-weight: 600;
 }
 
 .stat-value {
-  font-size: 24px;
+  font-size: var(--font-size-3xl);
   font-weight: 700;
   color: #333;
-  margin-bottom: 8px;
+  margin-bottom: var(--spacing-2);
 }
 
 .stat-trend {

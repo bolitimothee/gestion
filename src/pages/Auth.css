@@ -97,63 +97,6 @@
   position: relative;
 }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2);
-  position: relative;
-}
-
-.form-group label {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
-  color: var(--text-primary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  position: relative;
-}
-
-.input-wrapper {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-3);
-  position: relative;
-}
-
-.input-wrapper::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.02) 0%, rgba(139, 92, 246, 0.01) 100%);
-  border-radius: var(--radius-lg);
-  opacity: 0;
-  transition: opacity var(--transition-normal);
-}
-
-.input-wrapper:focus-within::before {
-  opacity: 1;
-}
-
-.input-icon {
-  color: var(--text-muted);
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  transition: all var(--transition-normal);
-  z-index: 1;
-}
-
-.input-wrapper:focus-within .input-icon {
-  color: #3b82f6;
-  transform: scale(1.1);
-}
-
 .form-group input {
   flex: 1;
   padding: var(--spacing-4) var(--spacing-5);
