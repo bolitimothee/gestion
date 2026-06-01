@@ -72,30 +72,38 @@ export const iOSPWAHelper = {
     }
   },
 
-  // Désactiver le zoom et le scroll élastique
+  // Désactiver le zoom et le scroll élastique - SANS BLOQUER LE SCROLLING
   disableZoomAndElasticScroll() {
     if (this.isIOS() && this.isPWA()) {
-      // Désactiver le zoom
+      // Désactiver le zoom pinch
       document.addEventListener('gesturestart', (e) => {
         e.preventDefault();
       });
 
-      // Désactiver le scroll élastique
-      document.body.addEventListener('touchmove', (e) => {
+      // Permettre le scroll vertical normal, bloquer uniquement le multi-touch
+      document.addEventListener('touchmove', (e) => {
+        // Bloquer le scroll élastique UNIQUEMENT avec multi-touch (pinch zoom)
         if (e.touches.length > 1) {
           e.preventDefault();
         }
+        // Sinon laisser le scroll vertical normal (ne pas bloquer)
       }, { passive: false });
 
-      // Empêcher le double-tap zoom
+      // Empêcher le double-tap zoom mais laisser le scroll fonctionner
       let lastTouchEnd = 0;
-      document.addEventListener('touchend', (e) => {
-        const now = Date.now();
-        if (now - lastTouchEnd <= 300) {
-          e.preventDefault();
-        }
-        lastTouchEnd = now;
-      }, false);
+      const mainContent = document.querySelector('.main-content');
+      
+      if (mainContent) {
+        // Gérer le double-tap zoom uniquement si la cible n'est pas un formulaire
+        mainContent.addEventListener('touchend', (e) => {
+          const now = Date.now();
+          // Bloquer double-tap zoom uniquement sur les éléments non-input
+          if (now - lastTouchEnd <= 300 && !e.target.closest('input, textarea, select, button')) {
+            e.preventDefault();
+          }
+          lastTouchEnd = now;
+        }, false);
+      }
     }
   },
 
@@ -152,12 +160,14 @@ export const iOSPWAHelper = {
         root.style.setProperty('--has-notch', '0');
       }
       
-      // Optimiser le main content pour PWA
+      // Optimiser le main content pour PWA - NE PAS définir de hauteur rigide
       const mainContent = document.querySelector('.main-content');
       if (mainContent) {
-        mainContent.style.height = 'calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom))';
+        // Utiliser min-height et allow scrolling
+        mainContent.style.minHeight = 'calc(100vh - var(--navbar-height))';
         mainContent.style.overflowY = 'auto';
         mainContent.style.overflowX = 'hidden';
+        mainContent.style.webkitOverflowScrolling = 'touch';
       }
     }
   },

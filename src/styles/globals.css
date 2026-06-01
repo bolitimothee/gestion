@@ -770,10 +770,10 @@ body {
 /* iOS PWA Safe Area Support */
 @supports (padding: max(0px)) {
   .layout {
-    padding-top: max(var(--spacing-0), var(--safe-area-top));
-    padding-bottom: max(var(--spacing-0), var(--safe-area-bottom));
-    padding-left: max(var(--spacing-0), var(--safe-area-left));
-    padding-right: max(var(--spacing-0), var(--safe-area-right));
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
   }
   
   .navbar {
@@ -782,7 +782,8 @@ body {
   
   .main-content {
     padding-bottom: max(var(--spacing-8), var(--safe-area-bottom));
-    height: calc(var(--pwa-height) - var(--safe-area-top) - var(--safe-area-bottom));
+    height: auto;
+    min-height: auto;
   }
   
   /* Enhanced iOS PWA Safe Area for iPhone X+ and Dynamic Island */
@@ -895,21 +896,24 @@ body {
 .layout {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
   width: 100%;
+  min-height: 100vh;
 }
 
 .layout-container {
   display: flex;
   flex: 1;
   width: 100%;
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
+  padding-top: var(--navbar-height);
 }
 
 .main-content {
   flex: 1;
   padding: 24px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   width: 100%;
   margin-left: 0;
 }
