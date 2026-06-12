@@ -360,7 +360,7 @@ export default function Finances() {
                     </button>
                   </div>
                 )}
-                {expenses.length > 0 ? (
+                {filteredExpenses.length > 0 ? (
                   <div className="table-responsive">
                     <table>
                       <thead>

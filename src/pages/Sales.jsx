@@ -284,153 +284,6 @@ export default function Sales() {
             </div>
           )}
 
-          {showForm && (
-            <div className="form-card">
-              <h2>{editingId ? 'Modifier la vente' : 'Nouvelle Vente'}</h2>
-              <form onSubmit={handleSubmit}>
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label htmlFor="product">Produit *</label>
-                    <select
-                      id="product"
-                      value={formData.product_id}
-                      onChange={(e) => {
-                        const product = products.find(p => String(p.id) === String(e.target.value));
-                        setFormData({
-                          ...formData,
-                          product_id: e.target.value,
-                          unit_price: product?.selling_price || 0,
-                          quantity: 1, // Réinitialiser la quantité à 1 lors du changement de produit
-                        });
-                      }}
-                      required
-                    >
-                      <option value="">Sélectionner un produit</option>
-                      {products.map((product) => (
-                        <option key={product.id} value={product.id}>
-                          {product.name} - {formatCurrency(product.selling_price)}
-                        </option>
-                      ))}
-                    </select>
-                    <span className="form-hint">Choisissez le produit vendu</span>
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="quantity">Quantité *</label>
-                    <input
-                      id="quantity"
-                      type="number"
-                      placeholder="Ex: 2"
-                      value={formData.quantity === '' ? '' : formData.quantity}
-                      onChange={(e) => {
-                        const selectedProduct = products.find(p => String(p.id) === String(formData.product_id));
-                        const maxQuantity = selectedProduct ? selectedProduct.quantity : 1;
-                        
-                        // Permettre de vider le champ pour le remplir manuellement
-                        if (e.target.value === '') {
-                          setFormData({ ...formData, quantity: '' });
-                          return;
-                        }
-                        
-                        const newQuantity = Number(e.target.value);
-                        if (isNaN(newQuantity) || newQuantity < 1) {
-                          return; // Ne rien faire si invalide, laisser l'utilisateur corriger
-                        }
-                        
-                        setFormData({ ...formData, quantity: Math.min(newQuantity, maxQuantity) });
-                      }}
-                      onBlur={(e) => {
-                        // Valider et corriger quand l'utilisateur quitte le champ
-                        if (e.target.value === '' || e.target.value === null) {
-                          setFormData({ ...formData, quantity: 1 });
-                        }
-                      }}
-                      min="1"
-                      max={products.find(p => String(p.id) === String(formData.product_id))?.quantity || 1}
-                      required
-                    />
-                    <span className="form-hint">
-                      Stock disponible: {products.find(p => String(p.id) === String(formData.product_id))?.quantity || 0} unités
-                    </span>
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="customer">Nom du client *</label>
-                    <input
-                      id="customer"
-                      type="text"
-                      placeholder="Ex: Jean Dupont"
-                      value={formData.customer_name}
-                      onChange={(e) => setFormData({ ...formData, customer_name: e.target.value })}
-                      required
-                    />
-                    <span className="form-hint">Nom ou identifier du client</span>
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="saleDate">Date de vente *</label>
-                    <input
-                      id="saleDate"
-                      type="date"
-                      value={formData.sale_date}
-                      onChange={(e) => setFormData({ ...formData, sale_date: e.target.value })}
-                      required
-                    />
-                    <span className="form-hint">Quand la vente s'est effectuée</span>
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="saleTime">Heure de vente</label>
-                    <input
-                      id="saleTime"
-                      type="time"
-                      value={formData.sale_time}
-                      onChange={(e) => setFormData({ ...formData, sale_time: e.target.value })}
-                    />
-                    <span className="form-hint">À quelle heure la vente s'est effectuée</span>
-                  </div>
-                </div>
-
-                <div className="form-group full-width">
-                  <label htmlFor="notes">Notes (optionnel)</label>
-                  <textarea
-                    id="notes"
-                    placeholder="Remarques ou détails supplémentaires..."
-                    value={formData.notes}
-                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                    rows="3"
-                  />
-                  <span className="form-hint">Informations supplémentaires sur la vente</span>
-                </div>
-
-                <div className="form-actions">
-                  <button type="submit" className="btn btn-primary">
-                    {editingId ? 'Mettre à jour' : 'Enregistrer la vente'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowForm(false);
-                      setEditingId(null);
-                      setFormData({
-                        product_id: '',
-                        quantity: 1,
-                        unit_price: 0,
-                        customer_name: '',
-                        sale_date: new Date().toISOString().split('T')[0],
-                        sale_time: new Date().toTimeString().slice(0, 5),
-                        notes: '',
-                      });
-                    }}
-                    className="btn btn-secondary"
-                  >
-                    Annuler
-                  </button>
-                </div>
-              </form>
-            </div>
-          )}
-
           {loading ? (
             <div className="loading">Chargement des ventes...</div>
           ) : products.length === 0 ? (
@@ -446,7 +299,150 @@ export default function Sales() {
             </div>
           ) : (
             <div className="sales-layout">
-              {/* HISTORIQUE À GAUCHE */}
+              {showForm && (
+                <div className="sales-form-section">
+                  <div className="form-card">
+                    <h2>{editingId ? 'Modifier la vente' : 'Nouvelle Vente'}</h2>
+                    <form onSubmit={handleSubmit}>
+                      <div className="form-grid">
+                        <div className="form-group">
+                          <label htmlFor="product">Produit *</label>
+                          <select
+                            id="product"
+                            value={formData.product_id}
+                            onChange={(e) => {
+                              const product = products.find(p => String(p.id) === String(e.target.value));
+                              setFormData({
+                                ...formData,
+                                product_id: e.target.value,
+                                unit_price: product?.selling_price || 0,
+                                quantity: 1,
+                              });
+                            }}
+                            required
+                          >
+                            <option value="">Sélectionner un produit</option>
+                            {products.map((product) => (
+                              <option key={product.id} value={product.id}>
+                                {product.name} - {formatCurrency(product.selling_price)}
+                              </option>
+                            ))}
+                          </select>
+                          <span className="form-hint">Choisissez le produit vendu</span>
+                        </div>
+
+                        <div className="form-group">
+                          <label htmlFor="quantity">Quantité *</label>
+                          <input
+                            id="quantity"
+                            type="number"
+                            placeholder="Ex: 2"
+                            value={formData.quantity === '' ? '' : formData.quantity}
+                            onChange={(e) => {
+                              const selectedProduct = products.find(p => String(p.id) === String(formData.product_id));
+                              const maxQuantity = selectedProduct ? selectedProduct.quantity : 1;
+                              if (e.target.value === '') {
+                                setFormData({ ...formData, quantity: '' });
+                                return;
+                              }
+                              const newQuantity = Number(e.target.value);
+                              if (isNaN(newQuantity) || newQuantity < 1) {
+                                return;
+                              }
+                              setFormData({ ...formData, quantity: Math.min(newQuantity, maxQuantity) });
+                            }}
+                            onBlur={(e) => {
+                              if (e.target.value === '' || e.target.value === null) {
+                                setFormData({ ...formData, quantity: 1 });
+                              }
+                            }}
+                            min="1"
+                            max={products.find(p => String(p.id) === String(formData.product_id))?.quantity || 1}
+                            required
+                          />
+                          <span className="form-hint">
+                            Stock disponible: {products.find(p => String(p.id) === String(formData.product_id))?.quantity || 0} unités
+                          </span>
+                        </div>
+
+                        <div className="form-group">
+                          <label htmlFor="customer">Nom du client *</label>
+                          <input
+                            id="customer"
+                            type="text"
+                            placeholder="Ex: Jean Dupont"
+                            value={formData.customer_name}
+                            onChange={(e) => setFormData({ ...formData, customer_name: e.target.value })}
+                            required
+                          />
+                          <span className="form-hint">Nom ou identifier du client</span>
+                        </div>
+
+                        <div className="form-group">
+                          <label htmlFor="saleDate">Date de vente *</label>
+                          <input
+                            id="saleDate"
+                            type="date"
+                            value={formData.sale_date}
+                            onChange={(e) => setFormData({ ...formData, sale_date: e.target.value })}
+                            required
+                          />
+                          <span className="form-hint">Quand la vente s'est effectuée</span>
+                        </div>
+
+                        <div className="form-group">
+                          <label htmlFor="saleTime">Heure de vente</label>
+                          <input
+                            id="saleTime"
+                            type="time"
+                            value={formData.sale_time}
+                            onChange={(e) => setFormData({ ...formData, sale_time: e.target.value })}
+                          />
+                          <span className="form-hint">À quelle heure la vente s'est effectuée</span>
+                        </div>
+                      </div>
+
+                      <div className="form-group full-width">
+                        <label htmlFor="notes">Notes (optionnel)</label>
+                        <textarea
+                          id="notes"
+                          placeholder="Remarques ou détails supplémentaires..."
+                          value={formData.notes}
+                          onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                          rows="3"
+                        />
+                        <span className="form-hint">Informations supplémentaires sur la vente</span>
+                      </div>
+
+                      <div className="form-actions">
+                        <button type="submit" className="btn btn-primary">
+                          {editingId ? 'Mettre à jour' : 'Enregistrer la vente'}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowForm(false);
+                            setEditingId(null);
+                            setFormData({
+                              product_id: '',
+                              quantity: 1,
+                              unit_price: 0,
+                              customer_name: '',
+                              sale_date: new Date().toISOString().split('T')[0],
+                              sale_time: new Date().toTimeString().slice(0, 5),
+                              notes: '',
+                            });
+                          }}
+                          className="btn btn-secondary"
+                        >
+                          Annuler
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
+
               <div className="sales-history-section">
                 <div className="sales-container">
                   {sales.length > 0 && (
@@ -520,7 +516,6 @@ export default function Sales() {
                   </div>
                 </div>
               </div>
-
             </div>
           )}
         </main>
