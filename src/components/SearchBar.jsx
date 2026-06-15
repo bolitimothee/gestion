@@ -29,7 +29,7 @@ export default function SearchBar({
     if (onSearch) {
       onSearch(debouncedSearchTerm, selectedFilter);
     }
-  }, [debouncedSearchTerm, selectedFilter, onSearch]);
+  }, [debouncedSearchTerm, selectedFilter]);
 
   const handleClear = useCallback(() => {
     setSearchTerm('');
@@ -38,7 +38,7 @@ export default function SearchBar({
     if (onSearch) {
       onSearch('', '');
     }
-  }, [onSearch]);
+  }, []);
 
   const handleFilterSelect = useCallback((filterValue) => {
     setSelectedFilter(filterValue);
@@ -46,16 +46,16 @@ export default function SearchBar({
     if (onFilter) {
       onFilter(filterValue);
     }
-  }, [onFilter]);
+  }, []);
 
   const handleKeyPress = useCallback((e) => {
     if (e.key === 'Enter') {
-      setDebouncedSearchTerm(searchTerm);
+      setDebouncedSearchTerm(e.target.value);
       if (onSearch) {
-        onSearch(searchTerm, selectedFilter);
+        onSearch(e.target.value, selectedFilter);
       }
     }
-  }, [searchTerm, selectedFilter, onSearch]);
+  }, []);
 
   return (
     <div className={`search-bar ${className}`}>
