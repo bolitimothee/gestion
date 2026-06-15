@@ -46,8 +46,9 @@
   position: relative;
 }
 
+/* ======= HAMBURGER BUTTON ======= */
 .navbar-toggle {
-  display: none;
+  display: flex;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
@@ -96,6 +97,14 @@
   transform: scale(0.95);
 }
 
+/* Afficher hamburger sur MOBILE (<768px), cacher sur DESKTOP */
+@media (min-width: 768px) {
+  .navbar-toggle {
+    display: none;
+  }
+}
+
+/* ======= BRAND/TITLE ======= */
 .navbar-brand {
   flex: 1;
   display: flex;
@@ -136,6 +145,7 @@
   width: 80%;
 }
 
+/* ======= ACTIONS/BUTTONS ======= */
 .navbar-actions {
   display: flex;
   align-items: center;
@@ -178,21 +188,7 @@
   border-color: rgba(255, 255, 255, 0.45);
 }
 
-.btn-logout-desktop::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left var(--transition-slow);
-}
-
-.btn-logout-desktop:hover::before {
-  left: 100%;
-}
-
+/* Ripple effect on logout button */
 .btn-logout-desktop::before {
   content: '';
   position: absolute;
@@ -220,14 +216,37 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Tablette (768px - 1023px) */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .navbar-container {
-    padding: 0 16px;
+/* ======= BREAKPOINTS ======= */
+
+/* Extra small screens (<360px) */
+@media (max-width: 359px) {
+  .navbar-brand h1 {
+    font-size: 18px;
+    letter-spacing: -0.25px;
   }
 
+  .navbar-container {
+    padding: var(--spacing-2) var(--spacing-3);
+    gap: var(--spacing-3);
+    min-height: 56px;
+  }
+}
+
+/* Small screens (360px - 480px) */
+@media (max-width: 480px) {
   .navbar-brand h1 {
     font-size: 20px;
+  }
+
+  .navbar-container {
+    padding: var(--spacing-2) var(--spacing-4);
+    gap: var(--spacing-4);
+    min-height: 64px;
+  }
+
+  .navbar-toggle {
+    width: 40px;
+    height: 40px;
   }
 
   .btn-logout-desktop {
@@ -236,149 +255,81 @@
   }
 }
 
-/* iOS PWA Optimizations - Standalone Mode */
-@media (display-mode: standalone) and (max-width: 767px) {
-  .navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 9999;
-    background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
-    background-color: #1e293b;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-    transform: translateZ(0);
-    opacity: 1 !important;
-  }
-  
+/* Tablet (480px - 768px) */
+@media (min-width: 481px) and (max-width: 767px) {
   .navbar-container {
-    padding: max(0px, env(safe-area-inset-top)) 16px 0 16px;
-    height: 80px;
+    padding: 0 16px;
+    gap: 16px;
+    min-height: 64px;
   }
-}
-  
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
 
-.navbar-toggle {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  order: -1;
-}
-
-.navbar-brand h1 {
-  flex: 1;
-  font-size: 18px;
-  text-align: left;
-}
-
-.navbar-user-desktop {
-  display: none;
-}
-
-/* Mode paysage */
-@media (orientation: landscape) {
-  .sidebar {
-    width: 280px;
-  }
-  
   .navbar-brand h1 {
-    font-size: 16px;
+    font-size: 22px;
   }
-}
 
-/* Support iOS < 11.3 */
-@supports not (padding-top: env(safe-area-inset-top)) {
-  .navbar {
-    padding-top: 20px;
-  }
-  
-  .navbar-safe-top {
-    height: 20px;
-  }
-}
-
-@media screen and (max-width: 480px) {
-  .navbar-container {
-    padding: 0 12px;
-    gap: 12px;
-  }
-  
-  .navbar-brand h1 {
-    font-size: 16px;
-  }
-  
   .navbar-toggle {
+    width: 44px;
+    height: 44px;
+  }
+
+  .btn-logout-desktop {
     width: 40px;
     height: 40px;
   }
 }
 
-
-/* Mobile (≤767px) */
-@media (max-width: 767px) {
+/* Medium screens (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1023px) {
   .navbar-container {
     padding: 0 16px;
-    gap: 16px;
-    height: 60px;
-  }
-
-  .navbar {
-    height: 60px;
-  }
-
-  .navbar-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    order: -1;
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
   }
 
   .navbar-brand h1 {
-    flex: 1;
-    font-size: 18px;
-    text-align: left;
+    font-size: 24px;
   }
 
-  .navbar-user-desktop {
-    display: none;
+  .btn-logout-desktop {
+    width: 40px;
+    height: 40px;
   }
 }
 
-@media (max-width: 480px) {
+/* Large screens (1024px - 1280px) */
+@media (min-width: 1024px) and (max-width: 1279px) {
   .navbar-container {
-    padding: 0 12px;
-    gap: 12px;
+    padding: 0 30px;
   }
 
   .navbar-brand h1 {
-    font-size: 16px;
+    font-size: 28px;
   }
 
-  .navbar-toggle {
+  .btn-logout-desktop {
     width: 44px;
     height: 44px;
-    min-width: 44px;
-    min-height: 44px;
   }
 }
 
-/* Large Desktop (≥1400px) */
-@media (min-width: 1400px) {
+/* Extra large screens (1280px - 1536px) */
+@media (min-width: 1280px) and (max-width: 1535px) {
   .navbar-container {
-    padding: 0 60px;
-    max-width: 1800px;
+    padding: 0 40px;
+  }
+
+  .navbar-brand h1 {
+    font-size: 30px;
+  }
+
+  .btn-logout-desktop {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+/* 2XL screens (1536px - 1920px) */
+@media (min-width: 1536px) and (max-width: 1919px) {
+  .navbar-container {
+    padding: 0 50px;
   }
 
   .navbar-brand h1 {
@@ -391,7 +342,7 @@
   }
 }
 
-/* Ultra Wide (≥1920px) */
+/* 4K and beyond (1920px+) */
 @media (min-width: 1920px) {
   .navbar-container {
     padding: 0 80px;
@@ -413,7 +364,7 @@
   }
 }
 
-/* 4K Ultra Wide (≥2560px) */
+/* Ultra wide (2560px+) */
 @media (min-width: 2560px) {
   .navbar-container {
     padding: 0 100px;
@@ -432,5 +383,48 @@
   .btn-logout-desktop {
     width: 60px;
     height: 60px;
+  }
+}
+
+/* ======= iOS PWA STANDALONE MODE ======= */
+@media (display-mode: standalone) and (max-width: 767px) {
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
+    background-color: #1e293b;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    transform: translateZ(0);
+    opacity: 1 !important;
+  }
+
+  .navbar-container {
+    padding: max(0px, env(safe-area-inset-top)) 16px 0 16px;
+    height: 80px;
+  }
+}
+
+/* ======= LANDSCAPE MODE ======= */
+@media (orientation: landscape) {
+  .navbar-brand h1 {
+    font-size: 16px;
+  }
+
+  .navbar-container {
+    min-height: 60px;
+  }
+}
+
+/* ======= FALLBACK FOR OLD iOS ======= */
+@supports not (padding-top: env(safe-area-inset-top)) {
+  .navbar {
+    padding-top: 20px;
+  }
+
+  .navbar-safe-top {
+    height: 20px;
   }
 }

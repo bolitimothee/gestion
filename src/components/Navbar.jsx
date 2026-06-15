@@ -40,9 +40,13 @@ export default function Navbar() {
     const choiceResult = await deferredPrompt.userChoice;
 
     if (choiceResult.outcome === 'accepted') {
-      console.log('PWA installation accepted');
+      if (import.meta.env.MODE === 'development') {
+        console.log('PWA installation accepted');
+      }
     } else {
-      console.log('PWA installation dismissed');
+      if (import.meta.env.MODE === 'development') {
+        console.log('PWA installation dismissed');
+      }
     }
 
     setDeferredPrompt(null);

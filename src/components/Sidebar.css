@@ -245,6 +245,66 @@
   pointer-events: none;
 }
 
+/* MOBILE (<768px) - CACHER LE SIDEBAR */
+@media (max-width: 767px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%);
+    width: 280px;
+    height: 100vh;
+    z-index: 950;
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.3);
+  }
+
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0);
+    z-index: 940;
+    transition: background 0.3s ease;
+    pointer-events: none;
+  }
+
+  .sidebar-overlay.active {
+    background: rgba(0, 0, 0, 0.5);
+    pointer-events: auto;
+  }
+
+  .sidebar-menu {
+    padding: 30px 16px 20px;
+    gap: 5px;
+  }
+
+  .sidebar-item {
+    padding: 12px 16px;
+    font-size: 14px;
+    gap: 12px;
+    margin-right: 0;
+  }
+
+  .sidebar-footer {
+    padding: 20px 16px;
+  }
+}
+
+/* EXTRA PETIT ÉCRAN (<360px) */
+@media (max-width: 359px) {
+  .sidebar {
+    width: 260px;
+  }
+}
+
 /* Tablette (768px - 1023px) */
 @media (min-width: 768px) and (max-width: 1023px) {
   .sidebar {

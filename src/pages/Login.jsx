@@ -33,14 +33,18 @@ export default function Login() {
     setLoading(true);
 
     try {
-      console.debug('Login submit', { email });
+      if (import.meta.env.MODE === 'development') {
+        console.debug('Login submit', { email });
+      }
       // Appel direct à signIn; les timeouts internes sont gérés dans le service
       const result = await signIn(email, password);
-      console.debug('Login result', result);
-      console.debug('Login result data/error', {
-        data: result?.data,
-        error: result?.error,
-      });
+      if (import.meta.env.MODE === 'development') {
+        console.debug('Login result', result);
+        console.debug('Login result data/error', {
+          data: result?.data,
+          error: result?.error,
+        });
+      }
       if (result?.error) {
         setError(result.error.message || 'Erreur de connexion. Veuillez contacter l\'administrateur.');
         return;

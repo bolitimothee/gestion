@@ -53,10 +53,12 @@ export const authService = {
     try {
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       const supabaseAnonKeyPresent = Boolean(import.meta.env.VITE_SUPABASE_ANON_KEY);
-      console.debug('[authService] signIn request for', email, {
-        supabaseUrl,
-        supabaseAnonKeyPresent,
-      });
+      if (import.meta.env.MODE === 'development') {
+        console.debug('[authService] signIn request for', email, {
+          supabaseUrl,
+          supabaseAnonKeyPresent,
+        });
+      }
 
       const { data, error } = await withTimeout(
         supabase.auth.signInWithPassword({
@@ -67,7 +69,9 @@ export const authService = {
         'Connexion trop longue — vérifiez votre réseau et réessayez.'
       );
 
-      console.debug('[authService] signIn response', { data, error });
+      if (import.meta.env.MODE === 'development') {
+        console.debug('[authService] signIn response', { data, error });
+      }
 
       if (error) {
         const message = error.status === 400 || error.status === 401
@@ -82,7 +86,9 @@ export const authService = {
 
       // Support response shape where user may be under data.user or data.session.user
       const user = data.user || data.session?.user;
-      console.debug('[authService] user extracted', { userId: user?.id });
+      if (import.meta.env.MODE === 'development') {
+        console.debug('[authService] user extracted', { userId: user?.id });
+      }
 
       // Vérifier si le compte est actif et valide
       if (user) {

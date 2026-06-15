@@ -198,7 +198,9 @@ export const iOSPWAHelper = {
   // Initialiser toutes les optimisations iOS PWA
   init() {
     if (this.isIOS()) {
+    if (import.meta.env.MODE === 'development') {
       console.log('[iOS PWA] Détection iOS, configuration optimisée...');
+    }
       
       // Attendre que le DOM soit chargé
       if (document.readyState === 'loading') {

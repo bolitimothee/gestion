@@ -783,7 +783,7 @@ body {
   .main-content {
     padding-bottom: max(var(--spacing-8), var(--safe-area-bottom));
     height: auto;
-    min-height: auto;
+    min-height: unset;
   }
   
   /* Enhanced iOS PWA Safe Area for iPhone X+ and Dynamic Island */
@@ -913,7 +913,6 @@ body {
   flex: 1;
   padding: 24px;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
   width: 100%;
   margin-left: 0;
 }

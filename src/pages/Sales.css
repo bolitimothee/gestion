@@ -811,3 +811,393 @@ select:focus {
   }
 }
 
+/* MODE MOBILE - TRANSFORMER TABLEAU EN CARTES */
+@media (max-width: 767px) {
+  .sales-table {
+    overflow-x: visible;
+  }
+
+  .sales-table table {
+    display: block;
+    border-collapse: separate;
+    border-spacing: 0 var(--spacing-3);
+  }
+
+  .sales-table thead {
+    display: none;
+  }
+
+  .sales-table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+
+  .sales-table tr {
+    display: block;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-4);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+
+  .sales-table tr:hover {
+    background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 100%);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .sales-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-2) 0;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+  }
+
+  .sales-table td:last-child {
+    border-bottom: none;
+  }
+
+  .sales-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 80px;
+  }
+
+  .sales-table .amount {
+    font-weight: 700;
+    font-size: var(--font-size-lg);
+  }
+
+  .sales-table .quantity {
+    text-align: right;
+  }
+
+  .actions-cell {
+    display: flex;
+    gap: var(--spacing-2);
+    flex-direction: column;
+    border-bottom: none;
+    padding: var(--spacing-3) 0 0 0;
+    margin-top: var(--spacing-2);
+  }
+
+  .actions-cell::before {
+    content: '';
+  }
+
+  .actions-cell button {
+    width: 100%;
+  }
+}
+/* MODE MOBILE - TRANSFORMER TABLEAU EN CARTES */
+@media (max-width: 767px) {
+  .sales-table {
+    overflow-x: visible;
+  }
+
+  .sales-table table {
+    display: block;
+    border-collapse: separate;
+    border-spacing: 0 var(--spacing-3);
+  }
+
+  .sales-table thead {
+    display: none;
+  }
+
+  .sales-table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+
+  .sales-table tr {
+    display: block;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-4);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+
+  .sales-table tr:hover {
+    background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 100%);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .sales-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-2) 0;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+  }
+
+  .sales-table td:last-child {
+    border-bottom: none;
+  }
+
+  .sales-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 80px;
+  }
+
+  .sales-table .amount {
+    font-weight: 700;
+    font-size: var(--font-size-lg);
+  }
+
+  .sales-table .quantity {
+    text-align: right;
+  }
+
+  .actions-cell {
+    display: flex;
+    gap: var(--spacing-2);
+    flex-direction: column;
+    border-bottom: none;
+    padding: var(--spacing-3) 0 0 0;
+    margin-top: var(--spacing-2);
+  }
+
+  .actions-cell::before {
+    content: '';
+  }
+
+  .actions-cell button {
+    width: 100%;
+  }
+}
+
+/* MODE MOBILE - TRANSFORMER TABLEAU FINANCES EN CARTES */
+@media (max-width: 767px) {
+  .expenses-table {
+    overflow-x: visible;
+  }
+
+  .expenses-table table {
+    display: block;
+    border-collapse: separate;
+    border-spacing: 0 var(--spacing-3);
+  }
+
+  .expenses-table thead {
+    display: none;
+  }
+
+  .expenses-table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+
+  .expenses-table tr {
+    display: block;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-4);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+
+  .expenses-table tr:hover {
+    background: linear-gradient(135deg, #fffbeb 0%, #f8fafc 100%);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .expenses-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-2) 0;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+  }
+
+  .expenses-table td:last-child {
+    border-bottom: none;
+  }
+
+  .expenses-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 70px;
+  }
+
+  .actions-cell {
+    display: flex;
+    gap: var(--spacing-2);
+    flex-direction: column;
+    border-bottom: none;
+    padding: var(--spacing-3) 0 0 0;
+    margin-top: var(--spacing-2);
+  }
+
+  .actions-cell::before {
+    content: '';
+  }
+
+  .actions-cell button {
+    width: 100%;
+  }
+}
+
+
+ 
+/* ==================================================
+   MODE MOBILE - TRANSFORM SALES TABLE TO CARDS
+   ================================================== */
+@media (max-width: 767px) {
+  .sales-table {
+    overflow-x: visible;
+  }
+
+  .sales-table table {
+    display: block;
+    border-collapse: separate;
+    border-spacing: 0 var(--spacing-3);
+  }
+
+  .sales-table thead {
+    display: none;
+  }
+
+  .sales-table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+
+  .sales-table tr {
+    display: block;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-4);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+
+  .sales-table tr:hover {
+    background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 100%);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .sales-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-2) 0;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+  }
+
+  .sales-table td:last-child {
+    border-bottom: none;
+  }
+
+  .sales-table .actions-cell {
+    display: flex;
+    gap: var(--spacing-2);
+    flex-direction: column;
+    border-bottom: none;
+    padding: var(--spacing-3) 0 0 0;
+    margin-top: var(--spacing-2);
+  }
+
+  .sales-table .actions-cell button {
+    width: 100%;
+  }
+}
+
+/* ==================================================
+   MODE MOBILE - TRANSFORM EXPENSES TABLE TO CARDS
+   ================================================== */
+@media (max-width: 767px) {
+  .expenses-table {
+    overflow-x: visible;
+  }
+
+  .expenses-table table {
+    display: block;
+    border-collapse: separate;
+    border-spacing: 0 var(--spacing-3);
+  }
+
+  .expenses-table thead {
+    display: none;
+  }
+
+  .expenses-table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+
+  .expenses-table tr {
+    display: block;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-4);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+
+  .expenses-table tr:hover {
+    background: linear-gradient(135deg, #fffbeb 0%, #f8fafc 100%);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .expenses-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-2) 0;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+  }
+
+  .expenses-table td:last-child {
+    border-bottom: none;
+  }
+
+  .expenses-table .actions-cell {
+    display: flex;
+    gap: var(--spacing-2);
+    flex-direction: column;
+    border-bottom: none;
+    padding: var(--spacing-3) 0 0 0;
+    margin-top: var(--spacing-2);
+  }
+
+  .expenses-table .actions-cell button {
+    width: 100%;
+  }
+}
+
+/* ==================================================
+   EXPORT BUTTONS MOBILE
+   ================================================== */
+@media (max-width: 480px) {
+  .export-actions {
+    flex-direction: column;
+    gap: var(--spacing-2);
+  }
+
+  .export-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
