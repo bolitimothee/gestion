@@ -3,9 +3,9 @@
   width: 280px;
   background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
   border-right: 1px solid rgba(203, 213, 225, 0.8);
-  height: calc(100vh - var(--navbar-height-lg, 80px));
+  height: calc(100dvh - var(--navbar-height, 80px) - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
   position: fixed;
-  top: var(--navbar-height-lg, 80px);
+  top: calc(var(--navbar-height, 80px) + max(0px, env(safe-area-inset-top)));
   left: 0;
   overflow-y: auto;
   z-index: 900;
@@ -264,8 +264,8 @@
 /* Tablet (768px - 1023px) */
 @media (min-width: 768px) and (max-width: 1023px) {
   .sidebar {
-    height: calc(100vh - var(--navbar-height-lg, 80px));
-    top: var(--navbar-height-lg, 80px);
+    height: calc(100dvh - var(--navbar-height, 80px) - max(0px, env(safe-area-inset-bottom)));
+    top: calc(var(--navbar-height, 80px) + max(0px, env(safe-area-inset-top)));
     width: 240px;
     box-shadow: 6px 0 30px rgba(0, 0, 0, 0.08);
   }
@@ -320,8 +320,8 @@
 /* Large Desktop (1024px - 1279px) */
 @media (min-width: 1024px) and (max-width: 1279px) {
   .sidebar {
-    height: calc(100vh - var(--navbar-height-lg, 80px));
-    top: var(--navbar-height-lg, 80px);
+    height: calc(100dvh - var(--navbar-height, 80px) - max(0px, env(safe-area-inset-bottom)));
+    top: calc(var(--navbar-height, 80px) + max(0px, env(safe-area-inset-top)));
     width: 280px;
   }
 

@@ -974,7 +974,7 @@ select {
 
 /* Layout System */
 .layout {
-  min-height: 100vh;
+  min-height: 100dvh;
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   position: relative;
   display: flex;
@@ -984,92 +984,98 @@ select {
 .layout-container {
   display: flex;
   flex: 1;
-  min-height: calc(100vh - 80px - max(0px, env(safe-area-inset-top)));
-  padding-top: calc(80px + max(0px, env(safe-area-inset-top)));
+  min-height: 100%;
+  padding-top: 0;
   transition: all 0.3s ease;
 }
 
 .main-content {
   flex: 1;
   padding: var(--spacing-8);
-  padding-left: calc(280px + max(0px, env(safe-area-inset-left)));
-  padding-right: max(0px, env(safe-area-inset-right));
+  padding-left: var(--spacing-8);
+  padding-right: max(var(--spacing-8), max(0px, env(safe-area-inset-right)));
   padding-bottom: max(var(--spacing-8), max(0px, env(safe-area-inset-bottom)));
+  margin-top: calc(var(--navbar-height, 80px) + max(0px, env(safe-area-inset-top)));
 }
 
 @media (max-width: 767px) {
   .layout-container {
-    padding-top: 60px; /* Navbar plus petite sur mobile */
+    padding-top: 0;
   }
   
   .main-content {
     margin-left: 0; /* Pas de sidebar fixe sur mobile */
     padding: var(--spacing-4);
+    margin-top: calc(var(--navbar-height-sm, 60px) + max(0px, env(safe-area-inset-top)));
   }
 }
 
 /* iOS PWA Mobile Layout - Override pour éviter les conflits */
 @media (display-mode: standalone) and (max-width: 767px) {
   .layout-container {
-    padding-top: 0; /* Géré par navbar-safe-top */
+    padding-top: 0;
   }
   
   .main-content {
-    padding-top: calc(var(--navbar-height) + var(--safe-area-top));
-    padding-left: max(var(--spacing-4), var(--safe-area-left));
-    padding-right: max(var(--spacing-4), var(--safe-area-right));
-    padding-bottom: max(var(--spacing-4), var(--safe-area-bottom));
+    margin-top: calc(var(--navbar-height-sm, 60px) + max(0px, env(safe-area-inset-top)));
+    padding: var(--spacing-4);
+    padding-left: max(var(--spacing-4), max(0px, env(safe-area-inset-left)));
+    padding-right: max(var(--spacing-4), max(0px, env(safe-area-inset-right)));
+    padding-bottom: max(var(--spacing-4), max(0px, env(safe-area-inset-bottom)));
     position: relative;
-    z-index: var(--z-main-content);
+    z-index: 10;
   }
 }
 
 /* Tablette Layout */
 @media (min-width: 768px) and (max-width: 1023px) {
   .layout-container {
-    padding-top: var(--navbar-height-tablet);
-    padding-top: 70px; /* Navbar taille tablette */
+    padding-top: 0;
   }
   
   .main-content {
     margin-left: 240px; /* Sidebar taille tablette */
     padding: var(--spacing-6);
+    margin-top: calc(var(--navbar-height-md, 70px) + max(0px, env(safe-area-inset-top)));
   }
 }
 
 /* Large Desktop Layout */
 @media (min-width: 1400px) {
   .layout-container {
-    padding-top: 90px; /* Navbar plus grande */
+    padding-top: 0;
   }
   
   .main-content {
     margin-left: 320px; /* Sidebar plus large */
     padding: var(--spacing-10);
+    margin-top: calc(var(--navbar-height-lg, 80px) + max(0px, env(safe-area-inset-top)));
   }
 }
 
 /* Ultra Wide Layout */
 @media (min-width: 1920px) {
   .layout-container {
-    padding-top: 100px; /* Navbar très grande */
+    padding-top: 0;
   }
   
   .main-content {
     margin-left: 380px; /* Sidebar très large */
     padding: var(--spacing-12);
+    margin-top: calc(var(--navbar-height-2xl, 90px) + max(0px, env(safe-area-inset-top)));
   }
 }
 
 /* 4K Layout */
 @media (min-width: 2560px) {
   .layout-container {
-    padding-top: 120px; /* Navbar 4K */
+    padding-top: 0;
   }
   
   .main-content {
     margin-left: 420px; /* Sidebar 4K */
     padding: var(--spacing-16);
+    margin-top: calc(var(--navbar-height-2xl, 90px) + max(0px, env(safe-area-inset-top)));
   }
 }
 
@@ -1108,14 +1114,14 @@ select {
   @media (display-mode: standalone) and (max-width: 767px) {
     .layout {
       min-height: 100dvh;
-      height: 100dvh;
-      overflow: hidden;
+      height: auto;
+      overflow: visible;
     }
     
     .layout-container {
-      padding-top: calc(80px + max(0px, env(safe-area-inset-top)));
-      min-height: calc(100dvh - 80px - max(0px, env(safe-area-inset-top)));
-      overflow: hidden;
+      padding-top: 0;
+      min-height: 100%;
+      overflow: visible;
     }
     
     .navbar {
@@ -1126,15 +1132,17 @@ select {
     }
     
     .navbar-container {
-      height: 80px;
-      padding-top: max(0px, env(safe-area-inset-top));
+      min-height: 80px;
+      padding-top: max(var(--spacing-4), max(0px, env(safe-area-inset-top)));
     }
     
     .main-content {
       overflow-y: auto;
       overflow-x: hidden;
       margin-left: 0;
+      margin-top: calc(80px + max(0px, env(safe-area-inset-top)));
       padding-bottom: max(var(--spacing-8), max(0px, env(safe-area-inset-bottom)));
+      -webkit-overflow-scrolling: touch;
     }
   }
 }

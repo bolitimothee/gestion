@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './styles/globals.css'
+import './styles/responsive.css'
 import './styles/components.css'
 // Vérification Supabase en dev uniquement (évite appels réseau superflus en prod)
 if (import.meta.env.DEV) {

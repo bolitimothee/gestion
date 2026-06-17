@@ -3,7 +3,7 @@
   background-color: #1e293b;
   background-attachment: fixed;
   color: white;
-  padding: max(0px, env(safe-area-inset-top)) max(0px, env(safe-area-inset-right)) 0 max(0px, env(safe-area-inset-left));
+  padding: 0;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   position: fixed;
   top: 0;
@@ -38,6 +38,7 @@
   max-width: 1600px;
   margin: 0 auto;
   padding: var(--spacing-4) var(--spacing-10);
+  padding-top: max(var(--spacing-4), max(0px, env(safe-area-inset-top)));
   display: flex;
   justify-content: space-between;
   align-items: center;

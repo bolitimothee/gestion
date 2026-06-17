@@ -13,12 +13,13 @@
   }
   
   .layout-container {
-    padding-top: var(--navbar-height-xs);
+    padding-top: 0;
   }
   
   .main-content {
     padding: var(--spacing-2);
     margin-left: 0;
+    margin-top: calc(var(--navbar-height-xs) + max(0px, env(safe-area-inset-top)));
   }
   
   body {
@@ -36,12 +37,13 @@
   }
   
   .layout-container {
-    padding-top: var(--navbar-height-sm);
+    padding-top: 0;
   }
   
   .main-content {
     padding: var(--spacing-3);
     margin-left: 0;
+    margin-top: calc(var(--navbar-height-sm) + max(0px, env(safe-area-inset-top)));
   }
   
   body {
@@ -59,12 +61,13 @@
   }
   
   .layout-container {
-    padding-top: var(--navbar-height-md);
+    padding-top: 0;
   }
   
   .main-content {
     padding: var(--spacing-4);
     margin-left: 0;
+    margin-top: calc(var(--navbar-height-md) + max(0px, env(safe-area-inset-top)));
   }
   
   body {
@@ -82,12 +85,13 @@
   }
   
   .layout-container {
-    padding-top: var(--navbar-height-md);
+    padding-top: 0;
   }
   
   .main-content {
     padding: var(--spacing-6);
     margin-left: var(--sidebar-width-md);
+    margin-top: calc(var(--navbar-height-md) + max(0px, env(safe-area-inset-top)));
   }
   
   body {
@@ -105,12 +109,13 @@
   }
   
   .layout-container {
-    padding-top: var(--navbar-height-lg);
+    padding-top: 0;
   }
   
   .main-content {
     padding: var(--spacing-8);
     margin-left: var(--sidebar-width-lg);
+    margin-top: calc(var(--navbar-height-lg) + max(0px, env(safe-area-inset-top)));
   }
   
   body {
@@ -128,12 +133,13 @@
   }
   
   .layout-container {
-    padding-top: var(--navbar-height-lg);
+    padding-top: 0;
   }
   
   .main-content {
     padding: var(--spacing-10);
     margin-left: var(--sidebar-width-xl);
+    margin-top: calc(var(--navbar-height-lg) + max(0px, env(safe-area-inset-top)));
   }
   
   body {
@@ -151,12 +157,13 @@
   }
   
   .layout-container {
-    padding-top: var(--navbar-height-2xl);
+    padding-top: 0;
   }
   
   .main-content {
     padding: var(--spacing-12);
     margin-left: var(--sidebar-width-2xl);
+    margin-top: calc(var(--navbar-height-2xl) + max(0px, env(safe-area-inset-top)));
   }
   
   body {
@@ -174,12 +181,13 @@
   }
   
   .layout-container {
-    padding-top: var(--navbar-height-2xl);
+    padding-top: 0;
   }
   
   .main-content {
     padding: var(--spacing-16);
     margin-left: var(--sidebar-width-2xl);
+    margin-top: calc(var(--navbar-height-2xl) + max(0px, env(safe-area-inset-top)));
   }
   
   body {
@@ -224,7 +232,7 @@
       width: 100%;
       overflow: visible;
       position: relative;
-      margin-top: var(--navbar-height);
+      margin-top: 0;
     }
     
     .main-content {
@@ -233,16 +241,15 @@
       overflow-y: scroll;
       overflow-x: hidden;
       scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      margin-top: calc(var(--navbar-height, 80px) + max(0px, env(safe-area-inset-top)));
     }
   }
   
   /* iOS PWA - Small screens (< 480px) */
   @media (display-mode: standalone) and (max-width: 479px) {
-    .layout-container {
-      margin-top: calc(var(--navbar-height-sm) + max(0px, env(safe-area-inset-top)));
-    }
-    
     .main-content {
+      margin-top: calc(var(--navbar-height-sm) + max(0px, env(safe-area-inset-top)));
       padding-top: var(--spacing-3);
       padding-left: max(var(--spacing-3), max(0px, env(safe-area-inset-left)));
       padding-right: max(var(--spacing-3), max(0px, env(safe-area-inset-right)));
@@ -252,11 +259,8 @@
   
   /* iOS PWA - Medium screens (480px - 768px) */
   @media (display-mode: standalone) and (min-width: 480px) and (max-width: 767px) {
-    .layout-container {
-      margin-top: calc(var(--navbar-height-md) + max(0px, env(safe-area-inset-top)));
-    }
-    
     .main-content {
+      margin-top: calc(var(--navbar-height-md) + max(0px, env(safe-area-inset-top)));
       padding-top: var(--spacing-4);
       padding-left: max(var(--spacing-4), max(0px, env(safe-area-inset-left)));
       padding-right: max(var(--spacing-4), max(0px, env(safe-area-inset-right)));
@@ -267,11 +271,13 @@
   /* iOS PWA - Landscape mode scrolling fix */
   @media (display-mode: standalone) and (orientation: landscape) {
     body {
-      height: 100vh;
+      height: 100dvh;
     }
     
     .main-content {
-      max-height: calc(100vh - var(--navbar-height));
+      max-height: calc(100dvh - (var(--navbar-height) + max(0px, env(safe-area-inset-top))) - max(0px, env(safe-area-inset-bottom)));
+      overflow-y: scroll;
+      -webkit-overflow-scrolling: touch;
     }
   }
 }

@@ -163,8 +163,7 @@ export const iOSPWAHelper = {
       // Optimiser le main content pour PWA - NE PAS définir de hauteur rigide
       const mainContent = document.querySelector('.main-content');
       if (mainContent) {
-        // Utiliser min-height et allow scrolling
-        mainContent.style.minHeight = 'calc(100vh - var(--navbar-height))';
+        // NE PAS définir min-height en JavaScript - laisser CSS gérer via margin-top
         mainContent.style.overflowY = 'auto';
         mainContent.style.overflowX = 'hidden';
         mainContent.style.webkitOverflowScrolling = 'touch';
@@ -198,44 +197,37 @@ export const iOSPWAHelper = {
   // Initialiser toutes les optimisations iOS PWA
   init() {
     if (this.isIOS()) {
-    if (import.meta.env.MODE === 'development') {
-      console.log('[iOS PWA] Détection iOS, configuration optimisée...');
-    }
+      if (import.meta.env.MODE === 'development') {
+        console.log('[iOS PWA] Détection iOS, configuration optimisée...');
+      }
       
       // Attendre que le DOM soit chargé
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-          this.configureViewport();
-          this.configureStatusBar();
-          this.adjustSafeArea();
-          this.hideSafariNavbar();
-          this.disableZoomAndElasticScroll();
-          this.adjustPWAResponsivity();
-          this.optimizeDisplay();
-          this.handleFocusManagement();
-        });
-      } else {
+      const runOptimizations = () => {
         this.configureViewport();
         this.configureStatusBar();
         this.adjustSafeArea();
-        this.hideSafariNavbar();
         this.disableZoomAndElasticScroll();
         this.adjustPWAResponsivity();
         this.optimizeDisplay();
         this.handleFocusManagement();
+        this.hideSafariNavbar();
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', runOptimizations);
+      } else {
+        runOptimizations();
       }
 
       // Cacher la barre de navigation après un délai (réduit pour réactivité)
       setTimeout(() => {
         this.hideSafariNavbar();
-        this.optimizeDisplay();
       }, 300);
 
       // Optimiser après le chargement complet (réduit)
       window.addEventListener('load', () => {
         setTimeout(() => {
           this.adjustPWAResponsivity();
-          this.optimizeDisplay();
         }, 200);
       });
     }
