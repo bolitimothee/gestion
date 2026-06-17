@@ -13,30 +13,38 @@
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json" />
-    <link rel="apple-touch-icon" sizes="192x192" href="/icon-192.png" />
-    <link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png" />
+    
+    <!-- Favicon & Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
     <link rel="shortcut icon" href="/icon-192.png" />
+    
+    <!-- iOS Icons -->
+    <link rel="apple-touch-icon" href="/icon-192.png" />
 
     <!-- iOS Specific Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Gestion de Commerce" />
+    <meta name="apple-mobile-web-app-title" content="Gestion" />
     
     <!-- iOS PWA Optimization -->
     <meta name="apple-touch-fullscreen" content="yes" />
     <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-touch-icon-precomposed" content="yes" />
     
     <!-- Android Specific Meta Tags -->
     <meta name="application-name" content="Gestion de Commerce" />
     <meta name="theme-color" content="#2563eb" />
+    <meta name="mobile-web-app-capable" content="yes" />
     
-    <!-- Microsoft Specific Meta Tags -->
+    <!-- Color Scheme -->
+    <meta name="color-scheme" content="light dark" />
+    
+    <!-- Windows/Microsoft Specific Meta Tags -->
     <meta name="msapplication-TileColor" content="#2563eb" />
     <meta name="msapplication-TileImage" content="/icon-192.png" />
     <meta name="msapplication-config" content="/browserconfig.xml" />
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <meta name="msapplication-navbutton-color" content="#2563eb" />
     
     <!-- Preconnect for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -44,6 +52,15 @@
     
     <!-- Security Headers - Simplifié pour éviter les blocages -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https: data:; connect-src 'self' https: supabase.co:;">
+    
+    <!-- X-UA-Compatible for IE -->
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    
+    <!-- Open Graph Meta Tags (for sharing) -->
+    <meta property="og:title" content="Gestion de Commerce" />
+    <meta property="og:description" content="Système de gestion des stocks et finances pour votre commerce" />
+    <meta property="og:image" content="/icon-512.png" />
+    <meta property="og:type" content="website" />
     
     <title>Gestion de Commerce - Système de Gestion des Stocks et Finances</title>
   </head>
