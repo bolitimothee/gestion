@@ -1,6 +1,13 @@
-// Utilitaire pour optimiser l'affichage PWA sur iOS
+/**
+ * iOS PWA Helper - Gestion optimisée pour iPhone/iPad en mode PWA/Standalone
+ * Gère le Dynamic Island, le notch, et les safe areas
+ */
 export const iOSPWAHelper = {
-  // Détecter si l'app tourne sur iOS
+  // ===== DÉTECTION =====
+  
+  /**
+   * Détecter si l'app tourne sur iOS
+   */
   isIOS() {
     return [
       'iPad Simulator',
@@ -13,223 +20,339 @@ export const iOSPWAHelper = {
     || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
   },
 
-  // Détecter si l'app est en mode PWA (standalone)
+  /**
+   * Détecter si l'app est en mode PWA (standalone) - Installée sur l'écran d'accueil
+   */
   isStandalone() {
     return ('standalone' in window.navigator) && window.navigator.standalone;
   },
 
-  // Détecter si l'app est en mode PWA via criteria
+  /**
+   * Détecter si l'app est en mode PWA (display-mode: standalone)
+   */
   isPWA() {
     return this.isStandalone() || window.matchMedia('(display-mode: standalone)').matches;
   },
 
-  // Configurer le viewport pour iOS PWA
-  configureViewport() {
-    if (this.isIOS() && this.isPWA()) {
-      const viewport = document.querySelector('meta[name="viewport"]');
-      if (viewport) {
-        viewport.setAttribute('content', 
-          'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, minimal-ui'
-        );
-      }
-    }
-  },
+  /**
+   * Détecter le type d'appareil iOS et la présence du Dynamic Island
+   */
+  detectDevice() {
+    const ua = navigator.userAgent;
+    const screenHeight = window.screen.height;
+    const screenWidth = window.screen.width;
+    
+    const isIPhone = /iPhone/.test(ua);
+    const isIPad = /iPad/.test(ua);
+    
+    let deviceInfo = {
+      isIPhone,
+      isIPad,
+      hasDynamicIsland: false,
+      hasNotch: false,
+      deviceType: 'unknown'
+    };
 
-  // Cacher la barre de navigation Safari
-  hideSafariNavbar() {
-    if (this.isIOS() && this.isPWA()) {
-      // Scroll vers le haut pour cacher la barre
-      window.scrollTo(0, 0);
+    if (isIPhone) {
+      // Hauteurs de Dynamic Island (iPhone 14 Pro, 15 Pro, 16 Pro, etc.)
+      // En portrait: 852px (Pro), 932px (Pro Max)
+      // En landscape: 393px, 430px, etc.
+      const isDynamicIsland = 
+        screenHeight === 852 || screenHeight === 932 ||  // Portrait Pro models
+        screenHeight === 844 || screenHeight === 926 ||  // Portrait non-Pro (Dynamic Island possible)
+        (screenHeight >= 2556 && screenHeight <= 2796);  // Very tall devices
       
-      // Forcer le viewport en mode plein écran
-      if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen().catch(() => {
-          // Ignorer les erreurs de fullscreen
-        });
-      }
-    }
-  },
-
-  // Ajuster le safe area pour iOS
-  adjustSafeArea() {
-    if (this.isIOS()) {
-      const root = document.documentElement;
-      root.style.setProperty('--safe-area-inset-top', 'env(safe-area-inset-top)');
-      root.style.setProperty('--safe-area-inset-bottom', 'env(safe-area-inset-bottom)');
-      root.style.setProperty('--safe-area-inset-left', 'env(safe-area-inset-left)');
-      root.style.setProperty('--safe-area-inset-right', 'env(safe-area-inset-right)');
-    }
-  },
-
-  // Configurer le status bar pour iOS
-  configureStatusBar() {
-    if (this.isIOS()) {
-      // Forcer la status bar en mode translucent
-      const metaTag = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
-      if (metaTag) {
-        metaTag.setAttribute('content', 'black-translucent');
-      }
-    }
-  },
-
-  // Désactiver le zoom et le scroll élastique - SANS BLOQUER LE SCROLLING
-  disableZoomAndElasticScroll() {
-    if (this.isIOS() && this.isPWA()) {
-      // Désactiver le zoom pinch
-      document.addEventListener('gesturestart', (e) => {
-        e.preventDefault();
-      });
-
-      // Permettre le scroll vertical normal, bloquer uniquement le multi-touch
-      document.addEventListener('touchmove', (e) => {
-        // Bloquer le scroll élastique UNIQUEMENT avec multi-touch (pinch zoom)
-        if (e.touches.length > 1) {
-          e.preventDefault();
-        }
-        // Sinon laisser le scroll vertical normal (ne pas bloquer)
-      }, { passive: false });
-
-      // Empêcher le double-tap zoom mais laisser le scroll fonctionner
-      let lastTouchEnd = 0;
-      const mainContent = document.querySelector('.main-content');
+      deviceInfo.hasDynamicIsland = isDynamicIsland;
       
-      if (mainContent) {
-        // Gérer le double-tap zoom uniquement si la cible n'est pas un formulaire
-        mainContent.addEventListener('touchend', (e) => {
-          const now = Date.now();
-          // Bloquer double-tap zoom uniquement sur les éléments non-input
-          if (now - lastTouchEnd <= 300 && !e.target.closest('input, textarea, select, button')) {
-            e.preventDefault();
-          }
-          lastTouchEnd = now;
-        }, false);
-      }
-    }
-  },
-
-  // Ajuster la responsivité pour PWA iOS
-  adjustPWAResponsivity() {
-    if (this.isIOS() && this.isPWA()) {
-      // Détecter l'orientation et ajuster le layout
-      const handleOrientationChange = () => {
-        const isLandscape = window.innerWidth > window.innerHeight;
-        
-        // Ajuster les variables CSS pour l'orientation
-        const root = document.documentElement;
-        root.style.setProperty('--pwa-height', `${window.innerHeight}px`);
-        root.style.setProperty('--pwa-width', `${window.innerWidth}px`);
-        root.style.setProperty('--pwa-orientation', isLandscape ? 'landscape' : 'portrait');
-        
-        // Forcer le recalculage du viewport
-        this.configureViewport();
-        
-        // Ajuster le safe area après changement d'orientation
-        setTimeout(() => {
-          this.adjustSafeArea();
-          this.hideSafariNavbar();
-        }, 50);
-      };
-
-      // Écouter les changements d'orientation
-      window.addEventListener('orientationchange', handleOrientationChange);
-      window.addEventListener('resize', handleOrientationChange);
+      // Notch detection (iPhone X, XS, XS Max, 11 Pro, 11 Pro Max, 12, 12 Pro, etc.)
+      deviceInfo.hasNotch = screenHeight >= 812;
       
-      // Exécuter une première fois
-      handleOrientationChange();
-    }
-  },
-
-  // Optimiser l'affichage pour les écrans iOS
-  optimizeDisplay() {
-    if (this.isIOS() && this.isPWA()) {
-      const root = document.documentElement;
-      
-      // Détecter le type d'appareil
-      const isIPhone = /iPhone/.test(navigator.userAgent);
-      const isIPad = /iPad/.test(navigator.userAgent);
-      
-      // Ajuster les variables CSS selon l'appareil
-      if (isIPhone) {
-        root.style.setProperty('--device-type', 'iphone');
-        // Ajustements spécifiques iPhone
-        const hasNotch = window.screen.height >= 812; // iPhone X et plus
-        root.style.setProperty('--has-notch', hasNotch ? '1' : '0');
-      } else if (isIPad) {
-        root.style.setProperty('--device-type', 'ipad');
-        // Ajustements spécifiques iPad
-        root.style.setProperty('--has-notch', '0');
-      }
-      
-      // Optimiser le main content pour PWA - NE PAS définir de hauteur rigide
-      const mainContent = document.querySelector('.main-content');
-      if (mainContent) {
-        // NE PAS définir min-height en JavaScript - laisser CSS gérer via margin-top
-        mainContent.style.overflowY = 'auto';
-        mainContent.style.overflowX = 'hidden';
-        mainContent.style.webkitOverflowScrolling = 'touch';
-      }
-    }
-  },
-
-  // Gérer le focus sur iOS PWA
-  handleFocusManagement() {
-    if (this.isIOS() && this.isPWA()) {
-      // Empêcher le zoom sur les inputs
-      const inputs = document.querySelectorAll('input, textarea, select');
-      inputs.forEach(input => {
-        input.addEventListener('focus', () => {
-          // Adapter le viewport quand le clavier apparaît
-          setTimeout(() => {
-            window.scrollTo(0, 0);
-          }, 150);
-        });
-        
-        input.addEventListener('blur', () => {
-          // Restaurer le viewport quand le clavier disparaît
-          setTimeout(() => {
-            this.hideSafariNavbar();
-          }, 75);
-        });
-      });
-    }
-  },
-
-  // Initialiser toutes les optimisations iOS PWA
-  init() {
-    if (this.isIOS()) {
-      if (import.meta.env.MODE === 'development') {
-        console.log('[iOS PWA] Détection iOS, configuration optimisée...');
-      }
-      
-      // Attendre que le DOM soit chargé
-      const runOptimizations = () => {
-        this.configureViewport();
-        this.configureStatusBar();
-        this.adjustSafeArea();
-        this.disableZoomAndElasticScroll();
-        this.adjustPWAResponsivity();
-        this.optimizeDisplay();
-        this.handleFocusManagement();
-        this.hideSafariNavbar();
-      };
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', runOptimizations);
+      // Déterminer le type spécifique
+      if (isDynamicIsland) {
+        deviceInfo.deviceType = 'dynamic-island';
+      } else if (deviceInfo.hasNotch) {
+        deviceInfo.deviceType = screenHeight >= 896 ? 'notch-large' : 'notch-basic';
       } else {
-        runOptimizations();
+        deviceInfo.deviceType = 'legacy';
       }
+    } else if (isIPad) {
+      deviceInfo.deviceType = 'ipad';
+    }
 
-      // Cacher la barre de navigation après un délai (réduit pour réactivité)
+    return deviceInfo;
+  },
+
+  // ===== CONFIGURATION =====
+
+  /**
+   * Configurer le viewport meta tag pour iOS PWA
+   * viewport-fit=cover permet d'utiliser l'espace du Dynamic Island
+   */
+  configureViewport() {
+    const viewport = document.querySelector('meta[name="viewport"]');
+    if (viewport) {
+      const content = this.isPWA()
+        ? 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, minimal-ui'
+        : 'width=device-width, initial-scale=1.0, viewport-fit=cover';
+      
+      viewport.setAttribute('content', content);
+    }
+
+    if (import.meta.env.MODE === 'development') {
+      console.log('[iOS PWA] Viewport configuré:', viewport?.getAttribute('content'));
+    }
+  },
+
+  /**
+   * Configurer la barre de statut iOS
+   */
+  configureStatusBar() {
+    if (!this.isIOS()) return;
+
+    const metaTag = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+    if (metaTag) {
+      // En mode PWA, utiliser black-translucent pour avoir le style maximal
+      // Sinon utiliser default ou black selon les préférences
+      const style = this.isPWA() ? 'black-translucent' : 'black';
+      metaTag.setAttribute('content', style);
+    }
+  },
+
+  /**
+   * Appliquer les CSS variables pour les safe areas
+   */
+  applySafeAreaVariables() {
+    if (!this.isIOS()) return;
+
+    const root = document.documentElement;
+    
+    // Définir les variables CSS pour les safe areas
+    // Ces valeurs sont lues automatiquement par le CSS via env()
+    root.style.setProperty('--safe-area-inset-top', 'env(safe-area-inset-top)');
+    root.style.setProperty('--safe-area-inset-bottom', 'env(safe-area-inset-bottom)');
+    root.style.setProperty('--safe-area-inset-left', 'env(safe-area-inset-left)');
+    root.style.setProperty('--safe-area-inset-right', 'env(safe-area-inset-right)');
+
+    if (import.meta.env.MODE === 'development') {
+      // Afficher les safe area values pour debug
+      const computedStyle = getComputedStyle(root);
+      console.log('[iOS PWA] Safe Area - Top:', computedStyle.getPropertyValue('--safe-area-inset-top'));
+    }
+  },
+
+  /**
+   * Cacher la barre de navigation Safari
+   */
+  hideSafariNavbar() {
+    if (!this.isPWA()) return;
+
+    // Scroll vers le haut pour cacher la barre Safari (si elle existe)
+    window.scrollTo(0, 1);
+    
+    // Alternative: utiliser requestFullscreen si disponible
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().catch(() => {
+        // Silencieusement ignorer les erreurs de fullscreen
+      });
+    }
+  },
+
+  // ===== GESTION DES INTERACTIONS =====
+
+  /**
+   * Désactiver le zoom et le scroll élastique - SANS BLOQUER LE SCROLLING VERTICAL
+   */
+  disableZoomAndElasticScroll() {
+    if (!this.isPWA()) return;
+
+    // Désactiver le zoom pinch (multi-touch)
+    document.addEventListener('gesturestart', (e) => {
+      e.preventDefault();
+    }, { passive: false });
+
+    // Permettre le scroll vertical normal, bloquer UNIQUEMENT le pinch zoom (multi-touch)
+    document.addEventListener('touchmove', (e) => {
+      // Bloquer le pinch zoom (plusieurs doigts)
+      if (e.touches.length > 1) {
+        e.preventDefault();
+      }
+      // Laisser passer le scroll à un doigt
+    }, { passive: false });
+
+    // Empêcher le double-tap zoom sur les éléments non-interactifs
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', (e) => {
+      const now = Date.now();
+      const isFormElement = e.target.closest('input, textarea, select, button, [role="button"]');
+      
+      // Double-tap sur un élément non-formulaire = zoom → bloquer
+      if (now - lastTouchEnd <= 300 && !isFormElement) {
+        e.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, { passive: false });
+
+    if (import.meta.env.MODE === 'development') {
+      console.log('[iOS PWA] Gestion du zoom et scroll configurée');
+    }
+  },
+
+  /**
+   * Gérer les changements d'orientation et de taille d'écran
+   */
+  handleOrientationChange() {
+    if (!this.isPWA()) return;
+
+    const updateLayout = () => {
+      const root = document.documentElement;
+      const { hasDynamicIsland, deviceType } = this.detectDevice();
+      
+      // Mettre à jour les variables CSS
+      root.style.setProperty('--pwa-height', `${window.innerHeight}px`);
+      root.style.setProperty('--pwa-width', `${window.innerWidth}px`);
+      root.style.setProperty('--pwa-orientation', window.innerWidth > window.innerHeight ? 'landscape' : 'portrait');
+      root.style.setProperty('--device-type', deviceType);
+      root.style.setProperty('--has-dynamic-island', hasDynamicIsland ? '1' : '0');
+
+      // Réappliquer le viewport et cacher la navbar Safari
+      this.configureViewport();
+      this.applySafeAreaVariables();
+      
+      // Attendre un peu avant de cacher la navbar Safari
       setTimeout(() => {
         this.hideSafariNavbar();
-      }, 300);
+      }, 100);
 
-      // Optimiser après le chargement complet (réduit)
-      window.addEventListener('load', () => {
+      if (import.meta.env.MODE === 'development') {
+        console.log('[iOS PWA] Orientation changée:', {
+          type: deviceType,
+          isDynamicIsland: hasDynamicIsland,
+          width: window.innerWidth,
+          height: window.innerHeight
+        });
+      }
+    };
+
+    window.addEventListener('orientationchange', updateLayout);
+    window.addEventListener('resize', updateLayout);
+    
+    // Exécuter une première fois
+    updateLayout();
+  },
+
+  /**
+   * Gérer le focus des inputs (clavier virtuel)
+   */
+  handleInputFocus() {
+    if (!this.isPWA()) return;
+
+    const inputs = document.querySelectorAll('input, textarea, select');
+    
+    inputs.forEach(input => {
+      input.addEventListener('focus', () => {
+        // Quand le clavier apparaît, assurer que l'input est visible
         setTimeout(() => {
-          this.adjustPWAResponsivity();
-        }, 200);
+          // Scroll le minimum nécessaire
+          const rect = input.getBoundingClientRect();
+          const navbar = document.querySelector('.navbar');
+          const navbarHeight = navbar ? navbar.offsetHeight : 80;
+          
+          if (rect.top < navbarHeight) {
+            input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 100);
       });
+
+      input.addEventListener('blur', () => {
+        // Quand le clavier disparaît, restaurer la position
+        setTimeout(() => {
+          this.hideSafariNavbar();
+        }, 100);
+      });
+    });
+  },
+
+  /**
+   * Optimiser l'affichage du contenu principal
+   */
+  optimizeContentDisplay() {
+    if (!this.isPWA()) return;
+
+    const mainContent = document.querySelector('.main-content');
+    if (mainContent) {
+      // Assurer que le contenu scroll correctement
+      mainContent.style.overflowY = 'auto';
+      mainContent.style.overflowX = 'hidden';
+      mainContent.style.webkitOverflowScrolling = 'touch';
+      
+      // Ne PAS définir min-height ici - laisser le CSS avec margin-top gérer ça
+    }
+
+    const layout = document.querySelector('.layout');
+    if (layout) {
+      layout.style.minHeight = '100dvh'; // Utiliser 100dvh au lieu de 100vh
+    }
+  },
+
+  // ===== INITIALISATION =====
+
+  /**
+   * Initialiser toutes les optimisations iOS PWA
+   */
+  init() {
+    if (!this.isIOS()) {
+      if (import.meta.env.MODE === 'development') {
+        console.log('[iOS PWA] Non iOS - skipping');
+      }
+      return;
+    }
+
+    const { deviceType, hasDynamicIsland } = this.detectDevice();
+    if (import.meta.env.MODE === 'development') {
+      console.log('[iOS PWA] Initialisation - Device:', deviceType, 'Dynamic Island:', hasDynamicIsland);
+    }
+
+    // Fonction qui s'exécute quand le DOM est prêt
+    const runOptimizations = () => {
+      // Configuration initiale
+      this.configureViewport();
+      this.configureStatusBar();
+      this.applySafeAreaVariables();
+      
+      // Gestion des interactions
+      this.disableZoomAndElasticScroll();
+      this.handleOrientationChange();
+      this.handleInputFocus();
+      
+      // Optimisation de l'affichage
+      this.optimizeContentDisplay();
+      
+      // Cacher la barre Safari
+      this.hideSafariNavbar();
+    };
+
+    // Attendre que le DOM soit prêt
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', runOptimizations);
+    } else {
+      runOptimizations();
+    }
+
+    // Cacher la barre Safari après un court délai
+    setTimeout(() => {
+      this.hideSafariNavbar();
+    }, 300);
+
+    // Optimiser après le chargement complet de la page
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        this.handleOrientationChange();
+        this.optimizeContentDisplay();
+      }, 200);
+    });
+
+    if (import.meta.env.MODE === 'development') {
+      console.log('[iOS PWA] Initialisation complète');
     }
   }
 };

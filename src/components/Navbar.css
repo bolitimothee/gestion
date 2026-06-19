@@ -34,6 +34,14 @@
   opacity: 1;
 }
 
+/* Safe Area Top Spacer - iPhone Dynamic Island & Notch */
+.navbar-safe-top {
+  height: max(0px, env(safe-area-inset-top));
+  background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
+  flex-shrink: 0;
+  width: 100vw;
+}
+
 .navbar-container {
   max-width: 1600px;
   margin: 0 auto;
@@ -425,7 +433,7 @@
   }
 }
 
-/* ======= iOS PWA STANDALONE MODE ======= */
+/* ======= iOS PWA STANDALONE MODE - iPhone ======= */
 @media (display-mode: standalone) and (max-width: 767px) {
   .navbar {
     position: fixed;
@@ -438,33 +446,28 @@
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
     transform: translateZ(0);
     opacity: 1 !important;
+    padding-top: max(0px, env(safe-area-inset-top));
   }
 
   .navbar-container {
-    padding: max(0px, env(safe-area-inset-top)) 16px 0 16px;
-    height: 70px;
+    padding: 0 16px;
+    min-height: calc(60px + max(0px, env(safe-area-inset-top)));
+    height: auto;
   }
 
   /* Mobile small height for iOS PWA */
   @media (max-width: 480px) {
     .navbar-container {
-      height: 60px;
-    }
-
-    .navbar {
-      height: 60px;
+      min-height: calc(56px + max(0px, env(safe-area-inset-top)));
+      padding: 0 14px;
     }
   }
 
   /* Tablet portrait in standalone mode */
   @media (min-width: 481px) {
     .navbar-container {
-      height: 70px;
-      padding: max(0px, env(safe-area-inset-top)) 18px 0 18px;
-    }
-
-    .navbar {
-      height: 70px;
+      min-height: calc(70px + max(0px, env(safe-area-inset-top)));
+      padding: 0 18px;
     }
 
     .navbar-brand h1 {
@@ -479,14 +482,13 @@
 
   /* Landscape mode in iOS PWA */
   @media (orientation: landscape) {
-    .navbar-container {
-      height: 56px;
-      min-height: 56px;
-      padding: max(0px, env(safe-area-inset-top)) 14px 0 14px;
+    .navbar {
+      padding-top: max(0px, env(safe-area-inset-top));
     }
 
-    .navbar {
-      height: 56px;
+    .navbar-container {
+      min-height: calc(52px + max(0px, env(safe-area-inset-top)));
+      padding: 0 14px;
     }
 
     .navbar-brand h1 {
@@ -501,6 +503,69 @@
     .btn-logout-desktop {
       width: 38px;
       height: 38px;
+    }
+  }
+}
+
+/* ======= iOS PWA STANDALONE MODE - iPad ======= */
+@media (display-mode: standalone) and (min-width: 768px) {
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
+    background-color: #1e293b;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    transform: translateZ(0);
+    opacity: 1 !important;
+    padding-top: max(0px, env(safe-area-inset-top));
+  }
+
+  .navbar-container {
+    padding: 0 24px;
+    min-height: calc(80px + max(0px, env(safe-area-inset-top)));
+    height: auto;
+  }
+
+  /* iPad Mini */
+  @media (max-width: 1023px) {
+    .navbar-container {
+      padding: 0 20px;
+      min-height: calc(70px + max(0px, env(safe-area-inset-top)));
+    }
+
+    .navbar-brand h1 {
+      font-size: 24px;
+    }
+  }
+
+  /* iPad Pro and larger */
+  @media (min-width: 1024px) {
+    .navbar-container {
+      padding: 0 32px;
+      min-height: calc(90px + max(0px, env(safe-area-inset-top)));
+    }
+
+    .navbar-brand h1 {
+      font-size: 28px;
+    }
+  }
+
+  /* iPad Landscape */
+  @media (orientation: landscape) {
+    .navbar {
+      padding-top: max(0px, env(safe-area-inset-top));
+    }
+
+    .navbar-container {
+      min-height: calc(60px + max(0px, env(safe-area-inset-top)));
+      padding: 0 20px;
+    }
+
+    .navbar-brand h1 {
+      font-size: 20px;
     }
   }
 }
