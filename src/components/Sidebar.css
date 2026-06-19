@@ -852,12 +852,50 @@
 /* ========= iOS PWA - STANDALONE MODE - iPhone ========= */
 @media (display-mode: standalone) and (max-width: 767px) {
   .sidebar {
+    position: fixed;
+    left: 0;
     top: calc(60px + max(0px, env(safe-area-inset-top)));
     bottom: max(0px, env(safe-area-inset-bottom));
+    width: 85%;
+    max-width: 320px;
+    height: auto;
+    background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+    transform: translateX(-100%) translateZ(0);
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+    border-right: none;
+    z-index: 900;
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .sidebar.open {
+    transform: translateX(0) translateZ(0);
   }
 
   .sidebar-overlay {
+    display: block;
+    position: fixed;
     top: calc(60px + max(0px, env(safe-area-inset-top)));
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 850;
+    pointer-events: auto;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    will-change: opacity;
+    backface-visibility: hidden;
+  }
+
+  .sidebar-overlay.active {
+    opacity: 1;
   }
 
   @media (orientation: landscape) {
@@ -880,9 +918,17 @@
 /* ========= iOS PWA - STANDALONE MODE - iPad ========= */
 @media (display-mode: standalone) and (min-width: 768px) {
   .sidebar {
+    position: fixed;
+    left: 0;
     top: calc(80px + max(0px, env(safe-area-inset-top)));
     bottom: max(0px, env(safe-area-inset-bottom));
     height: calc(100dvh - 80px - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
+    transform: translateX(0) translateZ(0);
+    z-index: 900;
+  }
+
+  .sidebar-overlay {
+    display: none;
   }
 
   /* iPad Mini */

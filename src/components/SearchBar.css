@@ -5,9 +5,10 @@
   align-items: center;
   gap: var(--spacing-3);
   width: 100%;
-  max-width: 600px;
+  max-width: 100%;
   margin: 0 auto;
   flex-wrap: wrap;
+  z-index: 100;
 }
 
 .search-input-container {
@@ -167,7 +168,7 @@
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
   -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
-  z-index: calc(var(--z-dropdown) + 1);
+  z-index: 1000;
   min-width: 200px;
   overflow: hidden;
   animation: slideInDown var(--transition-normal) ease-out;
@@ -247,7 +248,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: var(--z-dropdown) - 1;
+  z-index: 999;
   background: transparent;
 }
 
@@ -338,6 +339,52 @@
   }
 }
 
+/* iOS PWA Support */
+@media (display-mode: standalone) {
+  .search-bar {
+    z-index: 100;
+  }
+
+  .search-filter-dropdown {
+    z-index: 1001;
+  }
+
+  .search-overlay {
+    z-index: 1000;
+  }
+
+  /* iPhone PWA */
+  @media (max-width: 767px) {
+    .search-filter-dropdown {
+      width: calc(100vw - var(--spacing-8) - max(0px, env(safe-area-inset-left)) - max(0px, env(safe-area-inset-right)));
+      max-height: calc(100vh - 200px - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
+    }
+
+    .search-input-container {
+      min-height: calc(44px + max(0px, env(safe-area-inset-top)));
+    }
+
+    @media (orientation: landscape) {
+      .search-filter-dropdown {
+        max-height: calc(100vh - 150px - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
+      }
+    }
+  }
+
+  /* iPad PWA */
+  @media (min-width: 768px) {
+    .search-filter-dropdown {
+      max-height: calc(100vh - 250px - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
+    }
+
+    @media (orientation: landscape) {
+      .search-filter-dropdown {
+        max-height: calc(100vh - 200px - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
+      }
+    }
+  }
+}
+
 @media (max-width: 480px) {
   .search-bar {
     gap: var(--spacing-2);
@@ -345,7 +392,7 @@
 
   .search-input-container {
     padding: var(--spacing-3) var(--spacing-3);
-    min-height: 40px;
+    min-height: calc(40px + max(0px, env(safe-area-inset-top)));
   }
 
   .search-input {
@@ -361,6 +408,8 @@
   .search-clear-btn {
     padding: var(--spacing-1);
     flex-shrink: 0;
+    min-width: 36px;
+    min-height: 36px;
   }
 
   .search-filter-btn {
@@ -376,7 +425,7 @@
   }
 
   .search-filter-dropdown {
-    width: calc(100vw - var(--spacing-4));
+    width: calc(100vw - var(--spacing-4) - max(0px, env(safe-area-inset-left)) - max(0px, env(safe-area-inset-right)));
     max-height: 400px;
   }
 
@@ -396,13 +445,14 @@
   .filter-option {
     padding: var(--spacing-3) var(--spacing-4);
     font-size: var(--font-size-sm);
+    min-height: 44px;
   }
 }
 
 @media (max-width: 360px) {
   .search-input-container {
     padding: var(--spacing-2) var(--spacing-3);
-    min-height: 36px;
+    min-height: calc(36px + max(0px, env(safe-area-inset-top)));
   }
 
   .search-input {
@@ -417,6 +467,8 @@
 
   .search-clear-btn {
     padding: 4px;
+    min-width: 32px;
+    min-height: 32px;
   }
 
   .search-filter-btn {
@@ -431,7 +483,7 @@
   }
 
   .search-filter-dropdown {
-    width: calc(100vw - var(--spacing-3));
+    width: calc(100vw - var(--spacing-3) - max(0px, env(safe-area-inset-left)) - max(0px, env(safe-area-inset-right)));
   }
 
   .filter-header {
@@ -449,6 +501,7 @@
   .filter-option {
     padding: var(--spacing-2) var(--spacing-3);
     font-size: var(--font-size-xs);
+    min-height: 40px;
   }
 }
 
