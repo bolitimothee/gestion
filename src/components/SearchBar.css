@@ -337,12 +337,13 @@
   }
 
   .search-input-container {
-    padding: var(--spacing-3) var(--spacing-4);
+    padding: var(--spacing-2) var(--spacing-3);
     min-height: 44px;
   }
 
   .search-input {
     font-size: var(--font-size-sm);
+    padding: 0 var(--spacing-2);
   }
 
   .search-icon {
@@ -354,8 +355,8 @@
   .search-clear-btn {
     padding: var(--spacing-1);
     flex-shrink: 0;
-    min-width: 36px;
-    min-height: 36px;
+    min-width: 32px;
+    min-height: 32px;
   }
 
   .search-filter-container {
