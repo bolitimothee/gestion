@@ -869,7 +869,7 @@
   .sidebar {
     position: fixed;
     left: 0;
-    top: calc(60px + max(0px, env(safe-area-inset-top)));
+    top: calc(var(--navbar-height-md, 70px) + max(0px, env(safe-area-inset-top)));
     bottom: max(0px, env(safe-area-inset-bottom));
     width: 85%;
     max-width: 320px;
@@ -896,7 +896,7 @@
   .sidebar-overlay {
     display: block;
     position: fixed;
-    top: calc(60px + max(0px, env(safe-area-inset-top)));
+    top: calc(var(--navbar-height-md, 70px) + max(0px, env(safe-area-inset-top)));
     left: 0;
     right: 0;
     bottom: 0;
@@ -911,6 +911,17 @@
 
   .sidebar-overlay.active {
     opacity: 1;
+  }
+
+  /* Mobile small height for iOS PWA */
+  @media (max-width: 480px) {
+    .sidebar {
+      top: calc(var(--navbar-height-xs, 56px) + max(0px, env(safe-area-inset-top)));
+    }
+
+    .sidebar-overlay {
+      top: calc(var(--navbar-height-xs, 56px) + max(0px, env(safe-area-inset-top)));
+    }
   }
 
   @media (orientation: landscape) {
@@ -935,9 +946,9 @@
   .sidebar {
     position: fixed;
     left: 0;
-    top: calc(80px + max(0px, env(safe-area-inset-top)));
+    top: calc(var(--navbar-height-lg, 80px) + max(0px, env(safe-area-inset-top)));
     bottom: max(0px, env(safe-area-inset-bottom));
-    height: calc(100dvh - 80px - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
+    height: calc(100dvh - var(--navbar-height-lg, 80px) - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
     transform: translateX(0) translateZ(0);
     z-index: var(--z-sidebar, 1001);
   }
@@ -949,8 +960,8 @@
   /* iPad Mini */
   @media (max-width: 1023px) {
     .sidebar {
-      top: calc(70px + max(0px, env(safe-area-inset-top)));
-      height: calc(100dvh - 70px - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
+      top: calc(var(--navbar-height-md, 70px) + max(0px, env(safe-area-inset-top)));
+      height: calc(100dvh - var(--navbar-height-md, 70px) - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
       width: 240px;
     }
   }
@@ -958,8 +969,8 @@
   /* iPad Pro and larger */
   @media (min-width: 1024px) {
     .sidebar {
-      top: calc(90px + max(0px, env(safe-area-inset-top)));
-      height: calc(100dvh - 90px - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
+      top: calc(var(--navbar-height-xl, 90px) + max(0px, env(safe-area-inset-top)));
+      height: calc(100dvh - var(--navbar-height-xl, 90px) - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
       width: 280px;
     }
   }
