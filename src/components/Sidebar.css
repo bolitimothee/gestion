@@ -869,7 +869,7 @@
   .sidebar {
     position: fixed;
     left: 0;
-    top: calc(var(--navbar-height-md, 70px) + max(0px, env(safe-area-inset-top)));
+    top: calc(60px + max(0px, env(safe-area-inset-top)));
     bottom: max(0px, env(safe-area-inset-bottom));
     width: 85%;
     max-width: 320px;
@@ -896,7 +896,7 @@
   .sidebar-overlay {
     display: block;
     position: fixed;
-    top: calc(var(--navbar-height-md, 70px) + max(0px, env(safe-area-inset-top)));
+    top: calc(60px + max(0px, env(safe-area-inset-top)));
     left: 0;
     right: 0;
     bottom: 0;
@@ -916,11 +916,22 @@
   /* Mobile small height for iOS PWA */
   @media (max-width: 480px) {
     .sidebar {
-      top: calc(var(--navbar-height-xs, 56px) + max(0px, env(safe-area-inset-top)));
+      top: calc(56px + max(0px, env(safe-area-inset-top)));
     }
 
     .sidebar-overlay {
-      top: calc(var(--navbar-height-xs, 56px) + max(0px, env(safe-area-inset-top)));
+      top: calc(56px + max(0px, env(safe-area-inset-top)));
+    }
+  }
+
+  /* Tablet portrait in standalone mode */
+  @media (min-width: 481px) {
+    .sidebar {
+      top: calc(70px + max(0px, env(safe-area-inset-top)));
+    }
+
+    .sidebar-overlay {
+      top: calc(70px + max(0px, env(safe-area-inset-top)));
     }
   }
 
