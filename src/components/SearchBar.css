@@ -85,9 +85,9 @@
   justify-content: center;
   flex-shrink: 0;
   position: absolute;
-  right: var(--spacing-3);
-  top: 50%;
-  transform: translateY(-50%);
+  right: var(--spacing-4);
+  top: var(--spacing-3);
+  bottom: var(--spacing-3);
 }
 
 .search-clear-btn:hover {
@@ -361,7 +361,9 @@
     flex-shrink: 0;
     min-width: 32px;
     min-height: 32px;
-    right: var(--spacing-2);
+    right: var(--spacing-3);
+    top: var(--spacing-2);
+    bottom: var(--spacing-2);
   }
 
   .search-filter-container {
@@ -435,7 +437,9 @@
     padding: 4px;
     min-width: 32px;
     min-height: 32px;
-    right: var(--spacing-2);
+    right: var(--spacing-3);
+    top: var(--spacing-2);
+    bottom: var(--spacing-2);
   }
 
   .search-filter-btn {
