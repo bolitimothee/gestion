@@ -8,7 +8,7 @@
   top: calc(var(--navbar-height, 80px) + max(0px, env(safe-area-inset-top)));
   left: 0;
   overflow-y: auto;
-  z-index: 900;
+  z-index: var(--z-sidebar, 1001);
   display: flex;
   flex-direction: column;
   box-shadow: 6px 0 32px rgba(0, 0, 0, 0.08);
@@ -655,7 +655,7 @@
     transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
     border-right: none;
-    z-index: 900;
+    z-index: var(--z-sidebar-mobile, 950);
     -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     will-change: transform;
@@ -687,7 +687,7 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.6);
-    z-index: 850;
+    z-index: var(--z-sidebar-overlay-mobile, 945);
     pointer-events: auto;
     opacity: 0;
     transition: opacity 0.25s ease;
@@ -791,7 +791,7 @@
     transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
     border-right: none;
-    z-index: 900;
+    z-index: var(--z-sidebar-mobile, 950);
     -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     will-change: transform;
@@ -823,7 +823,7 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.6);
-    z-index: 850;
+    z-index: var(--z-sidebar-overlay-mobile, 945);
     pointer-events: auto;
     opacity: 0;
     transition: opacity 0.25s ease;
@@ -879,7 +879,7 @@
     transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
     border-right: none;
-    z-index: 900;
+    z-index: var(--z-sidebar-mobile, 950);
     -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     will-change: transform;
@@ -901,7 +901,7 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.6);
-    z-index: 850;
+    z-index: var(--z-sidebar-overlay-mobile, 945);
     pointer-events: auto;
     opacity: 0;
     transition: opacity 0.25s ease;
@@ -939,7 +939,7 @@
     bottom: max(0px, env(safe-area-inset-bottom));
     height: calc(100dvh - 80px - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
     transform: translateX(0) translateZ(0);
-    z-index: 900;
+    z-index: var(--z-sidebar, 1001);
   }
 
   .sidebar-overlay {
