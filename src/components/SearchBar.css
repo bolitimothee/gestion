@@ -339,52 +339,6 @@
   }
 }
 
-/* iOS PWA Support */
-@media (display-mode: standalone) {
-  .search-bar {
-    z-index: 100;
-  }
-
-  .search-filter-dropdown {
-    z-index: 1001;
-  }
-
-  .search-overlay {
-    z-index: 1000;
-  }
-
-  /* iPhone PWA */
-  @media (max-width: 767px) {
-    .search-filter-dropdown {
-      width: calc(100vw - var(--spacing-8) - max(0px, env(safe-area-inset-left)) - max(0px, env(safe-area-inset-right)));
-      max-height: calc(100vh - 200px - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
-    }
-
-    .search-input-container {
-      min-height: calc(44px + max(0px, env(safe-area-inset-top)));
-    }
-
-    @media (orientation: landscape) {
-      .search-filter-dropdown {
-        max-height: calc(100vh - 150px - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
-      }
-    }
-  }
-
-  /* iPad PWA */
-  @media (min-width: 768px) {
-    .search-filter-dropdown {
-      max-height: calc(100vh - 250px - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
-    }
-
-    @media (orientation: landscape) {
-      .search-filter-dropdown {
-        max-height: calc(100vh - 200px - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
-      }
-    }
-  }
-}
-
 @media (max-width: 480px) {
   .search-bar {
     gap: var(--spacing-2);
@@ -392,7 +346,7 @@
 
   .search-input-container {
     padding: var(--spacing-3) var(--spacing-3);
-    min-height: calc(40px + max(0px, env(safe-area-inset-top)));
+    min-height: 44px;
   }
 
   .search-input {
@@ -414,7 +368,7 @@
 
   .search-filter-btn {
     padding: var(--spacing-2) var(--spacing-3);
-    min-height: 40px;
+    min-height: 44px;
     font-size: var(--font-size-sm);
   }
 
@@ -452,7 +406,7 @@
 @media (max-width: 360px) {
   .search-input-container {
     padding: var(--spacing-2) var(--spacing-3);
-    min-height: calc(36px + max(0px, env(safe-area-inset-top)));
+    min-height: 40px;
   }
 
   .search-input {
@@ -473,7 +427,7 @@
 
   .search-filter-btn {
     padding: var(--spacing-2) var(--spacing-3);
-    min-height: 36px;
+    min-height: 40px;
     font-size: var(--font-size-xs);
   }
 
@@ -502,6 +456,48 @@
     padding: var(--spacing-2) var(--spacing-3);
     font-size: var(--font-size-xs);
     min-height: 40px;
+  }
+}
+
+/* iOS PWA Support - Doit être APRÈS les media queries de taille d'écran */
+@media (display-mode: standalone) {
+  .search-bar {
+    z-index: 100;
+  }
+
+  .search-filter-dropdown {
+    z-index: 1001;
+  }
+
+  .search-overlay {
+    z-index: 1000;
+  }
+
+  /* iPhone PWA */
+  @media (max-width: 767px) {
+    .search-filter-dropdown {
+      width: calc(100vw - var(--spacing-8) - max(0px, env(safe-area-inset-left)) - max(0px, env(safe-area-inset-right)));
+      max-height: calc(100vh - 200px - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
+    }
+
+    @media (orientation: landscape) {
+      .search-filter-dropdown {
+        max-height: calc(100vh - 150px - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
+      }
+    }
+  }
+
+  /* iPad PWA */
+  @media (min-width: 768px) {
+    .search-filter-dropdown {
+      max-height: calc(100vh - 250px - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
+    }
+
+    @media (orientation: landscape) {
+      .search-filter-dropdown {
+        max-height: calc(100vh - 200px - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
+      }
+    }
   }
 }
 
