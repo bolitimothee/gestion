@@ -869,8 +869,8 @@
   .sidebar {
     position: fixed;
     left: 0;
-    top: calc(60px + max(0px, env(safe-area-inset-top)));
-    bottom: max(0px, env(safe-area-inset-bottom));
+    top: 60px;
+    bottom: 0;
     width: 85%;
     max-width: 320px;
     height: auto;
@@ -896,7 +896,7 @@
   .sidebar-overlay {
     display: block;
     position: fixed;
-    top: calc(60px + max(0px, env(safe-area-inset-top)));
+    top: 60px;
     left: 0;
     right: 0;
     bottom: 0;
@@ -916,34 +916,34 @@
   /* Mobile small height for iOS PWA */
   @media (max-width: 480px) {
     .sidebar {
-      top: calc(64px + max(0px, env(safe-area-inset-top)));
+      top: 64px;
     }
 
     .sidebar-overlay {
-      top: calc(64px + max(0px, env(safe-area-inset-top)));
+      top: 64px;
     }
   }
 
   /* Tablet portrait in standalone mode */
   @media (min-width: 481px) {
     .sidebar {
-      top: calc(70px + max(0px, env(safe-area-inset-top)));
+      top: 70px;
     }
 
     .sidebar-overlay {
-      top: calc(70px + max(0px, env(safe-area-inset-top)));
+      top: 70px;
     }
   }
 
   @media (orientation: landscape) {
     .sidebar {
-      top: calc(52px + max(0px, env(safe-area-inset-top)));
+      top: 52px;
       width: 280px;
       max-width: 70vw;
     }
 
     .sidebar-overlay {
-      top: calc(52px + max(0px, env(safe-area-inset-top)));
+      top: 52px;
     }
 
     .sidebar-menu {
@@ -957,9 +957,9 @@
   .sidebar {
     position: fixed;
     left: 0;
-    top: calc(80px + max(0px, env(safe-area-inset-top)));
-    bottom: max(0px, env(safe-area-inset-bottom));
-    height: calc(100dvh - 80px - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
+    top: 80px;
+    bottom: 0;
+    height: calc(100dvh - 80px);
     transform: translateX(0) translateZ(0);
     z-index: var(--z-sidebar, 1001);
   }
@@ -971,8 +971,8 @@
   /* iPad Mini */
   @media (max-width: 1023px) {
     .sidebar {
-      top: calc(70px + max(0px, env(safe-area-inset-top)));
-      height: calc(100dvh - 70px - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
+      top: 70px;
+      height: calc(100dvh - 70px);
       width: 240px;
     }
   }
@@ -980,8 +980,8 @@
   /* iPad Pro and larger */
   @media (min-width: 1024px) {
     .sidebar {
-      top: calc(90px + max(0px, env(safe-area-inset-top)));
-      height: calc(100dvh - 90px - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
+      top: 90px;
+      height: calc(100dvh - 90px);
       width: 280px;
     }
   }
@@ -989,8 +989,8 @@
   /* iPad Landscape */
   @media (orientation: landscape) {
     .sidebar {
-      top: calc(60px + max(0px, env(safe-area-inset-top)));
-      height: calc(100dvh - 60px - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
+      top: 60px;
+      height: calc(100dvh - 60px);
     }
 
     @media (max-width: 1023px) {
