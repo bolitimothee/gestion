@@ -451,14 +451,14 @@
 
   .navbar-container {
     padding: 0 16px;
-    min-height: calc(60px + max(0px, env(safe-area-inset-top)));
+    min-height: 60px;
     height: auto;
   }
 
   /* Mobile small height for iOS PWA */
   @media (max-width: 480px) {
     .navbar-container {
-      min-height: calc(64px + max(0px, env(safe-area-inset-top)));
+      min-height: 64px;
       padding: 0 14px;
     }
   }
@@ -466,7 +466,7 @@
   /* Tablet portrait in standalone mode */
   @media (min-width: 481px) {
     .navbar-container {
-      min-height: calc(70px + max(0px, env(safe-area-inset-top)));
+      min-height: 70px;
       padding: 0 18px;
     }
 
@@ -487,7 +487,7 @@
     }
 
     .navbar-container {
-      min-height: calc(52px + max(0px, env(safe-area-inset-top)));
+      min-height: 52px;
       padding: 0 14px;
     }
 
