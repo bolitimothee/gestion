@@ -525,7 +525,7 @@
 
   .navbar-container {
     padding: 0 24px;
-    min-height: calc(80px + max(0px, env(safe-area-inset-top)));
+    min-height: 80px;
     height: auto;
   }
 
@@ -533,7 +533,7 @@
   @media (max-width: 1023px) {
     .navbar-container {
       padding: 0 20px;
-      min-height: calc(70px + max(0px, env(safe-area-inset-top)));
+      min-height: 70px;
     }
 
     .navbar-brand h1 {
@@ -545,7 +545,7 @@
   @media (min-width: 1024px) {
     .navbar-container {
       padding: 0 32px;
-      min-height: calc(90px + max(0px, env(safe-area-inset-top)));
+      min-height: 90px;
     }
 
     .navbar-brand h1 {

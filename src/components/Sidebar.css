@@ -645,7 +645,8 @@
   .sidebar {
     position: fixed;
     left: 0;
-    top: calc(64px + max(0px, env(safe-area-inset-top)));
+    /* Synchronisation avec la hauteur de la navbar via variable CSS */
+    top: calc(var(--navbar-height-mobile, 64px) + max(0px, env(safe-area-inset-top)));
     bottom: max(0px, env(safe-area-inset-bottom));
     width: 85%;
     max-width: 320px;
@@ -682,7 +683,7 @@
   .sidebar-overlay {
     display: block;
     position: fixed;
-    top: calc(64px + max(0px, env(safe-area-inset-top)));
+    top: calc(var(--navbar-height-mobile, 64px) + max(0px, env(safe-area-inset-top)));
     left: 0;
     right: 0;
     bottom: 0;
@@ -781,7 +782,8 @@
   .sidebar {
     position: fixed;
     left: 0;
-    top: calc(70px + max(0px, env(safe-area-inset-top)));
+    /* Synchronisation avec la hauteur de la navbar via variable CSS */
+    top: calc(var(--navbar-height-tablet, 70px) + max(0px, env(safe-area-inset-top)));
     bottom: max(0px, env(safe-area-inset-bottom));
     width: 75%;
     max-width: 300px;
@@ -818,7 +820,7 @@
   .sidebar-overlay {
     display: block;
     position: fixed;
-    top: calc(70px + max(0px, env(safe-area-inset-top)));
+    top: calc(var(--navbar-height-tablet, 70px) + max(0px, env(safe-area-inset-top)));
     left: 0;
     right: 0;
     bottom: 0;
@@ -869,8 +871,9 @@
   .sidebar {
     position: fixed;
     left: 0;
-    top: 60px;
-    bottom: 0;
+    /* Utilisation de la variable CSS pour la hauteur de navbar - synchronisation automatique */
+    top: calc(var(--pwa-navbar-height, 60px) + max(0px, env(safe-area-inset-top)));
+    bottom: max(0px, env(safe-area-inset-bottom));
     width: 85%;
     max-width: 320px;
     height: auto;
@@ -896,10 +899,11 @@
   .sidebar-overlay {
     display: block;
     position: fixed;
-    top: 60px;
+    /* Synchronisation avec la navbar via variable CSS */
+    top: calc(var(--pwa-navbar-height, 60px) + max(0px, env(safe-area-inset-top)));
     left: 0;
     right: 0;
-    bottom: 0;
+    bottom: max(0px, env(safe-area-inset-bottom));
     background: rgba(0, 0, 0, 0.6);
     z-index: var(--z-sidebar-overlay-mobile, 945);
     pointer-events: auto;
@@ -913,37 +917,37 @@
     opacity: 1;
   }
 
-  /* Mobile small height for iOS PWA */
+  /* Mobile small height for iOS PWA - utilise les variables CSS */
   @media (max-width: 480px) {
     .sidebar {
-      top: 64px;
+      top: calc(var(--pwa-navbar-height-small, 64px) + max(0px, env(safe-area-inset-top)));
     }
 
     .sidebar-overlay {
-      top: 64px;
+      top: calc(var(--pwa-navbar-height-small, 64px) + max(0px, env(safe-area-inset-top)));
     }
   }
 
   /* Tablet portrait in standalone mode */
   @media (min-width: 481px) {
     .sidebar {
-      top: 70px;
+      top: calc(var(--pwa-navbar-height-tablet, 70px) + max(0px, env(safe-area-inset-top)));
     }
 
     .sidebar-overlay {
-      top: 70px;
+      top: calc(var(--pwa-navbar-height-tablet, 70px) + max(0px, env(safe-area-inset-top)));
     }
   }
 
   @media (orientation: landscape) {
     .sidebar {
-      top: 52px;
+      top: calc(var(--pwa-navbar-height-landscape, 52px) + max(0px, env(safe-area-inset-top)));
       width: 280px;
       max-width: 70vw;
     }
 
     .sidebar-overlay {
-      top: 52px;
+      top: calc(var(--pwa-navbar-height-landscape, 52px) + max(0px, env(safe-area-inset-top)));
     }
 
     .sidebar-menu {
@@ -957,9 +961,10 @@
   .sidebar {
     position: fixed;
     left: 0;
-    top: 80px;
-    bottom: 0;
-    height: calc(100dvh - 80px);
+    /* Utilisation des variables CSS pour synchronisation automatique avec navbar */
+    top: calc(var(--pwa-navbar-height, 80px) + max(0px, env(safe-area-inset-top)));
+    bottom: max(0px, env(safe-area-inset-bottom));
+    height: calc(100dvh - var(--pwa-navbar-height, 80px) - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
     transform: translateX(0) translateZ(0);
     z-index: var(--z-sidebar, 1001);
   }
@@ -971,8 +976,8 @@
   /* iPad Mini */
   @media (max-width: 1023px) {
     .sidebar {
-      top: 70px;
-      height: calc(100dvh - 70px);
+      top: calc(var(--pwa-navbar-height-ipad-mini, 70px) + max(0px, env(safe-area-inset-top)));
+      height: calc(100dvh - 70px - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
       width: 240px;
     }
   }
@@ -980,8 +985,8 @@
   /* iPad Pro and larger */
   @media (min-width: 1024px) {
     .sidebar {
-      top: 90px;
-      height: calc(100dvh - 90px);
+      top: calc(var(--pwa-navbar-height-ipad-pro, 90px) + max(0px, env(safe-area-inset-top)));
+      height: calc(100dvh - 90px - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
       width: 280px;
     }
   }
@@ -989,8 +994,8 @@
   /* iPad Landscape */
   @media (orientation: landscape) {
     .sidebar {
-      top: 60px;
-      height: calc(100dvh - 60px);
+      top: calc(var(--pwa-navbar-height-landscape, 60px) + max(0px, env(safe-area-inset-top)));
+      height: calc(100dvh - 60px - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
     }
 
     @media (max-width: 1023px) {

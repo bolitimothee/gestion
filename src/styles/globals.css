@@ -689,18 +689,22 @@ body {
     --safe-area-right: env(safe-area-inset-right, 0px);
   }
 
-  /* iPhone PWA */
+  /* iPhone PWA - Hauteur de navbar pour synchronisation avec sidebar */
   @media (max-width: 767px) {
     :root {
       --pwa-navbar-height: 60px;
+      --pwa-navbar-height-small: 64px;
+      --pwa-navbar-height-tablet: 70px;
       --pwa-navbar-height-landscape: 52px;
     }
   }
 
-  /* iPad PWA */
+  /* iPad PWA - Hauteurs de navbar pour synchronisation sidebar */
   @media (min-width: 768px) {
     :root {
       --pwa-navbar-height: 80px;
+      --pwa-navbar-height-ipad-mini: 70px;
+      --pwa-navbar-height-ipad-pro: 90px;
       --pwa-navbar-height-landscape: 60px;
     }
 
@@ -718,6 +722,13 @@ body {
   }
 }
 
+/* Variables de hauteur de navbar pour tous les modes - Synchronisation sidebar */
+:root {
+  --navbar-height-mobile: 64px;
+  --navbar-height-tablet: 70px;
+  --navbar-height-desktop: 80px;
+}
+
 /* iOS PWA Safe Area Support */
 @supports (padding: max(0px)) {
   .layout {
@@ -726,25 +737,22 @@ body {
     padding-left: 0;
     padding-right: 0;
   }
-  
-  .navbar {
-    padding-top: max(var(--spacing-0), var(--safe-area-top));
-  }
-  
+
+  /* Navbar padding-top géré par Navbar.css pour iOS PWA - pas de double padding */
   .main-content {
     padding-bottom: max(var(--spacing-8), var(--safe-area-bottom));
     height: auto;
     min-height: unset;
   }
-  
+
   /* Enhanced iOS PWA Safe Area for iPhone X+ and Dynamic Island */
   @media (display-mode: standalone) and (max-width: 767px) {
     /* Base iOS PWA adjustments - géré par Navbar.css et Sidebar.css */
     .main-content {
-      padding-top: calc(var(--pwa-navbar-height, 60px) + var(--safe-area-top));
-      padding-left: max(var(--spacing-4), var(--safe-area-left));
-      padding-right: max(var(--spacing-4), var(--safe-area-right));
-      padding-bottom: max(var(--spacing-4), var(--safe-area-bottom));
+      padding-top: calc(var(--pwa-navbar-height, 60px) + env(safe-area-inset-top, 0px));
+      padding-left: max(var(--spacing-4), env(safe-area-inset-left, 0px));
+      padding-right: max(var(--spacing-4), env(safe-area-inset-right, 0px));
+      padding-bottom: max(var(--spacing-4), env(safe-area-inset-bottom, 0px));
     }
 
     .page-header {
