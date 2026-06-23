@@ -458,7 +458,7 @@
   /* Mobile small height for iOS PWA */
   @media (max-width: 480px) {
     .navbar-container {
-      min-height: calc(56px + max(0px, env(safe-area-inset-top)));
+      min-height: calc(64px + max(0px, env(safe-area-inset-top)));
       padding: 0 14px;
     }
   }
