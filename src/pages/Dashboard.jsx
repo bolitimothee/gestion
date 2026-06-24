@@ -4,6 +4,7 @@ import { financeService } from '../services/financeService';
 import { salesService } from '../services/salesService';
 import { stockService } from '../services/stockService';
 import Navbar from '../components/Navbar';
+import { AlertCircle } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import StatCard from '../components/StatCard';
 import { DollarSign, TrendingUp, Package, ShoppingCart } from 'lucide-react';

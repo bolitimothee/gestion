@@ -8,10 +8,11 @@ import StatCard from '../components/StatCard';
 import SearchBar from '../components/SearchBar';
 import { Plus, Trash2, AlertCircle, TrendingUp, TrendingDown, DollarSign, Download, Mail, Share2, Edit2 } from 'lucide-react';
 import { formatCurrency, formatDate } from '../services/formatService';
+import { showToast } from '../components/Toast';
 import './Finances.css';
 
 export default function Finances() {
-  const { user } = useAuth();
+  const { user, account } = useAuth();
   const [expenses, setExpenses] = useState([]);
   const [filteredExpenses, setFilteredExpenses] = useState([]);
   const [summary, setSummary] = useState(null);
@@ -19,6 +20,7 @@ export default function Finances() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState('');
+  const [deleteConfirm, setDeleteConfirm] = useState({ show: false, expenseId: null, description: '' });
   const [formData, setFormData] = useState({
     description: '',
     amount: 0,
@@ -85,8 +87,10 @@ export default function Finances() {
     try {
       if (editingId) {
         await financeService.updateExpense(editingId, formData);
+        showToast('Dépense mise à jour avec succès', 'success');
       } else {
         await financeService.addExpense(user.id, formData);
+        showToast('Dépense ajoutée avec succès', 'success');
       }
       
       setFormData({
@@ -106,18 +110,29 @@ export default function Finances() {
   }
 
   async function handleDelete(id) {
-    if (confirm('Êtes-vous sûr de vouloir supprimer cette dépense?')) {
+    const expense = expenses.find(e => e.id === id);
+    setDeleteConfirm({ show: true, expenseId: id, description: expense?.description || '' });
+  }
+
+  async function confirmDelete() {
+    if (deleteConfirm.expenseId) {
       try {
-        const result = await financeService.deleteExpense(id);
+        const result = await financeService.deleteExpense(deleteConfirm.expenseId);
         if (result.error) {
           setError('Erreur lors de la suppression de la dépense: ' + result.error.message);
           return;
         }
+        showToast('Dépense supprimée avec succès', 'success');
+        setDeleteConfirm({ show: false, expenseId: null, description: '' });
         await loadData();
       } catch (error) {
         setError('Erreur lors de la suppression de la dépense: ' + error.message);
       }
     }
+  }
+
+  function cancelDelete() {
+    setDeleteConfirm({ show: false, expenseId: null, description: '' });
   }
 
   function handleEdit(expense) {
@@ -145,7 +160,7 @@ export default function Finances() {
 
   function generateHistoriqueText() {
     let text = `HISTORIQUE DES DÉPENSES\n`;
-    text += `Entreprise: Commerce\n`;
+    text += `Entreprise: ${account?.account_name || 'Commerce'}\n`;
     text += `Date d'export: ${new Date().toLocaleString('fr-FR')}\n`;
     text += `${'='.repeat(80)}\n\n`;
 
@@ -409,6 +424,20 @@ export default function Finances() {
                 ) : (
                   <p className="empty-message">Aucune dépense enregistrée</p>
                 )}
+              </div>
+            </div>
+          )}
+
+          {deleteConfirm.show && (
+            <div className="modal-overlay" onClick={cancelDelete}>
+              <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <h3>Confirmer la suppression</h3>
+                <p>Êtes-vous sûr de vouloir supprimer la dépense "{deleteConfirm.description}" ?</p>
+                <p className="modal-warning">Cette action est irréversible.</p>
+                <div className="modal-actions">
+                  <button onClick={confirmDelete} className="btn btn-danger">Supprimer</button>
+                  <button onClick={cancelDelete} className="btn btn-secondary">Annuler</button>
+                </div>
               </div>
             </div>
           )}

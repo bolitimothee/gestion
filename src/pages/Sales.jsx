@@ -9,6 +9,7 @@ import Sidebar from '../components/Sidebar';
 import SearchBar from '../components/SearchBar';
 import { Plus, Edit2, Trash2, AlertCircle, Download, Mail, Share2 } from 'lucide-react';
 import { formatCurrency, formatDate } from '../services/formatService';
+import { showToast } from '../components/Toast';
 import './Sales.css';
 
 export default function Sales() {
@@ -21,6 +22,7 @@ export default function Sales() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState('');
+  const [deleteConfirm, setDeleteConfirm] = useState({ show: false, saleId: null, customerName: '' });
   const [formData, setFormData] = useState({
     product_id: '',
     quantity: 1,
@@ -157,8 +159,10 @@ export default function Sales() {
       let result;
       if (editingId) {
         result = await salesService.updateSale(editingId, saleData);
+        showToast('Vente mise à jour avec succès', 'success');
       } else {
         result = await salesService.addSale(user.id, saleData);
+        showToast('Vente enregistrée avec succès', 'success');
       }
 
       if (result.error) {
@@ -200,10 +204,21 @@ export default function Sales() {
   }
 
   async function handleDelete(id) {
-    if (confirm('Êtes-vous sûr de vouloir supprimer cette vente?')) {
-      await salesService.deleteSale(id);
+    const sale = sales.find(s => s.id === id);
+    setDeleteConfirm({ show: true, saleId: id, customerName: sale?.customer_name || '' });
+  }
+
+  async function confirmDelete() {
+    if (deleteConfirm.saleId) {
+      await salesService.deleteSale(deleteConfirm.saleId);
+      showToast('Vente supprimée avec succès', 'success');
+      setDeleteConfirm({ show: false, saleId: null, customerName: '' });
       await loadData();
     }
+  }
+
+  function cancelDelete() {
+    setDeleteConfirm({ show: false, saleId: null, customerName: '' });
   }
 
   function downloadHistorique() {
@@ -514,6 +529,20 @@ export default function Sales() {
                       <p className="empty-message">Aucune vente enregistrée</p>
                     )}
                   </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {deleteConfirm.show && (
+            <div className="modal-overlay" onClick={cancelDelete}>
+              <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <h3>Confirmer la suppression</h3>
+                <p>Êtes-vous sûr de vouloir supprimer la vente de "{deleteConfirm.customerName}" ?</p>
+                <p className="modal-warning">Cette action est irréversible et le stock sera remis à jour.</p>
+                <div className="modal-actions">
+                  <button onClick={confirmDelete} className="btn btn-danger">Supprimer</button>
+                  <button onClick={cancelDelete} className="btn btn-secondary">Annuler</button>
                 </div>
               </div>
             </div>

@@ -168,7 +168,7 @@ export const convertFinancialData = (financial, targetCurrency = DEFAULT_CURRENC
     netProfit: convertCurrency(financial.netProfit || 0, 'USD', targetCurrency),
     stockValue: convertCurrency(financial.stockValue || 0, 'USD', targetCurrency),
     productCosts: convertCurrency(financial.productCosts || 0, 'USD', targetCurrency),
-    expenseExpenses: convertCurrency(financial.expenseExpenses || 0, 'USD', targetCurrency),
+    costOfGoodsSold: convertCurrency(financial.costOfGoodsSold || 0, 'USD', targetCurrency),
   };
 };
 

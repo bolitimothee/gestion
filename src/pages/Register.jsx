@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Mail, Lock, Building2, Calendar, AlertCircle } from 'lucide-react';
+import { Mail, Lock, Building2, Calendar, AlertCircle, CheckCircle } from 'lucide-react';
 import './Auth.css';
 
 export default function Register() {
@@ -10,6 +10,7 @@ export default function Register() {
   const [accountName, setAccountName] = useState('');
   const [validityDate, setValidityDate] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { signUp, user } = useAuth();
@@ -38,7 +39,8 @@ export default function Register() {
         setError(result.error.message || 'Erreur lors de l\'inscription');
         setLoading(false);
       } else {
-        // Le useEffect ci-dessus va gérer la redirection
+        setSuccess('Compte créé avec succès! Redirection vers le tableau de bord...');
+        setLoading(false);
       }
     } catch (err) {
       setError(err.message || 'Erreur lors de l\'inscription');
@@ -58,6 +60,13 @@ export default function Register() {
           <div className="alert alert-error">
             <AlertCircle size={20} />
             <span>{error}</span>
+          </div>
+        )}
+
+        {success && (
+          <div className="alert alert-success">
+            <CheckCircle size={20} />
+            <span>{success}</span>
           </div>
         )}
 

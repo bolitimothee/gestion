@@ -72,7 +72,7 @@ export const financeService = {
         .select('amount')
         .eq('user_id', userId);
 
-      const expenseExpenses = expensesData?.reduce((sum, expense) => sum + Math.round(Number(expense.amount) * 100) / 100, 0) || 0;
+      const totalExpensesFromTable = expensesData?.reduce((sum, expense) => sum + Math.round(Number(expense.amount) * 100) / 100, 0) || 0;
 
       // Récupérer les produits pour calculer le COGS (Coût des Marchandises Vendues)
       const { data: productsData } = await supabase
@@ -107,7 +107,7 @@ export const financeService = {
       }, 0) || 0;
 
       // Les dépenses totales sont seulement les dépenses enregistrées (loyer, salaires, etc.)
-      const totalExpenses = expenseExpenses;
+      const totalExpenses = totalExpensesFromTable;
 
       // Le bénéfice net selon les standards financiers: Revenus - COGS - Dépenses opérationnelles
       const netProfit = totalRevenue - costOfGoodsSold - totalExpenses;
@@ -119,7 +119,6 @@ export const financeService = {
           netProfit,
           stockValue,
           productCosts,
-          expenseExpenses,
           costOfGoodsSold,
         },
         error: null,

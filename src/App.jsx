@@ -5,6 +5,7 @@ import { SidebarProvider } from './context/SidebarContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 import LoadingSpinner from './components/LoadingSpinner';
+import Toast from './components/Toast';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
@@ -71,6 +72,7 @@ function App() {
     <ErrorBoundary>
       <AuthProvider>
         <AppContent />
+        <Toast />
       </AuthProvider>
     </ErrorBoundary>
   );

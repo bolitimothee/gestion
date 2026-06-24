@@ -7,6 +7,7 @@ import Sidebar from '../components/Sidebar';
 import SearchBar from '../components/SearchBar';
 import { Plus, Edit2, Trash2, AlertCircle } from 'lucide-react';
 import { formatCurrency, getStockStatus, getStockColor } from '../services/formatService';
+import { showToast } from '../components/Toast';
 import './Stock.css';
 
 export default function Stock() {
@@ -18,6 +19,7 @@ export default function Stock() {
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState('');
   const [maxStockThreshold] = useState(100); // Seuil configurable pour le statut de stock
+  const [deleteConfirm, setDeleteConfirm] = useState({ show: false, productId: null, productName: '' });
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -110,8 +112,10 @@ export default function Stock() {
     try {
       if (editingId) {
         await stockService.updateProduct(editingId, formData);
+        showToast('Produit mis à jour avec succès', 'success');
       } else {
         await stockService.addProduct(user.id, formData);
+        showToast('Produit ajouté avec succès', 'success');
       }
 
       setFormData({
@@ -132,10 +136,21 @@ export default function Stock() {
   }
 
   async function handleDelete(id) {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce produit?')) {
-      await stockService.deleteProduct(id);
+    const product = products.find(p => p.id === id);
+    setDeleteConfirm({ show: true, productId: id, productName: product?.name || '' });
+  }
+
+  async function confirmDelete() {
+    if (deleteConfirm.productId) {
+      await stockService.deleteProduct(deleteConfirm.productId);
+      showToast('Produit supprimé avec succès', 'success');
+      setDeleteConfirm({ show: false, productId: null, productName: '' });
       await loadProducts();
     }
+  }
+
+  function cancelDelete() {
+    setDeleteConfirm({ show: false, productId: null, productName: '' });
   }
 
   function handleEdit(product) {
@@ -425,6 +440,20 @@ export default function Stock() {
                   </button>
                 </div>
               )}
+            </div>
+          )}
+
+          {deleteConfirm.show && (
+            <div className="modal-overlay" onClick={cancelDelete}>
+              <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <h3>Confirmer la suppression</h3>
+                <p>Êtes-vous sûr de vouloir supprimer le produit "{deleteConfirm.productName}" ?</p>
+                <p className="modal-warning">Cette action est irréversible.</p>
+                <div className="modal-actions">
+                  <button onClick={confirmDelete} className="btn btn-danger">Supprimer</button>
+                  <button onClick={cancelDelete} className="btn btn-secondary">Annuler</button>
+                </div>
+              </div>
             </div>
           )}
         </main>
