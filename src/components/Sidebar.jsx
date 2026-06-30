@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useSidebar } from '../context/SidebarContext';
 import { BarChart3, Package, ShoppingCart, TrendingUp, LogOut } from 'lucide-react';
@@ -10,6 +10,7 @@ export default function Sidebar({ active }) {
   const { user, signOut } = useAuth();
   const { isSidebarOpen, closeSidebar } = useSidebar();
   const { isIOS, isStandalone, deviceType } = useIOSLayout();
+  const location = useLocation();
 
   const menuItems = [
     { name: 'Tableau de Bord', path: '/dashboard', icon: BarChart3 },
@@ -18,6 +19,15 @@ export default function Sidebar({ active }) {
     { name: 'Finances', path: '/finances', icon: TrendingUp },
   ];
 
+  // Fonction pour vérifier si le chemin est actif (avec gestion des slashes)
+  const isActive = (path) => {
+    const currentPath = location.pathname;
+    // Normaliser les chemins (enlever les slashes multiples)
+    const normalizedCurrent = currentPath.replace(/\/+$/, '') || '/';
+    const normalizedPath = path.replace(/\/+$/, '') || '/';
+    return normalizedCurrent === normalizedPath;
+  };
+
   async function handleLogout() {
     closeSidebar();
     try {
@@ -25,7 +35,6 @@ export default function Sidebar({ active }) {
       window.location.href = '/login';
     } catch (error) {
       console.error('Erreur lors de la déconnexion:', error);
-      // En cas d'erreur, quand même rediriger vers login
       window.location.href = '/login';
     }
   }
@@ -40,7 +49,7 @@ export default function Sidebar({ active }) {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`sidebar-item ${active === item.path ? 'active' : ''}`}
+                className={`sidebar-item ${isActive(item.path) ? 'active' : ''}`}
                 onClick={closeSidebar}
               >
                 <item.icon size={18} />

@@ -1,3 +1,8 @@
+/* ============================================ */
+/* COMPREHENSIVE RESPONSIVE DESIGN SYSTEM     */
+/* Covers all screen sizes and platforms       */
+/* ============================================ */
+
 @import './responsive.css';
 
 * {
@@ -16,6 +21,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
+  overscroll-behavior: none;
 }
 
 :root {
@@ -28,7 +35,7 @@ body {
   --warning-color: #fb6340;
   --danger-color: #f5365c;
   --info-color: #11cdef;
-  
+
   /* Neutral colors */
   --gray-50: #f9fafb;
   --gray-100: #f3f4f6;
@@ -40,18 +47,18 @@ body {
   --gray-700: #374151;
   --gray-800: #1f2937;
   --gray-900: #111827;
-  
+
   --dark-bg: #343a40;
   --light-bg: #f8f9fa;
   --border-color: #dee2e6;
   --text-primary: #1f2937;
   --text-secondary: #6b7280;
   --text-muted: #9ca3af;
-  
+
   /* Typography - Enhanced */
   --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   --font-family-mono: 'SF Mono', Monaco, Inconsolata, 'Roboto Mono', monospace;
-  
+
   --font-size-xs: 11px;
   --font-size-sm: 12px;
   --font-size-base: 14px;
@@ -63,19 +70,19 @@ body {
   --font-size-5xl: 32px;
   --font-size-6xl: 36px;
   --font-size-7xl: 42px;
-  
+
   --font-weight-light: 300;
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
   --font-weight-extrabold: 800;
-  
+
   --line-height-tight: 1.25;
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.6;
   --line-height-loose: 1.75;
-  
+
   /* Spacing - Enhanced scale */
   --spacing-0: 0;
   --spacing-1: 4px;
@@ -90,7 +97,7 @@ body {
   --spacing-16: 64px;
   --spacing-20: 80px;
   --spacing-24: 96px;
-  
+
   /* Legacy aliases */
   --spacing-xs: var(--spacing-1);
   --spacing-sm: var(--spacing-2);
@@ -101,7 +108,7 @@ body {
   --spacing-3xl: var(--spacing-8);
   --spacing-4xl: var(--spacing-10);
   --spacing-5xl: var(--spacing-12);
-  
+
   /* Shadows - Enhanced */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
@@ -110,7 +117,7 @@ body {
   --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04);
   --shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.15);
   --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.06);
-  
+
   /* Border Radius - Enhanced */
   --radius-none: 0;
   --radius-sm: 4px;
@@ -121,15 +128,15 @@ body {
   --radius-2xl: 20px;
   --radius-3xl: 24px;
   --radius-full: 9999px;
-  
+
   /* Transitions - Enhanced */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slower: 500ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-bounce: 600ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  
-  /* Z-index - Enhanced */
+
+  /* Z-index - Enhanced (FIXED: correct hierarchy) */
   --z-dropdown: 1000;
   --z-sticky: 1020;
   --z-fixed: 1030;
@@ -138,7 +145,7 @@ body {
   --z-popover: 1060;
   --z-tooltip: 1070;
   --z-toast: 1080;
-  
+
   /* Breakpoints */
   --breakpoint-xs: 320px;
   --breakpoint-sm: 480px;
@@ -148,28 +155,54 @@ body {
   --breakpoint-2xl: 1536px;
   --breakpoint-3xl: 1920px;
   --breakpoint-4k: 2560px;
-  
-  /* Responsive Sizes */
+
+  /* Responsive Sizes - Unified navbar heights (FIXED) */
   --navbar-height-xs: 56px;
   --navbar-height-sm: 60px;
   --navbar-height-md: 70px;
   --navbar-height-lg: 80px;
   --navbar-height-xl: 80px;
   --navbar-height-2xl: 90px;
-  
+
   --sidebar-width-xs: 0px;
   --sidebar-width-sm: 0px;
   --sidebar-width-md: 240px;
   --sidebar-width-lg: 280px;
   --sidebar-width-xl: 320px;
   --sidebar-width-2xl: 380px;
-  
+
+  /* PWA specific heights - synced with navbar */
+  --pwa-navbar-height-mobile: 64px;
+  --pwa-navbar-height-tablet: 70px;
+  --pwa-navbar-height-desktop: 80px;
+  --pwa-navbar-height-landscape: 52px;
+
   /* Mobile optimizations */
   --touch-target: 44px;
+
+  /* iOS PWA Z-Index hierarchy (FIXED) */
+  --z-navbar: 10000;
+  --z-sidebar: 10001;
+  --z-sidebar-overlay: 10000;
+  --z-sidebar-mobile: 10010;
+  --z-sidebar-overlay-mobile: 10005;
+  --z-modal: 10050;
+  --z-modal-backdrop: 10040;
+  --z-main-content: 1;
+}
+
+/* iOS PWA Safe Area Variables - UNIFIÉES et ROBUSTES */
+:root {
   --safe-area-top: env(safe-area-inset-top, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
   --safe-area-left: env(safe-area-inset-left, 0px);
   --safe-area-right: env(safe-area-inset-right, 0px);
+  --pwa-height: 100vh;
+  --pwa-width: 100vw;
+  --pwa-orientation: portrait;
+  --device-type: unknown;
+  --has-dynamic-island: 0;
+  --has-notch: 0;
 }
 
 /* Scrollbar */
@@ -193,9 +226,7 @@ body {
   background: #a8a8a8;
 }
 
-/* Enhanced Utility Classes */
-
-/* Typography */
+/* Enhanced Utility Classes - Typography */
 .text-xs { font-size: var(--font-size-xs); }
 .text-sm { font-size: var(--font-size-sm); }
 .text-base { font-size: var(--font-size-base); }
@@ -402,8 +433,13 @@ body {
 .pointer-events-none { pointer-events: none; }
 .pointer-events-auto { pointer-events: auto; }
 
-/* Professional Animations */
-@keyframes slideInUp {
+/* Professional Animations - UNIQUÉES */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
   from {
     opacity: 0;
     transform: translateY(30px);
@@ -414,7 +450,7 @@ body {
   }
 }
 
-@keyframes slideInDown {
+@keyframes fadeInDown {
   from {
     opacity: 0;
     transform: translateY(-30px);
@@ -445,11 +481,6 @@ body {
     opacity: 1;
     transform: translateX(0);
   }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
 }
 
 @keyframes fadeInScale {
@@ -487,13 +518,22 @@ body {
   }
 }
 
-/* Animation Classes */
-.animate-slide-in-up {
-  animation: slideInUp var(--transition-normal) ease-out;
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
-.animate-slide-in-down {
-  animation: slideInDown var(--transition-normal) ease-out;
+/* Animation Classes */
+.animate-fade-in {
+  animation: fadeIn var(--transition-normal) ease-out;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp var(--transition-normal) ease-out;
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown var(--transition-normal) ease-out;
 }
 
 .animate-slide-in-left {
@@ -502,10 +542,6 @@ body {
 
 .animate-slide-in-right {
   animation: slideInRight var(--transition-normal) ease-out;
-}
-
-.animate-fade-in {
-  animation: fadeIn var(--transition-normal) ease-out;
 }
 
 .animate-fade-in-scale {
@@ -549,13 +585,8 @@ body {
 .loading-skeleton {
   background: linear-gradient(90deg, var(--gray-200) 25%, var(--gray-100) 50%, var(--gray-200) 75%);
   background-size: 200% 100%;
-  animation: loading 1.5s infinite;
+  animation: shimmer 1.5s infinite;
   border-radius: var(--radius-md);
-}
-
-@keyframes loading {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
 }
 
 /* Professional Transitions */
@@ -575,19 +606,29 @@ body {
   transition: color var(--transition-normal), background-color var(--transition-normal), border-color var(--transition-normal);
 }
 
-/* Glass Effects */
+/* Glass Effects - AVEC FALLBACK */
 .glass {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.85);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .glass-dark {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.85);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Fallback pour navigateurs qui ne supportent pas backdrop-filter */
+@supports not (backdrop-filter: blur(10px)) {
+  .glass {
+    background: rgba(255, 255, 255, 0.95);
+  }
+  .glass-dark {
+    background: rgba(0, 0, 0, 0.95);
+  }
 }
 
 /* Professional Gradients */
@@ -656,229 +697,14 @@ body {
   color: inherit;
 }
 
-/* iOS PWA Safe Area Variables - Simplifiées et robustes */
-:root {
-  --safe-area-top: env(safe-area-inset-top, 0px);
-  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-area-left: env(safe-area-inset-left, 0px);
-  --safe-area-right: env(safe-area-inset-right, 0px);
-  --navbar-height: 60px;
-  --navbar-height-desktop: 80px;
-  --navbar-height-tablet: 70px;
-  --sidebar-width: 280px;
-  --sidebar-width-tablet: 240px;
-  --sidebar-width-desktop: 320px;
-  --pwa-height: 100vh;
-  
-  /* Z-Index hiérarchie unifiée */
-  --z-navbar: 9999;
-  --z-sidebar: 1001;
-  --z-sidebar-overlay: 1000;
-  --z-sidebar-mobile: 950;
-  --z-sidebar-overlay-mobile: 945;
-  --z-main-content: 1;
-}
-
-/* iOS PWA Device-Specific Safe Areas - Approche dynamique */
-@media (display-mode: standalone) {
-  :root {
-    /* Laisser iOS déterminer automatiquement les safe areas via env() */
-    --safe-area-top: env(safe-area-inset-top, 0px);
-    --safe-area-bottom: env(safe-area-inset-bottom, 0px);
-    --safe-area-left: env(safe-area-inset-left, 0px);
-    --safe-area-right: env(safe-area-inset-right, 0px);
-  }
-
-  /* iPhone PWA - Hauteur de navbar pour synchronisation avec sidebar */
-  @media (max-width: 767px) {
-    :root {
-      --pwa-navbar-height: 60px;
-      --pwa-navbar-height-small: 64px;
-      --pwa-navbar-height-tablet: 70px;
-      --pwa-navbar-height-landscape: 52px;
-    }
-  }
-
-  /* iPad PWA - Hauteurs de navbar pour synchronisation sidebar */
-  @media (min-width: 768px) {
-    :root {
-      --pwa-navbar-height: 80px;
-      --pwa-navbar-height-ipad-mini: 70px;
-      --pwa-navbar-height-ipad-pro: 90px;
-      --pwa-navbar-height-landscape: 60px;
-    }
-
-    @media (max-width: 1023px) {
-      :root {
-        --pwa-navbar-height: 70px;
-      }
-    }
-
-    @media (min-width: 1024px) {
-      :root {
-        --pwa-navbar-height: 90px;
-      }
-    }
-  }
-}
-
-/* Variables de hauteur de navbar pour tous les modes - Synchronisation sidebar */
-:root {
-  --navbar-height-mobile: 64px;
-  --navbar-height-tablet: 70px;
-  --navbar-height-desktop: 80px;
-}
-
-/* iOS PWA Safe Area Support */
-@supports (padding: max(0px)) {
-  .layout {
-    padding-top: 0;
-    padding-bottom: 0;
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  /* Navbar padding-top géré par Navbar.css pour iOS PWA - pas de double padding */
-  .main-content {
-    padding-bottom: max(var(--spacing-8), var(--safe-area-bottom));
-    height: auto;
-    min-height: unset;
-  }
-
-  /* Enhanced iOS PWA Safe Area for iPhone X+ and Dynamic Island */
-  @media (display-mode: standalone) and (max-width: 767px) {
-    /* Base iOS PWA adjustments - géré par Navbar.css et Sidebar.css */
-    .main-content {
-      padding-top: calc(var(--pwa-navbar-height, 60px) + env(safe-area-inset-top, 0px));
-      padding-left: max(var(--spacing-4), env(safe-area-inset-left, 0px));
-      padding-right: max(var(--spacing-4), env(safe-area-inset-right, 0px));
-      padding-bottom: max(var(--spacing-4), env(safe-area-inset-bottom, 0px));
-    }
-
-    .page-header {
-      padding-top: var(--spacing-4);
-    }
-
-    /* Landscape mode adjustments for all iPhone models */
-    @media (orientation: landscape) {
-      .main-content {
-        padding-top: calc(var(--pwa-navbar-height-landscape, 52px) + var(--safe-area-top));
-        padding-left: max(var(--spacing-6), var(--safe-area-left));
-        padding-right: max(var(--spacing-6), var(--safe-area-right));
-        padding-bottom: max(var(--spacing-4), var(--safe-area-bottom));
-      }
-    }
-  }
-
-  /* Enhanced iOS PWA Safe Area for iPad */
-  @media (display-mode: standalone) and (min-width: 768px) {
-    .main-content {
-      padding-top: calc(var(--pwa-navbar-height, 80px) + var(--safe-area-top));
-      padding-left: max(var(--spacing-6), var(--safe-area-left));
-      padding-right: max(var(--spacing-6), var(--safe-area-right));
-      padding-bottom: max(var(--spacing-6), var(--safe-area-bottom));
-    }
-
-    .page-header {
-      padding-top: var(--spacing-6);
-    }
-
-    /* iPad Landscape */
-    @media (orientation: landscape) {
-      .main-content {
-        padding-top: calc(var(--pwa-navbar-height-landscape, 60px) + var(--safe-area-top));
-      }
-    }
-  }
-}
-
-/* iOS PWA Responsivity Optimizations */
-@media (display-mode: standalone) {
-  /* iPhone optimizations */
-  :root {
-    --device-type: unknown;
-    --has-notch: 0;
-  }
-  
-  /* Landscape mode optimizations */
-  @media (orientation: landscape) {
-    .layout-container {
-      padding-top: max(var(--spacing-0), var(--safe-area-inset-top));
-    }
-    
-    .main-content {
-      padding-left: max(var(--spacing-4), var(--safe-area-inset-left));
-      padding-right: max(var(--spacing-4), var(--safe-area-inset-right));
-    }
-  }
-  
-  /* Portrait mode optimizations */
-  @media (orientation: portrait) {
-    .sidebar {
-      height: calc(var(--pwa-height) - var(--safe-area-inset-top));
-    }
-    
-    .main-content {
-      margin-left: 0;
-      width: 100%;
-    }
-  }
-  
-  /* iPhone X+ notch optimizations */
-  @media screen and (min-width: 375px) and (min-height: 812px) {
-    :root {
-      --has-notch: 1;
-    }
-    
-    .navbar {
-      padding-top: max(var(--spacing-4), 44px);
-    }
-    
-    .main-content {
-      padding-top: var(--spacing-4);
-    }
-  }
-  
-  /* iPad optimizations */
-  @media screen and (min-width: 768px) {
-    :root {
-      --device-type: ipad;
-    }
-    
-    .main-content {
-      padding-left: max(var(--spacing-6), var(--safe-area-inset-left));
-      padding-right: max(var(--spacing-6), var(--safe-area-inset-right));
-    }
-  }
-  
-  /* iPhone optimizations */
-  @media screen and (max-width: 767px) {
-    :root {
-      --device-type: iphone;
-    }
-    
-    .layout-container {
-      min-height: var(--pwa-height);
-    }
-    
-    .main-content {
-      padding: var(--spacing-4);
-      margin-left: 0;
-    }
-    
-    .sidebar {
-      width: 100%;
-      max-width: 100%;
-    }
-  }
-}
-
-/* RESPONSIVE LAYOUT */
+/* RESPONSIVE LAYOUT - BASE */
 .layout {
   display: flex;
   flex-direction: column;
   width: 100%;
   min-height: 100dvh;
+  height: 100dvh;
+  overflow: hidden;
 }
 
 .layout-container {
@@ -888,22 +714,126 @@ body {
   overflow: visible;
   position: relative;
   margin-top: 0;
-  padding-top: 0;
 }
 
 .main-content {
   flex: 1;
-  padding: 24px;
+  padding: var(--spacing-6);
   overflow-y: auto;
+  overflow-x: hidden;
   width: 100%;
   margin-left: 0;
-  margin-top: calc(var(--navbar-height, 80px) + max(0px, env(safe-area-inset-top)));
+  margin-top: var(--navbar-height-lg);
   -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  position: relative;
 }
 
-/* RESPONSIVE MEDIA QUERIES */
+/* ===== iOS PWA GLOBAL OPTIMIZATIONS ===== */
+/* Optimisé pour iPhone/iPad PWA */
+@supports (padding: max(0px)) {
+  @media (display-mode: standalone) {
+    html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      -webkit-user-select: none;
+      user-select: none;
+      touch-action: manipulation;
+    }
 
-/* Mobile (≤767px) */
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      position: fixed;
+      overscroll-behavior: none;
+    }
+
+    .layout {
+      height: 100dvh;
+      min-height: 100dvh;
+      overflow: hidden;
+    }
+
+    .layout-container {
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    .main-content {
+      height: calc(100dvh - var(--navbar-height-lg, 80px) - var(--safe-area-top));
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      padding-top: max(var(--spacing-4), var(--safe-area-top));
+      padding-left: max(var(--spacing-4), var(--safe-area-left));
+      padding-right: max(var(--spacing-4), var(--safe-area-right));
+      padding-bottom: max(var(--spacing-4), var(--safe-area-bottom));
+      margin-top: var(--navbar-height-lg, 80px);
+    }
+
+    /* Empêcher le scroll élastique */
+    body {
+      overscroll-behavior: none;
+    }
+
+    /* Optimisations tactiles */
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button, a, input, select, textarea {
+      touch-action: manipulation;
+    }
+  }
+
+  /* iOS PWA Mobile (<768px) */
+  @media (display-mode: standalone) and (max-width: 767px) {
+    .main-content {
+      margin-top: var(--navbar-height-sm, 60px);
+      padding: var(--spacing-4);
+    }
+  }
+
+  /* iOS PWA Landscape */
+  @media (display-mode: standalone) and (orientation: landscape) and (max-width: 767px) {
+    .main-content {
+      margin-top: var(--navbar-height-landscape, 52px);
+      padding: var(--spacing-3);
+    }
+  }
+
+  /* iOS PWA iPad */
+  @media (display-mode: standalone) and (min-width: 768px) {
+    .main-content {
+      margin-left: var(--sidebar-width-md, 240px);
+    }
+  }
+}
+
+/* Android PWA */
+@supports (padding: max(0px)) {
+  @media (display-mode: fullscreen) {
+    html {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .layout {
+      height: 100vh;
+      min-height: 100vh;
+    }
+  }
+}
+
+/* ===== RESPONSIVE BASE ===== */
+/* Mobile (< 768px) - NO SIDEBAR */
 @media (max-width: 767px) {
   .layout {
     flex-direction: column;
@@ -914,446 +844,85 @@ body {
   }
 
   .main-content {
+    margin-left: 0 !important;
+    margin-top: var(--navbar-height-md, 70px);
     padding: var(--spacing-4);
-    min-height: 100%;
-  }
-
-  .page-header {
-    flex-direction: column !important;
-    gap: var(--spacing-3) !important;
-    margin-bottom: var(--spacing-6) !important;
-  }
-
-  .page-header h1 {
-    font-size: var(--font-size-3xl) !important;
-    line-height: var(--line-height-tight) !important;
-  }
-
-  .page-header p {
-    font-size: var(--font-size-base) !important;
-    text-align: center;
-  }
-
-  .page-header button {
-    width: 100% !important;
-    padding: var(--spacing-3) var(--spacing-4) !important;
-  }
-
-  .stats-grid {
-    grid-template-columns: 1fr !important;
-    gap: var(--spacing-4) !important;
-  }
-
-  .form-grid,
-  .form-grid-2,
-  .form-grid-3,
-  .form-grid-4 {
-    grid-template-columns: 1fr !important;
-    gap: var(--spacing-4) !important;
-  }
-
-  .products-grid {
-    grid-template-columns: 1fr !important;
-    gap: var(--spacing-4) !important;
-  }
-
-  .table-container {
-    border-radius: var(--radius-lg);
-    overflow-x: auto;
-  }
-
-  .table {
-    font-size: var(--font-size-xs) !important;
-  }
-
-  .table th,
-  .table td {
-    padding: var(--spacing-2) var(--spacing-3) !important;
-  }
-
-  .btn {
-    padding: var(--spacing-3) var(--spacing-4) !important;
-    font-size: var(--font-size-sm) !important;
-    border-radius: var(--radius-md) !important;
-  }
-
-  .btn-lg {
-    padding: var(--spacing-4) var(--spacing-5) !important;
-    font-size: var(--font-size-base) !important;
-  }
-
-  .card {
-    padding: var(--spacing-4) !important;
-    border-radius: var(--radius-lg) !important;
-  }
-
-  .card-header {
-    margin-bottom: var(--spacing-3) !important;
-    padding-bottom: var(--spacing-2) !important;
-  }
-
-  .card-title {
-    font-size: var(--font-size-lg) !important;
-  }
-
-  .card-footer {
-    margin-top: var(--spacing-3) !important;
-    padding-top: var(--spacing-2) !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-  }
-
-  .alert {
-    padding: var(--spacing-3) var(--spacing-4) !important;
-    font-size: var(--font-size-xs) !important;
-  }
-
-  .dashboard-section {
-    padding: var(--spacing-4) !important;
-    border-radius: var(--radius-lg) !important;
-  }
-
-  .dashboard-section h2 {
-    font-size: var(--font-size-xl) !important;
-  }
-
-  .sidebar {
-    width: 280px !important;
-    max-width: 85vw !important;
-  }
-
-  .navbar-container {
-    padding: 0 var(--spacing-4) !important;
-  }
-
-  .navbar-brand h1 {
-    font-size: var(--font-size-lg) !important;
+    min-height: calc(100vh - var(--navbar-height-md, 70px));
   }
 }
 
-/* Tablette (768px - 1023px) */
+/* Tablet (768px - 1023px) */
 @media (min-width: 768px) and (max-width: 1023px) {
   .main-content {
-    padding: var(--spacing-5);
-  }
-
-  .page-header {
-    margin-bottom: var(--spacing-8) !important;
-  }
-
-  .page-header h1 {
-    font-size: var(--font-size-4xl) !important;
-  }
-
-  .page-header p {
-    font-size: var(--font-size-lg) !important;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: var(--spacing-5) !important;
-  }
-
-  .form-grid,
-  .form-grid-2 {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: var(--spacing-4) !important;
-  }
-
-  .form-grid-3,
-  .form-grid-4 {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: var(--spacing-4) !important;
-  }
-
-  .products-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: var(--spacing-4) !important;
-  }
-
-  .sidebar {
-    width: 240px !important;
-  }
-
-  .navbar-container {
-    padding: 0 var(--spacing-4);
-  }
-
-  .navbar-brand h1 {
-    font-size: var(--font-size-xl);
-  }
-
-  .table {
-    font-size: var(--font-size-sm) !important;
-  }
-
-  .table th,
-  .table td {
-    padding: var(--spacing-3) var(--spacing-4) !important;
-  }
-
-  .card {
-    padding: var(--spacing-5) !important;
-  }
-
-  .dashboard-section {
-    padding: var(--spacing-5) !important;
-  }
-
-  .dashboard-section h2 {
-    font-size: var(--font-size-2xl) !important;
+    margin-left: var(--sidebar-width-tablet, 240px);
   }
 }
 
-/* Desktop (1024px - 1399px) */
-@media (min-width: 1024px) and (max-width: 1399px) {
+/* Desktop (> 1024px) */
+@media (min-width: 1024px) {
   .main-content {
-    padding: 32px;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(3, 1fr) !important;
-  }
-
-  .form-grid {
-    grid-template-columns: repeat(3, 1fr) !important;
-  }
-
-  .products-grid {
-    grid-template-columns: repeat(3, 1fr) !important;
-  }
-
-  .navbar-container {
-    max-width: 1200px;
+    margin-left: var(--sidebar-width, 280px);
   }
 }
 
-/* Large Desktop (1400px+) */
-@media (min-width: 1400px) {
+/* Very small screens */
+@media (max-width: 359px) {
   .main-content {
-    padding: 40px;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(4, 1fr) !important;
-    gap: 24px !important;
-  }
-
-  .form-grid {
-    grid-template-columns: repeat(4, 1fr) !important;
-  }
-
-  .products-grid {
-    grid-template-columns: repeat(4, 1fr) !important;
-  }
-
-  .navbar-container {
-    max-width: 1400px;
+    padding: var(--spacing-3);
+    font-size: 13px;
   }
 }
 
-@media (max-width: 480px) {
+/* ===== HIGH DPI / RETINA ===== */
+@media (-webkit-min-device-pixel-ratio: 2),
+       (min-resolution: 192dpi) {
+  * {
+    border-width: 0.5px;
+  }
+}
+
+/* ===== DARK MODE ===== */
+@media (prefers-color-scheme: dark) {
   body {
-    font-size: 14px;
+    background-color: #1a1a1a;
+    color: #f0f0f0;
+  }
+
+  .layout {
+    background: linear-gradient(135deg, #1a1a1a 0%, #222222 100%);
+  }
+}
+
+/* ===== LIGHT MODE (default) ===== */
+@media (prefers-color-scheme: light) {
+  body {
+    background-color: #f5f7fa;
+    color: #333;
+  }
+
+  .layout {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  }
+}
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===== SAFE AREA UNIFIED ===== */
+@supports (padding: max(0px)) {
+  .navbar {
+    padding-left: max(var(--spacing-4), env(safe-area-inset-left));
+    padding-right: max(var(--spacing-4), env(safe-area-inset-right));
   }
 
   .main-content {
-    padding: 16px;
-    min-height: 100%;
-  }
-
-  .page-header {
-    flex-direction: column !important;
-    gap: 16px !important;
-    margin-bottom: 24px !important;
-  }
-
-  .page-header h1 {
-    font-size: 28px !important;
-    font-weight: 700 !important;
-  }
-
-  .page-header p {
-    font-size: 13px !important;
-  }
-
-  .page-header button {
-    width: 100% !important;
-    padding: 12px 16px !important;
-  }
-
-  .stats-grid {
-    grid-template-columns: 1fr !important;
-    gap: 16px !important;
-  }
-
-  .form-grid {
-    grid-template-columns: 1fr !important;
-  }
-
-  /* Form overrides for mobile */
-  input,
-  textarea,
-  select {
-    font-size: 16px !important;
-    padding: var(--spacing-3) !important;
-  }
-
-  .form-hint {
-    font-size: var(--font-size-sm) !important;
-    margin-top: var(--spacing-1) !important;
-  }
-
-  .btn {
-    padding: 12px 16px !important;
-    font-size: 14px !important;
-    min-height: 44px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-  .btn-sm {
-    width: 44px !important;
-    height: 44px !important;
-    min-width: 44px !important;
-    padding: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-  .btn-sm svg {
-    width: 18px !important;
-    height: 18px !important;
-  }
-
-  .alert {
-    padding: 14px !important;
-    font-size: 14px !important;
-    margin-bottom: 12px !important;
-  }
-
-  .alert h3,
-  .alert h4 {
-    font-size: 15px !important;
-    margin-bottom: 8px !important;
-  }
-
-  table {
-    font-size: 13px !important;
-  }
-
-  thead {
-    display: none !important;
-  }
-
-  tbody tr {
-    display: flex !important;
-    flex-direction: column !important;
-    border-bottom: 2px solid var(--border-color) !important;
-    margin-bottom: 16px !important;
-    padding: 12px 0 !important;
-  }
-
-  td {
-    padding: 12px 0 !important;
-    border: none !important;
-    text-align: left !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-  }
-
-  td::before {
-    content: attr(data-label);
-    font-weight: 600;
-    color: #666;
-    flex: 0 0 40%;
-  }
-
-  .products-grid {
-    grid-template-columns: 1fr !important;
-    gap: 16px !important;
-    margin-top: 20px !important;
-  }
-
-  .product-card {
-    padding: 16px !important;
-  }
-
-  .product-header {
-    flex-direction: column !important;
-    gap: 8px !important;
-  }
-
-  .product-header h3 {
-    font-size: 16px !important;
-  }
-
-  .actions-cell {
-    flex-direction: row !important;
-    gap: 8px !important;
-    justify-content: flex-end !important;
-  }
-
-  .export-actions {
-    flex-direction: column !important;
-    gap: 12px !important;
-    margin-bottom: 16px !important;
-  }
-
-  .export-actions button {
-    width: 100% !important;
-    padding: 12px 16px !important;
-    font-size: 14px !important;
-  }
-
-  .modal {
-    padding: 16px !important;
-    margin: 16px !important;
-    max-height: calc(100vh - 32px) !important;
-  }
-
-  .modal-header {
-    margin-bottom: 16px !important;
-  }
-
-  .modal-header h2 {
-    font-size: 20px !important;
-  }
-
-  .modal-content {
-    max-height: calc(100vh - 150px) !important;
-  }
-
-  .expenses-container,
-  .form-card {
-    padding: 16px !important;
-    margin-bottom: 16px !important;
-  }
-
-  .expenses-container h2,
-  .form-card h2 {
-    font-size: 18px !important;
-    margin-bottom: 16px !important;
-  }
-
-  input[type="text"],
-  input[type="email"],
-  input[type="password"],
-  input[type="number"],
-  input[type="date"],
-  select,
-  textarea {
-    width: 100% !important;
-    padding: 12px !important;
-    font-size: 16px !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: 6px !important;
-  }
-
-  textarea {
-    min-height: 100px !important;
+    padding-left: max(var(--spacing-4), env(safe-area-inset-left));
+    padding-right: max(var(--spacing-4), env(safe-area-inset-right));
   }
 }

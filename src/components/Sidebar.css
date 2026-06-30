@@ -1,6 +1,5 @@
 /* ========= SIDEBAR - BASE STYLES ========= */
 :root {
-  /* Default navbar heights - synchronized across the app */
   --sidebar-width: 280px;
   --sidebar-width-tablet: 240px;
   --sidebar-width-mobile: 85%;
@@ -17,7 +16,7 @@
   left: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  z-index: var(--z-sidebar, 1001);
+  z-index: var(--z-sidebar, 10001);
   display: flex;
   flex-direction: column;
   box-shadow: 6px 0 32px rgba(0, 0, 0, 0.08);
@@ -450,9 +449,9 @@
     transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     box-shadow: 8px 0 40px rgba(0, 0, 0, 0.2);
     border-right: none;
-    z-index: 10010;
-    -webkit-backdrop-filter: blur(24px);
-    backdrop-filter: blur(24px);
+    z-index: var(--z-sidebar-mobile, 10010);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
     will-change: transform;
     backface-visibility: hidden;
     -webkit-font-smoothing: antialiased;
@@ -470,7 +469,7 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.6);
-    z-index: 10005;
+    z-index: var(--z-sidebar-overlay-mobile, 10005);
     pointer-events: auto;
     opacity: 0;
     transition: opacity 0.25s ease;
@@ -665,7 +664,6 @@
 }
 
 /* ========= iOS PWA SPECIFIC FIXES ========= */
-/* iOS PWA - Always use 100dvh for full height */
 @supports (height: 100dvh) {
   @media (max-width: 768px) {
     .sidebar {
@@ -674,7 +672,6 @@
   }
 }
 
-/* iOS PWA - Safe area padding for devices with notch */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   @media (max-width: 768px) {
     .sidebar-content {
@@ -687,21 +684,54 @@
   }
 }
 
-/* iOS PWA - Ensure sidebar is always on top in standalone mode */
-@media (display-mode: standalone) and (max-width: 768px) {
-  .sidebar {
-    z-index: 10010;
-    box-shadow: 8px 0 40px rgba(0, 0, 0, 0.25);
+/* iOS PWA - Sync sidebar top with navbar height */
+@supports (padding: max(0px)) {
+  @media (display-mode: standalone) and (max-width: 767px) {
+    .sidebar {
+      top: 0;
+      height: 100dvh;
+    }
+
+    .sidebar-overlay {
+      top: 0;
+      height: 100dvh;
+    }
+
+    @media (max-width: 480px) {
+      .sidebar {
+        top: 0;
+      }
+
+      .sidebar-overlay {
+        top: 0;
+      }
+    }
+
+    @media (min-width: 481px) {
+      .sidebar {
+        top: 0;
+      }
+
+      .sidebar-overlay {
+        top: 0;
+      }
+    }
+
+    @media (orientation: landscape) {
+      .sidebar {
+        top: 0;
+        height: 100dvh;
+      }
+
+      .sidebar-overlay {
+        top: 0;
+        height: 100dvh;
+      }
+    }
   }
 
-  .sidebar-overlay {
-    z-index: 10005;
-  }
-}
-
-/* iOS PWA iPad - Desktop-like behavior */
-@supports (display-mode: standalone) {
-  @media (min-width: 768px) {
+  /* iOS PWA iPad - Desktop-like behavior */
+  @media (display-mode: standalone) and (min-width: 768px) {
     .sidebar {
       transform: translateX(0) translateZ(0);
       position: fixed;
@@ -737,7 +767,6 @@
 }
 
 /* ========= ANDROID PWA & CHROME ========= */
-/* Android Chrome PWA uses display-mode: fullscreen or standalone */
 @media (display-mode: fullscreen) and (max-width: 768px) {
   .sidebar {
     height: 100dvh;
@@ -750,7 +779,6 @@
 }
 
 /* ========= ACCESSIBILITY & TOUCH ========= */
-/* Ensure touch targets are large enough */
 @media (max-width: 768px) {
   .sidebar-item,
   .btn-logout-sidebar {
@@ -764,7 +792,6 @@
     outline-offset: 2px;
   }
 
-  /* Prevent text selection during swipe */
   .sidebar-menu,
   .sidebar-footer {
     -webkit-user-select: none;

@@ -9,10 +9,23 @@ export const useIOSLayout = () => {
    * Détecter le type d'appareil iOS et la présence du Dynamic Island
    */
   const detectiOSDevice = () => {
+    if (typeof window === 'undefined') {
+      return {
+        deviceType: 'default',
+        isDynamicIsland: false,
+        hasNotch: false,
+        isIPhone: false,
+        isIPad: false,
+        screenHeight: 0,
+        screenWidth: 0
+      };
+    }
+
     const ua = navigator.userAgent;
     const isIOS = /iPad|iPhone|iPod/.test(ua);
-    
-    if (!isIOS) {
+    const isMacWithTouch = ua.includes('Mac') && 'ontouchend' in document;
+
+    if (!isIOS && !isMacWithTouch) {
       return {
         deviceType: 'default',
         isDynamicIsland: false,
@@ -26,29 +39,22 @@ export const useIOSLayout = () => {
 
     const screenHeight = window.screen.height;
     const screenWidth = window.screen.width;
-    const isIPhone = /iPhone/.test(ua);
+    const isIPhone = /iPhone/.test(ua) && !/iPad/.test(ua);
     const isIPad = /iPad/.test(ua);
 
-    // Détection Dynamic Island (iPhone 14 Pro, 15 Pro, 16 Pro+)
-    // Portrait heights: 852 (14Pro), 932 (14ProMax)
-    // Note: En landscape, les dimensions changent
+    // Dynamic Island detection
     const isDynamicIsland =
-      screenHeight === 852 || screenHeight === 932 ||  // Pro models portrait
-      screenHeight === 844 || screenHeight === 926 ||  // Non-Pro with Dynamic Island
-      (screenHeight >= 2556 && screenHeight <= 2796);  // Very large devices
+      screenHeight >= 852 && screenHeight <= 956 ||
+      (screenHeight >= 393 && screenHeight <= 430 && isIPhone);
 
-    // Détection notch (iPhone X, XS, XS Max, 11 Pro, 11 Pro Max, 12, 13, etc.)
-    const hasNotch = screenHeight >= 812;
+    // Notch detection
+    const hasNotch = screenHeight >= 812 || (isIPhone && screenHeight >= 800);
 
     let deviceType = 'legacy';
     if (isDynamicIsland) {
       deviceType = 'dynamic-island';
     } else if (hasNotch) {
-      if (screenHeight >= 896) {
-        deviceType = 'notch-large';
-      } else {
-        deviceType = 'notch-basic';
-      }
+      deviceType = screenHeight >= 896 ? 'notch-large' : 'notch-basic';
     } else if (isIPad) {
       deviceType = 'ipad';
     }
@@ -65,8 +71,7 @@ export const useIOSLayout = () => {
   };
 
   /**
-   * Obtenir les valeurs des safe areas du CSS
-   * Retourne les valeurs calculées par le navigateur via env()
+   * Obtenir les valeurs des safe areas
    */
   const getSafeAreaInsets = () => {
     if (typeof window === 'undefined') {
@@ -76,14 +81,10 @@ export const useIOSLayout = () => {
     const root = document.documentElement;
     const style = getComputedStyle(root);
 
-    // Essayer de récupérer les valeurs réelles des safe areas
-    // Si les valeurs ne sont pas trouvées, retourner 0
     const getSafeAreaValue = (property) => {
       try {
         const value = style.getPropertyValue(property).trim();
-        if (!value) return 0;
-        
-        // Convertir "44px" en nombre
+        if (!value || value === '0px') return 0;
         const pixels = parseInt(value, 10);
         return isNaN(pixels) ? 0 : pixels;
       } catch (e) {
@@ -99,17 +100,55 @@ export const useIOSLayout = () => {
     };
   };
 
+  /**
+   * Détecter si on est en mode PWA
+   */
+  const detectPWA = () => {
+    if (typeof window === 'undefined') return { isStandalone: false, isPWA: false };
+
+    const isStandalone =
+      window.matchMedia('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true;
+
+    const isFullscreen = window.matchMedia('(display-mode: fullscreen)').matches;
+    const isMinimalUI = window.matchMedia('(display-mode: minimal-ui)').matches;
+
+    return {
+      isStandalone,
+      isPWA: isStandalone || isFullscreen || isMinimalUI
+    };
+  };
+
   // État initial
   const [iosInfo, setIosInfo] = useState(() => {
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-    const isPWA = isStandalone || window.matchMedia('(display-mode: standalone)').matches;
+    if (typeof window === 'undefined') {
+      return {
+        isIOS: false,
+        isStandalone: false,
+        isPWA: false,
+        deviceType: 'default',
+        isDynamicIsland: false,
+        hasNotch: false,
+        isIPhone: false,
+        isIPad: false,
+        screenHeight: 0,
+        screenWidth: 0,
+        safeAreaInsets: { top: 0, bottom: 0, left: 0, right: 0 },
+        windowWidth: 0,
+        windowHeight: 0,
+        isLandscape: false
+      };
+    }
+
+    const ua = navigator.userAgent;
+    const isIOS = /iPad|iPhone|iPod/.test(ua) || (ua.includes('Mac') && 'ontouchend' in document);
+    const pwaStatus = detectPWA();
     const deviceInfo = detectiOSDevice();
 
     return {
       isIOS,
-      isStandalone,
-      isPWA,
+      isStandalone: pwaStatus.isStandalone,
+      isPWA: pwaStatus.isPWA,
       ...deviceInfo,
       safeAreaInsets: getSafeAreaInsets(),
       windowWidth: window.innerWidth,
@@ -118,34 +157,39 @@ export const useIOSLayout = () => {
     };
   });
 
-  // Mettre à jour lors des changements d'orientation et de taille
+  // Mettre à jour lors des changements
   useEffect(() => {
-    const handleOrientationChange = () => {
-      const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    const handleUpdate = () => {
+      const pwaStatus = detectPWA();
       const deviceInfo = detectiOSDevice();
 
       setIosInfo(prev => ({
         ...prev,
         ...deviceInfo,
+        isStandalone: pwaStatus.isStandalone,
+        isPWA: pwaStatus.isPWA,
         safeAreaInsets: getSafeAreaInsets(),
         windowWidth: window.innerWidth,
         windowHeight: window.innerHeight,
-        isLandscape: window.innerWidth > window.innerHeight,
-        isStandalone,
-        isPWA: isStandalone || window.matchMedia('(display-mode: standalone)').matches
+        isLandscape: window.innerWidth > window.innerHeight
       }));
     };
 
-    window.addEventListener('resize', handleOrientationChange);
-    window.addEventListener('orientationchange', handleOrientationChange);
+    // Gestionnaire avec debounce pour éviter trop de mises à jour
+    let resizeTimeout;
+    const handleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(handleUpdate, 100);
+    };
+
+    window.addEventListener('resize', handleResize);
     window.addEventListener('orientationchange', () => {
-      // Attendre un peu avant de recalculer (le système met du temps à mettre à jour)
-      setTimeout(handleOrientationChange, 100);
+      setTimeout(handleUpdate, 100);
     });
 
     return () => {
-      window.removeEventListener('resize', handleOrientationChange);
-      window.removeEventListener('orientationchange', handleOrientationChange);
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(resizeTimeout);
     };
   }, []);
 

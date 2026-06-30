@@ -1,289 +1,595 @@
 /* ============================================ */
-/* COMPREHENSIVE RESPONSIVE DESIGN SYSTEM     */
-/* Covers all screen sizes and platforms       */
+/* RESPONSIVE DESIGN SYSTEM - COMPLET         */
+/* Optimisé pour tous écrans et PWA           */
 /* ============================================ */
 
 /* ============================================ */
-/* EXTRA SMALL SCREENS (< 360px) - Very Old Phones */
+/* MOBILE FIRST - Extra Small (< 360px)        */
 /* ============================================ */
 @media (max-width: 359px) {
   :root {
     --navbar-height: var(--navbar-height-xs);
     --sidebar-width: var(--sidebar-width-xs);
   }
-  
-  .layout-container {
-    padding-top: 0;
-  }
-  
-  .main-content {
-    padding: var(--spacing-2);
-    margin-left: 0;
-    margin-top: calc(var(--navbar-height-xs) + max(0px, env(safe-area-inset-top)));
-  }
-  
+
   body {
     font-size: 13px;
+  }
+
+  .main-content {
+    padding: var(--spacing-3);
+  }
+
+  .page-header h1 {
+    font-size: 22px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-3);
+  }
+
+  .form-grid,
+  .form-grid-2,
+  .form-grid-3,
+  .form-grid-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .products-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-3);
   }
 }
 
 /* ============================================ */
-/* SMALL SCREENS (360px - 480px) - Mobile Phones */
+/* MOBILE - Small (360px - 480px)              */
 /* ============================================ */
 @media (min-width: 360px) and (max-width: 480px) {
   :root {
     --navbar-height: var(--navbar-height-sm);
-    --sidebar-width: var(--sidebar-width-sm);
   }
-  
-  .layout-container {
-    padding-top: 0;
-  }
-  
-  .main-content {
-    padding: var(--spacing-3);
-    margin-left: 0;
-    margin-top: calc(var(--navbar-height-sm) + max(0px, env(safe-area-inset-top)));
-  }
-  
+
   body {
     font-size: 14px;
   }
-}
 
-/* ============================================ */
-/* MEDIUM SCREENS (480px - 768px) - Larger Phones/Small Tablets */
-/* ============================================ */
-@media (min-width: 480px) and (max-width: 767px) {
-  :root {
-    --navbar-height: var(--navbar-height-md);
-    --sidebar-width: var(--sidebar-width-sm);
-  }
-  
-  .layout-container {
-    padding-top: 0;
-  }
-  
   .main-content {
     padding: var(--spacing-4);
-    margin-left: 0;
-    margin-top: calc(var(--navbar-height-md) + max(0px, env(safe-area-inset-top)));
   }
-  
-  body {
-    font-size: 14px;
+
+  .page-header {
+    flex-direction: column;
+    gap: var(--spacing-3);
+    align-items: stretch;
+  }
+
+  .page-header h1 {
+    font-size: 24px;
+  }
+
+  .page-header p {
+    font-size: 13px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-4);
+  }
+
+  .dashboard-section {
+    padding: var(--spacing-4);
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
   }
 }
 
 /* ============================================ */
-/* LARGE SCREENS (768px - 1024px) - Tablets */
+/* MOBILE LARGE - Medium (480px - 768px)       */
+/* ============================================ */
+@media (min-width: 481px) and (max-width: 767px) {
+  :root {
+    --navbar-height: var(--navbar-height-md);
+  }
+
+  body {
+    font-size: 14px;
+  }
+
+  .main-content {
+    padding: var(--spacing-5);
+  }
+
+  .page-header h1 {
+    font-size: 28px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-4);
+  }
+
+  .dashboard-section {
+    padding: var(--spacing-5);
+  }
+}
+
+/* ============================================ */
+/* TABLET - Portrait (768px - 1023px)           */
 /* ============================================ */
 @media (min-width: 768px) and (max-width: 1023px) {
   :root {
     --navbar-height: var(--navbar-height-md);
-    --sidebar-width: var(--sidebar-width-md);
+    --sidebar-width: var(--sidebar-width-tablet);
   }
-  
-  .layout-container {
-    padding-top: 0;
-  }
-  
-  .main-content {
-    padding: var(--spacing-6);
-    margin-left: var(--sidebar-width-md);
-    margin-top: calc(var(--navbar-height-md) + max(0px, env(safe-area-inset-top)));
-  }
-  
+
   body {
     font-size: 14px;
+  }
+
+  .main-content {
+    margin-left: var(--sidebar-width-tablet);
+    padding: var(--spacing-5);
+  }
+
+  .page-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .page-header h1 {
+    font-size: 28px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-5);
+  }
+
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .form-grid-3,
+  .form-grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-4);
+  }
+
+  .sidebar {
+    width: var(--sidebar-width-tablet);
+  }
+
+  .table {
+    font-size: var(--font-size-sm);
   }
 }
 
 /* ============================================ */
-/* XL SCREENS (1024px - 1280px) - Laptops */
+/* TABLET LANDSCAPE / SMALL DESKTOP            */
+/* (1024px - 1279px)                           */
 /* ============================================ */
 @media (min-width: 1024px) and (max-width: 1279px) {
   :root {
     --navbar-height: var(--navbar-height-lg);
-    --sidebar-width: var(--sidebar-width-lg);
+    --sidebar-width: 260px;
   }
-  
-  .layout-container {
-    padding-top: 0;
-  }
-  
-  .main-content {
-    padding: var(--spacing-8);
-    margin-left: var(--sidebar-width-lg);
-    margin-top: calc(var(--navbar-height-lg) + max(0px, env(safe-area-inset-top)));
-  }
-  
+
   body {
     font-size: 14px;
+  }
+
+  .main-content {
+    margin-left: 260px;
+    padding: var(--spacing-6);
+  }
+
+  .page-header h1 {
+    font-size: 32px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-5);
+  }
+
+  .form-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .form-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-5);
+  }
+
+  .sidebar {
+    width: 260px;
+  }
+
+  .navbar-container {
+    max-width: 1200px;
   }
 }
 
 /* ============================================ */
-/* 2XL SCREENS (1280px - 1536px) - Desktop */
+/* DESKTOP - Standard (1280px - 1535px)        */
 /* ============================================ */
 @media (min-width: 1280px) and (max-width: 1535px) {
   :root {
     --navbar-height: var(--navbar-height-lg);
-    --sidebar-width: var(--sidebar-width-xl);
+    --sidebar-width: 300px;
   }
-  
-  .layout-container {
-    padding-top: 0;
-  }
-  
-  .main-content {
-    padding: var(--spacing-10);
-    margin-left: var(--sidebar-width-xl);
-    margin-top: calc(var(--navbar-height-lg) + max(0px, env(safe-area-inset-top)));
-  }
-  
+
   body {
     font-size: 15px;
+  }
+
+  .main-content {
+    margin-left: 300px;
+    padding: var(--spacing-8);
+  }
+
+  .page-header h1 {
+    font-size: 36px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-6);
+  }
+
+  .form-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-5);
+  }
+
+  .sidebar {
+    width: 300px;
+  }
+
+  .navbar-container {
+    max-width: 1400px;
   }
 }
 
 /* ============================================ */
-/* 3XL SCREENS (1536px - 1920px) - Large Desktop */
+/* LARGE DESKTOP (1536px - 1919px)             */
 /* ============================================ */
 @media (min-width: 1536px) and (max-width: 1919px) {
   :root {
     --navbar-height: var(--navbar-height-2xl);
-    --sidebar-width: var(--sidebar-width-2xl);
+    --sidebar-width: 340px;
   }
-  
-  .layout-container {
-    padding-top: 0;
-  }
-  
-  .main-content {
-    padding: var(--spacing-12);
-    margin-left: var(--sidebar-width-2xl);
-    margin-top: calc(var(--navbar-height-2xl) + max(0px, env(safe-area-inset-top)));
-  }
-  
+
   body {
     font-size: 15px;
+  }
+
+  .main-content {
+    margin-left: 340px;
+    padding: var(--spacing-10);
+  }
+
+  .page-header h1 {
+    font-size: 40px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-6);
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-6);
+  }
+
+  .sidebar {
+    width: 340px;
+  }
+
+  .navbar-container {
+    max-width: 1600px;
   }
 }
 
 /* ============================================ */
-/* 4K+ SCREENS (1920px+) - Ultra-wide Desktop */
+/* 4K+ SCREENS (1920px+)                       */
 /* ============================================ */
 @media (min-width: 1920px) {
   :root {
     --navbar-height: var(--navbar-height-2xl);
-    --sidebar-width: var(--sidebar-width-2xl);
+    --sidebar-width: 380px;
   }
-  
-  .layout-container {
-    padding-top: 0;
-  }
-  
-  .main-content {
-    padding: var(--spacing-16);
-    margin-left: var(--sidebar-width-2xl);
-    margin-top: calc(var(--navbar-height-2xl) + max(0px, env(safe-area-inset-top)));
-  }
-  
+
   body {
     font-size: 16px;
   }
-}
 
-/* ============================================ */
-/* iOS PWA SPECIFIC ADJUSTMENTS */
-/* ============================================ */
-@supports (padding: max(0px)) {
-  /* iOS PWA - All sizes - OPTIMIZED FOR SCROLLING */
-  @media (display-mode: standalone) {
-    html {
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      -webkit-user-select: none;
-      user-select: none;
-    }
+  .main-content {
+    margin-left: 380px;
+    padding: var(--spacing-12);
+  }
 
-    body {
-      width: 100%;
-      height: auto;
-      min-height: 100vh;
-      overflow: visible;
-      position: relative;
-    }
-    
-    .layout {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      min-height: 100dvh;
-      padding-top: 0;
-      margin: 0;
-    }
-    
-    .layout-container {
-      display: flex;
-      flex: 1;
-      width: 100%;
-      overflow: visible;
-      position: relative;
-      margin-top: 0;
-    }
-    
-    .main-content {
-      flex: 1;
-      width: 100%;
-      overflow-y: scroll;
-      overflow-x: hidden;
-      scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
-      margin-top: calc(var(--navbar-height, 80px) + max(0px, env(safe-area-inset-top)));
-    }
+  .page-header h1 {
+    font-size: 44px;
   }
-  
-  /* iOS PWA - Small screens (< 480px) */
-  @media (display-mode: standalone) and (max-width: 479px) {
-    .main-content {
-      margin-top: calc(var(--navbar-height-sm) + max(0px, env(safe-area-inset-top)));
-      padding-top: var(--spacing-3);
-      padding-left: max(var(--spacing-3), max(0px, env(safe-area-inset-left)));
-      padding-right: max(var(--spacing-3), max(0px, env(safe-area-inset-right)));
-      padding-bottom: max(var(--spacing-4), max(0px, env(safe-area-inset-bottom)));
-    }
+
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-8);
   }
-  
-  /* iOS PWA - Medium screens (480px - 768px) */
-  @media (display-mode: standalone) and (min-width: 480px) and (max-width: 767px) {
-    .main-content {
-      margin-top: calc(var(--navbar-height-md) + max(0px, env(safe-area-inset-top)));
-      padding-top: var(--spacing-4);
-      padding-left: max(var(--spacing-4), max(0px, env(safe-area-inset-left)));
-      padding-right: max(var(--spacing-4), max(0px, env(safe-area-inset-right)));
-      padding-bottom: max(var(--spacing-4), max(0px, env(safe-area-inset-bottom)));
-    }
+
+  .products-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--spacing-6);
   }
-  
-  /* iOS PWA - Landscape mode scrolling fix */
-  @media (display-mode: standalone) and (orientation: landscape) {
-    body {
-      height: 100dvh;
-    }
-    
-    .main-content {
-      max-height: calc(100dvh - (var(--navbar-height) + max(0px, env(safe-area-inset-top))) - max(0px, env(safe-area-inset-bottom)));
-      overflow-y: scroll;
-      -webkit-overflow-scrolling: touch;
-    }
+
+  .sidebar {
+    width: 380px;
+  }
+
+  .navbar-container {
+    max-width: 2000px;
+    padding: 0 var(--spacing-16);
   }
 }
 
 /* ============================================ */
-/* ANDROID SPECIFIC ADJUSTMENTS */
+/* LANDSCAPE ORIENTATION OPTIMIZATIONS          */
+/* ============================================ */
+@media (orientation: landscape) and (max-height: 500px) {
+  .navbar-container {
+    min-height: 50px;
+    padding: var(--spacing-2) var(--spacing-4);
+  }
+
+  .page-header {
+    margin-bottom: var(--spacing-4);
+  }
+
+  .main-content {
+    padding-top: 50px;
+    padding-bottom: var(--spacing-2);
+  }
+}
+
+/* ============================================ */
+/* TABLE SPECIFIC RESPONSIVE                    */
+/* ============================================ */
+@media (max-width: 767px) {
+  .table-container {
+    border-radius: var(--radius-lg);
+    overflow-x: auto;
+  }
+
+  .table {
+    font-size: var(--font-size-xs);
+  }
+
+  .table th,
+  .table td {
+    padding: var(--spacing-2) var(--spacing-3);
+  }
+
+  /* Mobile table card layout */
+  table thead {
+    display: none;
+  }
+
+  table tbody tr {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 2px solid var(--border-color);
+    margin-bottom: var(--spacing-4);
+    padding: var(--spacing-3) 0;
+  }
+
+  table td {
+    padding: var(--spacing-2) 0;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+  }
+
+  table td::before {
+    content: attr(data-label);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-secondary);
+    flex: 0 0 40%;
+  }
+
+  .actions-cell {
+    flex-direction: row !important;
+    gap: var(--spacing-2);
+    justify-content: flex-end !important;
+    margin-top: var(--spacing-2);
+  }
+}
+
+/* ============================================ */
+/* BUTTON RESPONSIVE                           */
+/* ============================================ */
+@media (max-width: 480px) {
+  .btn {
+    padding: var(--spacing-3) var(--spacing-4);
+    font-size: var(--font-size-sm);
+    border-radius: var(--radius-md);
+    min-height: var(--touch-target);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-2);
+  }
+
+  .btn-lg {
+    padding: var(--spacing-4) var(--spacing-5);
+    font-size: var(--font-size-base);
+  }
+
+  .btn-sm {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    padding: 0;
+  }
+
+  .btn-sm svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* ============================================ */
+/* FORM RESPONSIVE                             */
+/* ============================================ */
+@media (max-width: 480px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="date"],
+  input[type="time"],
+  select,
+  textarea {
+    width: 100%;
+    padding: var(--spacing-3);
+    font-size: 16px; /* Empêche le zoom sur iOS */
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+  }
+
+  textarea {
+    min-height: 80px;
+  }
+
+  .form-hint {
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-1);
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+
+  .form-actions .btn {
+    width: 100%;
+  }
+}
+
+/* ============================================ */
+/* CARD RESPONSIVE                             */
+/* ============================================ */
+@media (max-width: 480px) {
+  .card {
+    padding: var(--spacing-4);
+    border-radius: var(--radius-lg);
+  }
+
+  .card-header {
+    margin-bottom: var(--spacing-3);
+    padding-bottom: var(--spacing-2);
+  }
+
+  .card-title {
+    font-size: var(--font-size-lg);
+  }
+
+  .card-footer {
+    margin-top: var(--spacing-3);
+    padding-top: var(--spacing-2);
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* ============================================ */
+/* ALERT RESPONSIVE                            */
+/* ============================================ */
+@media (max-width: 480px) {
+  .alert {
+    padding: var(--spacing-3) var(--spacing-4);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-3);
+  }
+
+  .alert h3,
+  .alert h4 {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-2);
+  }
+}
+
+/* ============================================ */
+/* EXPORT ACTIONS RESPONSIVE                   */
+/* ============================================ */
+@media (max-width: 480px) {
+  .export-actions {
+    flex-direction: column;
+    gap: var(--spacing-3);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .export-actions button {
+    width: 100%;
+    padding: var(--spacing-3) var(--spacing-4);
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* ============================================ */
+/* MODAL RESPONSIVE                            */
+/* ============================================ */
+@media (max-width: 480px) {
+  .modal {
+    padding: var(--spacing-4);
+    margin: var(--spacing-4);
+    max-height: calc(100vh - var(--spacing-8));
+    border-radius: var(--radius-lg);
+  }
+
+  .modal-header {
+    margin-bottom: var(--spacing-4);
+  }
+
+  .modal-header h2 {
+    font-size: var(--font-size-xl);
+  }
+
+  .modal-content {
+    max-height: calc(100vh - 150px);
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+
+  .modal-actions .btn {
+    width: 100%;
+  }
+}
+
+/* ============================================ */
+/* ANDROID SPECIFIC OPTIMIZATIONS              */
 /* ============================================ */
 @media (pointer: coarse) and (max-width: 767px) {
   /* Touch targets for Android */
@@ -291,104 +597,260 @@
     min-height: var(--touch-target);
     min-width: var(--touch-target);
   }
-  
-  /* Android status bar handling */
+
   .navbar {
     padding-top: 0;
   }
-}
 
-/* ============================================ */
-/* LANDSCAPE ORIENTATION */
-/* ============================================ */
-@media (orientation: landscape) and (max-height: 500px) {
-  .navbar-container {
-    height: 50px;
-  }
-  
-  .main-content {
-    padding-top: 50px;
-    padding-bottom: var(--spacing-2);
-  }
-}
-
-@media (orientation: landscape) and (min-width: 1024px) {
-  .main-content {
-    padding: var(--spacing-8);
+  .sidebar-item,
+  .btn-logout-sidebar {
+    -webkit-tap-highlight-color: rgba(59, 130, 246, 0.2);
   }
 }
 
 /* ============================================ */
-/* PORTRAIT ORIENTATION */
-/* ============================================ */
-@media (orientation: portrait) and (max-width: 480px) {
-  .main-content {
-    padding: var(--spacing-3);
-  }
-}
-
-/* ============================================ */
-/* HIGH DPI / RETINA SCREENS */
-/* ============================================ */
-@media (-webkit-min-device-pixel-ratio: 2),
-       (min-resolution: 192dpi) {
-  /* Thinner borders on high DPI */
-  * {
-    border-width: 0.5px;
-  }
-}
-
-/* ============================================ */
-/* NOTCH AND SAFE AREA HANDLING */
+/* iOS PWA SPECIFIC - CRITICAL FIXES           */
 /* ============================================ */
 @supports (padding: max(0px)) {
+  /* iOS PWA - All sizes - OPTIMIZED FOR SCROLLING */
+  @media (display-mode: standalone) {
+    html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+      overscroll-behavior: none;
+    }
+
+    .layout {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    .layout-container {
+      display: flex;
+      flex: 1;
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .main-content {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      /* Calcul précis avec safe area */
+      margin-top: max(var(--navbar-height-sm, 60px), var(--safe-area-top));
+    }
+
+    /* Empêcher le bounce scroll */
+    body {
+      overscroll-behavior: none;
+    }
+
+    /* Optimisation tactile */
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button, a, input, select, textarea {
+      touch-action: manipulation;
+    }
+  }
+
+  /* iOS PWA - Small screens (< 480px) */
+  @media (display-mode: standalone) and (max-width: 479px) {
+    .main-content {
+      margin-top: max(var(--navbar-height-xs, 56px), var(--safe-area-top));
+      padding-top: var(--spacing-3);
+      padding-left: max(var(--spacing-3), var(--safe-area-left));
+      padding-right: max(var(--spacing-3), var(--safe-area-right));
+      padding-bottom: max(var(--spacing-4), var(--safe-area-bottom));
+    }
+  }
+
+  /* iOS PWA - Medium screens (480px - 768px) */
+  @media (display-mode: standalone) and (min-width: 480px) and (max-width: 767px) {
+    .main-content {
+      margin-top: max(var(--navbar-height-sm, 60px), var(--safe-area-top));
+      padding-top: var(--spacing-4);
+      padding-left: max(var(--spacing-4), var(--safe-area-left));
+      padding-right: max(var(--spacing-4), var(--safe-area-right));
+      padding-bottom: max(var(--spacing-4), var(--safe-area-bottom));
+    }
+  }
+
+  /* iOS PWA - Landscape mobile */
+  @media (display-mode: standalone) and (orientation: landscape) and (max-width: 767px) {
+    body {
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    .layout {
+      height: 100dvh;
+    }
+
+    .layout-container {
+      height: 100dvh;
+    }
+
+    .main-content {
+      height: calc(100dvh - max(var(--navbar-height-landscape, 52px), var(--safe-area-top)) - var(--safe-area-bottom));
+      margin-top: max(var(--navbar-height-landscape, 52px), var(--safe-area-top));
+      padding: var(--spacing-3);
+    }
+  }
+
+  /* iOS PWA - iPad behavior (desktop-like) */
+  @media (display-mode: standalone) and (min-width: 768px) {
+    .main-content {
+      margin-left: var(--sidebar-width-md, 240px);
+      margin-top: var(--navbar-height-md, 70px);
+      height: calc(100dvh - var(--navbar-height-md, 70px));
+      padding: var(--spacing-5);
+    }
+  }
+
+  /* iOS PWA - iPad Landscape */
+  @media (display-mode: standalone) and (min-width: 768px) and (orientation: landscape) {
+    .main-content {
+      margin-left: var(--sidebar-width-tablet, 240px);
+      margin-top: max(var(--navbar-height-tablet, 60px), var(--safe-area-top));
+    }
+  }
+}
+
+/* ============================================ */
+/* iOS PWA NAVBAR SYNC                         */
+/* ============================================ */
+@supports (padding: max(0px)) {
+  @media (display-mode: standalone) and (max-width: 767px) {
+    .navbar {
+      padding-top: max(0px, env(safe-area-inset-top));
+      height: auto;
+      min-height: max(60px, env(safe-area-inset-top, 0px) + 60px);
+    }
+
+    .navbar-container {
+      min-height: 60px;
+      height: auto;
+      padding: var(--spacing-2) var(--spacing-4);
+    }
+
+    @media (max-width: 480px) {
+      .navbar-container {
+        min-height: 56px;
+      }
+    }
+
+    @media (orientation: landscape) {
+      .navbar-container {
+        min-height: 48px;
+      }
+    }
+  }
+}
+
+/* ============================================ */
+/* iOS PWA SIDEBAR SYNC                        */
+/* ============================================ */
+@supports (height: 100dvh) {
+  @media (max-width: 767px) and (display-mode: standalone) {
+    .sidebar {
+      height: 100dvh;
+      top: 0;
+    }
+
+    .sidebar-overlay {
+      height: 100dvh;
+    }
+  }
+}
+
+/* ============================================ */
+/* FALLBACK FOR OLD iOS                        */
+/* ============================================ */
+@supports not (padding-top: env(safe-area-inset-top)) {
   .navbar {
-    padding-left: max(0px, env(safe-area-inset-left));
-    padding-right: max(0px, env(safe-area-inset-right));
+    padding-top: 20px;
   }
-  
-  .main-content {
-    padding-left: max(var(--spacing-4), max(0px, env(safe-area-inset-left)));
-    padding-right: max(var(--spacing-4), max(0px, env(safe-area-inset-right)));
-    padding-bottom: max(var(--spacing-4), max(0px, env(safe-area-inset-bottom)));
+
+  .navbar-safe-top {
+    height: 20px;
   }
 }
 
 /* ============================================ */
-/* REDUCED MOTION */
+/* SAFE AREA NOTCH HANDLING                    */
 /* ============================================ */
-@media (prefers-reduced-motion: reduce) {
+@supports (padding: max(0px)) {
+  /* iPhone X+ notch */
+  @media screen and (min-width: 375px) and (min-height: 812px) {
+    :root {
+      --has-notch: 1;
+    }
+  }
+
+  /* Dynamic Island detection */
+  @media screen and (min-width: 393px) and (min-height: 852px) {
+    :root {
+      --has-dynamic-island: 1;
+    }
+  }
+}
+
+/* ============================================ */
+/* PERFORMANCE OPTIMIZATIONS                  */
+/* ============================================ */
+@media (max-width: 767px) {
+  /* Réduire les animations sur mobile pour perf */
   * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    animation-duration: 0.3s !important;
+    transition-duration: 0.2s !important;
+  }
+
+  /* Désactiver certaines animations coûteuses */
+  .hover-lift:hover,
+  .hover-scale:hover,
+  .hover-glow:hover {
+    transform: none;
   }
 }
 
 /* ============================================ */
-/* DARK MODE SUPPORT */
+/* PRINT STYLES                                 */
 /* ============================================ */
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: #1a1a1a;
-    color: #f0f0f0;
+@media print {
+  .navbar,
+  .sidebar,
+  .btn,
+  .export-actions {
+    display: none !important;
   }
-  
-  .layout {
-    background: linear-gradient(135deg, #1a1a1a 0%, #222222 100%);
-  }
-}
 
-/* ============================================ */
-/* LIGHT MODE */
-/* ============================================ */
-@media (prefers-color-scheme: light) {
-  body {
-    background-color: #f5f7fa;
-    color: #333;
+  .main-content {
+    margin-left: 0 !important;
+    padding: 0 !important;
   }
-  
+
   .layout {
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    height: auto;
+    overflow: visible;
   }
 }

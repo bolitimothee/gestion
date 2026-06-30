@@ -88,13 +88,21 @@ export default function SearchBar({
   const handleFilterSelect = useCallback((filterValue) => {
     setSelectedFilter(filterValue);
     setShowFilterDropdown(false);
+
+    // Appeler onFilter si fourni (pour les filtres externes)
     if (onFilter) {
       onFilter(filterValue);
     }
+
+    // ausSI onSearch existe, appeler aussi pour mettre à jour les deux
+    if (onSearch) {
+      onSearch(searchTerm, filterValue);
+    }
+
     if (inputRef.current) {
       inputRef.current.focus();
     }
-  }, [onFilter]);
+  }, [onFilter, onSearch, searchTerm]);
 
   const handleKeyPress = useCallback((e) => {
     if (e.key === 'Enter') {
@@ -119,7 +127,6 @@ export default function SearchBar({
   }, []);
 
   const handleInputFocus = useCallback(() => {
-    // Close filter dropdown when input is focused
     setShowFilterDropdown(false);
   }, []);
 

@@ -171,6 +171,7 @@ export default function Stock() {
     });
     setEditingId(null);
     setShowForm(false);
+    setError('');
   }
 
   return (

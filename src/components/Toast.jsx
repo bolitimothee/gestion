@@ -15,11 +15,16 @@ export default function Toast() {
 
   const addToast = useCallback((message, type, duration) => {
     const id = Date.now();
+    const actualDuration = duration === 0 ? 999999999 : duration; // Persistant si duration=0
+
     setToasts((prev) => [...prev, { id, message, type }]);
 
-    setTimeout(() => {
-      setToasts((prev) => prev.filter((t) => t.id !== id));
-    }, duration);
+    // Ne pas auto-supprimer si duration=0
+    if (duration !== 0) {
+      setTimeout(() => {
+        setToasts((prev) => prev.filter((t) => t.id !== id));
+      }, actualDuration);
+    }
   }, []);
 
   const removeToast = useCallback((id) => {

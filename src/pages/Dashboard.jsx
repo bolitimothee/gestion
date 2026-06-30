@@ -61,12 +61,23 @@ export default function Dashboard() {
   }, [user]);
 
   useEffect(() => {
+    let isMounted = true;
+    let timeoutId = null;
+
     if (user) {
-      const timeoutId = setTimeout(() => {
-        loadDashboardData();
+      timeoutId = setTimeout(() => {
+        if (isMounted) {
+          loadDashboardData();
+        }
       }, 0);
-      return () => clearTimeout(timeoutId);
     }
+
+    return () => {
+      isMounted = false;
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, [user, loadDashboardData]);
 
   return (
@@ -121,7 +132,7 @@ export default function Dashboard() {
 
               <div className="dashboard-section">
                 <h2>Dernières Ventes</h2>
-                <div className="sales-table">
+                <div className="sales-table table-responsive">
                   {recentSales.length > 0 ? (
                     <table>
                       <thead>
