@@ -1,34 +1,10 @@
 .expenses-container {
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-  border-radius: var(--radius-2xl);
+  background: #ffffff;
+  border-radius: var(--radius-xl);
   padding: var(--spacing-6);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   border: 1px solid rgba(226, 232, 240, 0.8);
   margin-top: var(--spacing-8);
-  position: relative;
-  overflow: hidden;
-  transition: all var(--transition-normal);
-}
-
-.expenses-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #10b981 0%, #3b82f6 100%);
-  transform: scaleX(0);
-  transition: transform var(--transition-normal);
-}
-
-.expenses-container:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
-}
-
-.expenses-container:hover::before {
-  transform: scaleX(1);
 }
 
 .expenses-container h2 {
@@ -37,18 +13,6 @@
   color: var(--text-primary);
   margin-bottom: var(--spacing-5);
   line-height: var(--line-height-tight);
-  position: relative;
-}
-
-.expenses-container h2::after {
-  content: '';
-  position: absolute;
-  bottom: -var(--spacing-2);
-  left: 0;
-  width: 60px;
-  height: 3px;
-  background: linear-gradient(90deg, #10b981 0%, #3b82f6 100%);
-  border-radius: var(--radius-full);
 }
 
 .page-header {
@@ -72,11 +36,6 @@
   color: var(--text-primary);
   margin-bottom: var(--spacing-2);
   line-height: var(--line-height-tight);
-  background: linear-gradient(135deg, var(--text-primary) 0%, #f59e0b 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: fadeInDown var(--transition-normal) ease-out;
 }
 
 .page-header p {
@@ -170,10 +129,9 @@
   align-items: center;
   margin-bottom: var(--spacing-6);
   padding: var(--spacing-4);
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  background: var(--light-bg);
   border-radius: var(--radius-lg);
   border: 1px solid rgba(226, 232, 240, 0.8);
-  animation: fadeInUp var(--transition-normal) ease-out;
 }
 
 .search-results-count {
@@ -198,12 +156,11 @@
   align-items: center;
   gap: var(--spacing-1);
   padding: var(--spacing-1) var(--spacing-3);
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  background: var(--warning-color);
   color: white;
   border-radius: var(--radius-full);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
-  animation: fadeInScale var(--transition-normal) ease-out;
 }
 
 .clear-search-btn {
@@ -589,30 +546,30 @@
 
 .form-card {
   background: white;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: var(--shadow);
-  margin-bottom: 30px;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  margin-bottom: var(--spacing-8);
 }
 
 .form-card h2 {
-  font-size: 18px;
+  font-size: var(--font-size-xl);
   font-weight: 700;
-  color: #333;
-  margin-bottom: 20px;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-5);
 }
 
 .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  margin-bottom: 16px;
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-4);
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--spacing-1);
 }
 
 .form-group.full-width {
@@ -621,30 +578,30 @@
 
 .form-group label {
   font-weight: 600;
-  color: #333;
-  font-size: 14px;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
 }
 
 .form-group input,
 .form-group textarea {
-  padding: 10px 12px;
+  padding: var(--spacing-2) var(--spacing-3);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
   font-family: inherit;
   width: 100%;
 }
 
 .form-hint {
-  font-size: 12px;
-  color: #999;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
   font-style: italic;
 }
 
 .form-actions {
   display: flex;
-  gap: 12px;
-  margin-top: 20px;
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-5);
 }
 
 @media (max-width: 768px) {
@@ -872,69 +829,6 @@
     font-size: 13px;
   }
 }
-/* ==================================================
-   MODE MOBILE - TRANSFORM SALES TABLE TO CARDS
-   ================================================== */
-@media (max-width: 767px) {
-  .sales-table {
-    overflow-x: visible;
-  }
-
-  .sales-table table {
-    display: block;
-    border-collapse: separate;
-    border-spacing: 0 var(--spacing-3);
-  }
-
-  .sales-table thead {
-    display: none;
-  }
-
-  .sales-table tbody {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-3);
-  }
-
-  .sales-table tr {
-    display: block;
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    border: 1px solid rgba(226, 232, 240, 0.8);
-    border-radius: var(--radius-xl);
-    padding: var(--spacing-4);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  }
-
-  .sales-table tr:hover {
-    background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 100%);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  }
-
-  .sales-table td {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--spacing-2) 0;
-    border-bottom: 1px solid rgba(226, 232, 240, 0.5);
-  }
-
-  .sales-table td:last-child {
-    border-bottom: none;
-  }
-
-  .sales-table .actions-cell {
-    display: flex;
-    gap: var(--spacing-2);
-    flex-direction: column;
-    border-bottom: none;
-    padding: var(--spacing-3) 0 0 0;
-    margin-top: var(--spacing-2);
-  }
-
-  .sales-table .actions-cell button {
-    width: 100%;
-  }
-}
 
 /* ==================================================
    MODE MOBILE - TRANSFORM EXPENSES TABLE TO CARDS
@@ -962,16 +856,15 @@
 
   .expenses-table tr {
     display: block;
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    background: #ffffff;
     border: 1px solid rgba(226, 232, 240, 0.8);
     border-radius: var(--radius-xl);
     padding: var(--spacing-4);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   }
 
   .expenses-table tr:hover {
-    background: linear-gradient(135deg, #fffbeb 0%, #f8fafc 100%);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    background: #f8fafc;
   }
 
   .expenses-table td {
