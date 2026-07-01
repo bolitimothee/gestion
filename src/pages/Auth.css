@@ -20,17 +20,11 @@
     radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
     radial-gradient(circle at 80% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
     radial-gradient(circle at 50% 20%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
-  animation: float 20s ease-in-out infinite;
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  33% { transform: translateY(-20px) rotate(1deg); }
-  66% { transform: translateY(10px) rotate(-1deg); }
-}
 
 .auth-card {
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  background: #ffffff;
   border-radius: var(--radius-2xl);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   padding: var(--spacing-10);
@@ -38,27 +32,10 @@
   max-width: 440px;
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  -webkit-backdrop-filter: blur(20px);
-  backdrop-filter: blur(20px);
+  border: 1px solid var(--gray-200);
   animation: slideInUp var(--transition-normal) ease-out;
 }
 
-.auth-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
-  transform: scaleX(0);
-  animation: slideInLine var(--transition-slow) ease-out var(--transition-delay) forwards;
-}
-
-@keyframes slideInLine {
-  to { transform: scaleX(1); }
-}
 
 .auth-card-large {
   max-width: 480px;
@@ -76,18 +53,14 @@
   color: var(--text-primary);
   margin-bottom: var(--spacing-2);
   line-height: var(--line-height-tight);
-  background: linear-gradient(135deg, var(--text-primary) 0%, #3b82f6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: fadeInDown var(--transition-normal) ease-out;
+  animation: slideInUp var(--transition-normal) ease-out;
 }
 
 .auth-header p {
   color: var(--text-secondary);
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-medium);
-  animation: fadeInDown var(--transition-normal) ease-out var(--transition-fast) backwards;
+  animation: slideInUp var(--transition-normal) ease-out var(--transition-fast) backwards;
 }
 
 .auth-form {
@@ -213,14 +186,14 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  background: var(--primary-color);
   color: white;
   box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
   animation: fadeInUp var(--transition-normal) ease-out var(--transition-slow) backwards;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  background: #1d4ed8;
   transform: translateY(-2px);
   box-shadow: 0 12px 32px rgba(59, 130, 246, 0.4);
 }

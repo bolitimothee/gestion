@@ -2,20 +2,10 @@
 
 .page-header {
   margin-bottom: var(--spacing-10);
-  animation: fadeInDown var(--transition-normal) ease-out;
+  animation: slideInUp var(--transition-normal) ease-out;
   position: relative;
 }
 
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
 .page-header h1 {
   font-size: var(--font-size-6xl);
@@ -24,10 +14,6 @@
   margin-bottom: var(--spacing-2);
   letter-spacing: -0.025em;
   line-height: var(--line-height-tight);
-  background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .page-header p {
@@ -48,52 +34,26 @@
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: var(--spacing-6);
   margin-bottom: var(--spacing-10);
-  animation: fadeInUp var(--transition-normal) ease-out 0.2s both;
+  animation: slideInUp var(--transition-normal) ease-out 0.2s both;
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
 .dashboard-section {
   background: white;
   border-radius: var(--radius-2xl);
   padding: var(--spacing-6);
   box-shadow: var(--shadow);
-  border: 1px solid var(--gray-100);
+  border: 1px solid var(--gray-200);
   transition: all var(--transition-normal);
-  animation: fadeInUp var(--transition-normal) ease-out 0.4s both;
+  animation: slideInUp var(--transition-normal) ease-out 0.4s both;
   position: relative;
   overflow: hidden;
 }
 
-.dashboard-section::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--primary-color) 0%, var(--primary-light) 100%);
-  transform: scaleX(0);
-  transition: transform var(--transition-normal);
-}
-
 .dashboard-section:hover {
-  transform: translateY(-4px);
+  transform: translateY(-2px);
   box-shadow: var(--shadow-xl);
   border-color: var(--gray-200);
-}
-
-.dashboard-section:hover::before {
-  transform: scaleX(1);
 }
 
 .dashboard-section h2 {
@@ -103,18 +63,6 @@
   margin-bottom: var(--spacing-5);
   letter-spacing: -0.025em;
   line-height: var(--line-height-tight);
-  position: relative;
-}
-
-.dashboard-section h2::after {
-  content: '';
-  position: absolute;
-  bottom: -var(--spacing-2);
-  left: 0;
-  width: 60px;
-  height: 3px;
-  background: linear-gradient(90deg, var(--primary-color) 0%, var(--primary-light) 100%);
-  border-radius: var(--radius-full);
 }
 
 .sales-table {
@@ -135,7 +83,7 @@
   padding: 12px;
   text-align: left;
   font-weight: 600;
-  color: #666;
+  color: var(--text-secondary);
   font-size: 13px;
   text-transform: uppercase;
 }
@@ -143,7 +91,7 @@
 .sales-table td {
   padding: 14px 12px;
   border-bottom: 1px solid var(--border-color);
-  color: #333;
+  color: var(--text-primary);
   font-size: 14px;
 }
 

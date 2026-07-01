@@ -47,7 +47,7 @@
 
 .finances-search-bar {
   max-width: 600px;
-  animation: fadeInUp var(--transition-normal) ease-out var(--transition-slow) backwards;
+  animation: slideInUp var(--transition-normal) ease-out var(--transition-slow) backwards;
 }
 
 /* Responsive Design pour Page Header */
@@ -248,45 +248,6 @@
   overflow: hidden;
 }
 
-.btn-sm::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
-  opacity: 0;
-  transition: opacity var(--transition-normal);
-}
-
-.btn-sm:hover::before {
-  opacity: 1;
-}
-
-.btn-edit {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  color: white;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
-}
-
-.btn-edit:hover {
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-}
-
-.btn-delete {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  color: white;
-  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
-}
-
-.btn-delete:hover {
-  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
-}
 
 .btn-sm:active {
   transform: translateY(0);
@@ -680,23 +641,23 @@
   .form-group {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    margin-bottom: 8px;
+    gap: var(--spacing-1);
+    margin-bottom: var(--spacing-2);
   }
 
   .form-group label {
-    font-size: 14px;
-    font-weight: 600;
-    color: #333;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
   }
 
   .form-group input,
   .form-group textarea,
   .form-group select {
-    padding: 12px;
-    font-size: 16px;
+    padding: var(--spacing-3);
+    font-size: var(--font-size-base);
     border: 1px solid var(--border-color);
-    border-radius: 6px;
+    border-radius: var(--radius-md);
     width: 100%;
     font-family: inherit;
   }

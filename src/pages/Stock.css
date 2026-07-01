@@ -274,12 +274,12 @@
   color: var(--text-secondary);
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-medium);
-  animation: fadeInDown var(--transition-normal) ease-out var(--transition-fast) backwards;
+  animation: slideInUp var(--transition-normal) ease-out var(--transition-fast) backwards;
 }
 
 .stock-search-bar {
   max-width: 600px;
-  animation: fadeInUp var(--transition-normal) ease-out var(--transition-slow) backwards;
+  animation: slideInUp var(--transition-normal) ease-out var(--transition-slow) backwards;
 }
 
 /* Responsive Design pour Page Header */
@@ -615,23 +615,23 @@
   .form-group {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    margin-bottom: 8px;
+    gap: var(--spacing-1);
+    margin-bottom: var(--spacing-2);
   }
 
   .form-group label {
-    font-size: 14px;
-    font-weight: 600;
-    color: #333;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
   }
 
   .form-group input,
   .form-group textarea,
   .form-group select {
-    padding: 12px;
-    font-size: 16px;
+    padding: var(--spacing-3);
+    font-size: var(--font-size-base);
     border: 1px solid var(--border-color);
-    border-radius: 6px;
+    border-radius: var(--radius-md);
     font-family: inherit;
     width: 100%;
   }
