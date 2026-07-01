@@ -3,13 +3,11 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useSidebar } from '../context/SidebarContext';
 import { BarChart3, Package, ShoppingCart, TrendingUp, LogOut } from 'lucide-react';
-import { useIOSLayout } from '../hooks/useIOSLayout';
 import './Sidebar.css';
 
 export default function Sidebar({ active }) {
   const { user, signOut } = useAuth();
   const { isSidebarOpen, closeSidebar } = useSidebar();
-  const { isIOS, isStandalone, deviceType } = useIOSLayout();
   const location = useLocation();
 
   const menuItems = [
@@ -41,10 +39,9 @@ export default function Sidebar({ active }) {
 
   return (
     <>
-      <aside className={`sidebar ${isSidebarOpen ? 'open' : ''} ${isIOS && isStandalone ? 'ios-pwa' : ''} ${deviceType}`}>
-        <div className="sidebar-safe-top" />
+      <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-content">
-          <div className="sidebar-menu">
+          <nav className="sidebar-menu">
             {menuItems.map((item) => (
               <Link
                 key={item.path}
@@ -56,7 +53,7 @@ export default function Sidebar({ active }) {
                 <span>{item.name}</span>
               </Link>
             ))}
-          </div>
+          </nav>
 
           <div className="sidebar-footer">
             <div className="user-email">
@@ -64,14 +61,13 @@ export default function Sidebar({ active }) {
             </div>
             <button onClick={handleLogout} className="btn-logout-sidebar">
               <LogOut size={18} />
-              Déconnexion
+              <span>Déconnexion</span>
             </button>
           </div>
         </div>
-        <div className="sidebar-safe-bottom" />
       </aside>
 
-      {isSidebarOpen && <div className={`sidebar-overlay ${isSidebarOpen ? 'active' : ''}`} onClick={closeSidebar} />}
+      <div className={`sidebar-overlay ${isSidebarOpen ? 'active' : ''}`} onClick={closeSidebar} />
     </>
   );
 }
