@@ -517,28 +517,28 @@ select:focus {
   .form-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: var(--spacing-3);
   }
 
   .form-group {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--spacing-1);
   }
 
   .form-group label {
-    font-size: 14px;
-    font-weight: 600;
-    color: #333;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
   }
 
   .form-group input,
   .form-group select,
   .form-group textarea {
-    padding: 12px;
-    font-size: 16px;
+    padding: var(--spacing-3);
+    font-size: var(--font-size-base);
     border: 1px solid var(--border-color);
-    border-radius: 6px;
+    border-radius: var(--radius-md);
     width: 100%;
     font-family: inherit;
   }
@@ -558,7 +558,7 @@ select:focus {
 
   .form-hint {
     font-size: 12px;
-    color: #999;
+    color: var(--text-muted);
     font-style: italic;
   }
 
@@ -586,36 +586,6 @@ select:focus {
   .sales-table table {
     font-size: 13px;
     width: 100%;
-  }
-
-  .sales-table thead {
-    display: none;
-  }
-
-  .sales-table tbody tr {
-    display: flex;
-    flex-direction: column;
-    border-bottom: 2px solid var(--border-color);
-    margin-bottom: 12px;
-    padding: 12px 0;
-  }
-
-  .sales-table td {
-    padding: 10px 0;
-    border: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 13px;
-    text-align: left;
-  }
-
-  .sales-table td::before {
-    content: attr(data-label);
-    font-weight: 600;
-    color: #666;
-    flex: 0 0 50%;
-    margin-right: 12px;
   }
 
   .sales-table .amount {

@@ -472,29 +472,13 @@ body {
   animation: pulse 2s ease-in-out infinite;
 }
 
-/* Hover Effects */
+/* Hover Effects - Simplified */
 .hover-lift {
   transition: transform var(--transition-normal);
 }
 
 .hover-lift:hover {
-  transform: translateY(-4px);
-}
-
-.hover-scale {
-  transition: transform var(--transition-normal);
-}
-
-.hover-scale:hover {
-  transform: scale(1.05);
-}
-
-.hover-glow {
-  transition: box-shadow var(--transition-normal);
-}
-
-.hover-glow:hover {
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  transform: translateY(-2px);
 }
 
 /* Loading States */

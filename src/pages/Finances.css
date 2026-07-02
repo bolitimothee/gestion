@@ -707,34 +707,6 @@
     width: 100%;
   }
 
-  .expenses-table thead {
-    display: none;
-  }
-
-  .expenses-table tbody tr {
-    display: flex;
-    flex-direction: column;
-    border-bottom: 2px solid var(--border-color);
-    margin-bottom: 12px;
-    padding: 12px 0;
-  }
-
-  .expenses-table td {
-    padding: 10px 0;
-    border: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 13px;
-  }
-
-  .expenses-table td::before {
-    content: attr(data-label);
-    font-weight: 600;
-    color: #666;
-    flex: 0 0 40%;
-  }
-
   .expenses-table .amount {
     color: var(--danger-color);
     font-weight: 600;

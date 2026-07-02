@@ -609,7 +609,7 @@
 
   .form-grid {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: var(--spacing-3);
   }
 
   .form-group {
