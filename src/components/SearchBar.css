@@ -265,7 +265,6 @@
   padding: var(--spacing-2);
   max-height: 250px;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
 }
 
 .filter-option {
@@ -631,7 +630,6 @@
 
   .filter-options {
     max-height: calc(100vh - 320px - max(0px, env(safe-area-inset-top)) - max(0px, env(safe-area-inset-bottom)));
-    -webkit-overflow-scrolling: touch;
   }
 }
 

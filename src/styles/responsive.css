@@ -653,7 +653,6 @@
       overflow-y: auto;
       overflow-x: hidden;
       scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
       /* Calcul précis avec safe area */
       margin-top: max(var(--navbar-height-sm, 60px), var(--safe-area-top));
     }

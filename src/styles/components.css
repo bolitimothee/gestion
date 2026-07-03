@@ -868,27 +868,30 @@ select {
 
 /* Layout System */
 .layout {
-  min-height: 100dvh;
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  min-height: 100vh;
+  background: var(--body-bg);
   position: relative;
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .layout-container {
   display: flex;
   flex: 1;
   min-height: 100%;
-  padding-top: 0;
-  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 1680px;
+  margin: 0 auto;
+  transition: all var(--transition-normal);
 }
 
 .main-content {
   flex: 1;
+  width: 100%;
   padding: var(--spacing-8);
-  padding-left: var(--spacing-8);
-  padding-right: max(var(--spacing-8), max(0px, env(safe-area-inset-right)));
-  padding-bottom: max(var(--spacing-8), max(0px, env(safe-area-inset-bottom)));
+  padding-right: max(var(--spacing-8), env(safe-area-inset-right));
+  padding-bottom: max(var(--spacing-8), env(safe-area-inset-bottom));
   margin-top: calc(var(--navbar-height, 80px) + max(0px, env(safe-area-inset-top)));
 }
 
@@ -896,86 +899,75 @@ select {
   .layout-container {
     padding-top: 0;
   }
-  
+
   .main-content {
-    margin-left: 0; /* Pas de sidebar fixe sur mobile */
+    margin-left: 0;
     padding: var(--spacing-4);
     margin-top: calc(var(--navbar-height-sm, 60px) + max(0px, env(safe-area-inset-top)));
   }
 }
 
-/* iOS PWA Mobile Layout - Override pour éviter les conflits */
 @media (display-mode: standalone) and (max-width: 767px) {
   .layout-container {
     padding-top: 0;
   }
-  
+
   .main-content {
     margin-top: calc(var(--navbar-height-sm, 60px) + max(0px, env(safe-area-inset-top)));
     padding: var(--spacing-4);
-    padding-left: max(var(--spacing-4), max(0px, env(safe-area-inset-left)));
-    padding-right: max(var(--spacing-4), max(0px, env(safe-area-inset-right)));
-    padding-bottom: max(var(--spacing-4), max(0px, env(safe-area-inset-bottom)));
+    padding-left: max(var(--spacing-4), env(safe-area-inset-left));
+    padding-right: max(var(--spacing-4), env(safe-area-inset-right));
+    padding-bottom: max(var(--spacing-4), env(safe-area-inset-bottom));
     position: relative;
     z-index: 10;
   }
 }
 
-/* Tablette Layout */
 @media (min-width: 768px) and (max-width: 1023px) {
   .layout-container {
     padding-top: 0;
   }
-  
+
   .main-content {
-    margin-left: 240px; /* Sidebar taille tablette */
+    margin-left: 240px;
     padding: var(--spacing-6);
     margin-top: calc(var(--navbar-height-md, 70px) + max(0px, env(safe-area-inset-top)));
   }
 }
 
-/* Large Desktop Layout */
-@media (min-width: 1400px) {
-  .layout-container {
-    padding-top: 0;
-  }
-  
+@media (min-width: 1024px) {
   .main-content {
-    margin-left: 320px; /* Sidebar plus large */
+    margin-left: 280px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .main-content {
     padding: var(--spacing-10);
     margin-top: calc(var(--navbar-height-lg, 80px) + max(0px, env(safe-area-inset-top)));
   }
 }
 
-/* Ultra Wide Layout */
 @media (min-width: 1920px) {
-  .layout-container {
-    padding-top: 0;
-  }
-  
   .main-content {
-    margin-left: 380px; /* Sidebar très large */
+    margin-left: 380px;
     padding: var(--spacing-12);
-    margin-top: calc(var(--navbar-height-2xl, 90px) + max(0px, env(safe-area-inset-top)));
   }
 }
 
-/* 4K Layout */
 @media (min-width: 2560px) {
-  .layout-container {
-    padding-top: 0;
-  }
-  
   .main-content {
-    margin-left: 420px; /* Sidebar 4K */
+    margin-left: 420px;
     padding: var(--spacing-16);
-    margin-top: calc(var(--navbar-height-2xl, 90px) + max(0px, env(safe-area-inset-top)));
   }
 }
 
-/* Center page titles and page header content on desktop */
 .page-header {
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+  flex-wrap: wrap;
 }
 
 .page-header-content {
@@ -1036,7 +1028,6 @@ select {
       margin-left: 0;
       margin-top: calc(80px + max(0px, env(safe-area-inset-top)));
       padding-bottom: max(var(--spacing-8), max(0px, env(safe-area-inset-bottom)));
-      -webkit-overflow-scrolling: touch;
     }
   }
 }
