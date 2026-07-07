@@ -78,7 +78,9 @@
   outline: none;
   font-size: var(--font-size-base);
   color: var(--text-primary);
-  padding: 0 var(--spacing-2);
+  /* Reserve space on the right for the custom clear button to avoid overlap
+     with native browser clear controls (notably iOS standalone PWA). */
+  padding: 0 calc(var(--spacing-2) + 36px);
   font-family: inherit;
   line-height: 1.4;
   min-width: 0;
@@ -103,6 +105,27 @@
 .search-input::-webkit-search-cancel-button,
 .search-input::-webkit-search-results-button,
 .search-input::-webkit-search-results-decoration {
+  display: none;
+}
+
+/* Additional, more specific rules to hide native clear buttons on iOS/Chrome.
+   Some WebKit builds show the native cancel button in standalone PWA mode
+   unless explicitly reset with these properties. */
+input[type="search"].search-input::-webkit-search-cancel-button,
+input[type="search"].search-input::-webkit-search-decoration,
+input[type="search"].search-input::-webkit-search-results-button,
+input[type="search"].search-input::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+/* Edge/IE clear button
+   (kept for completeness although primary issue is iOS Safari). */
+input[type="search"].search-input::-ms-clear,
+input[type="search"].search-input::-ms-reveal {
   display: none;
 }
 
