@@ -5,18 +5,19 @@
   left: 0;
   right: 0;
   z-index: var(--z-navbar, 10000);
-  background: rgba(255, 255, 255, 0.96);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.22);
-  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.08);
+  background: var(--secondary-bg);
+  background-color: var(--secondary-color);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.18);
   -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
-  color: var(--text-primary);
+  color: #ffffff;
   width: 100%;
 }
 
 .navbar-safe-top {
   height: max(0px, env(safe-area-inset-top));
-  background: rgba(255, 255, 255, 0.96);
+  background: var(--secondary-bg);
   width: 100%;
   flex-shrink: 0;
 }
@@ -36,20 +37,22 @@
 .navbar-toggle {
   display: flex;
   appearance: none;
-  background: rgba(15, 23, 42, 0.06);
-  border: 1px solid rgba(15, 23, 42, 0.12);
-  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
   font-size: var(--font-size-2xl);
   border-radius: var(--radius-full);
   transition: transform var(--transition-normal), background var(--transition-normal), border-color var(--transition-normal);
   width: 44px;
   height: 44px;
+  min-width: var(--touch-target);
+  min-height: var(--touch-target);
   align-items: center;
   justify-content: center;
 }
 
 .navbar-toggle:hover {
-  background: rgba(15, 23, 42, 0.1);
+  background: rgba(255, 255, 255, 0.22);
   transform: translateY(-1px);
 }
 
@@ -70,7 +73,7 @@
   font-size: clamp(1.1rem, 2.5vw, 1.9rem);
   font-weight: var(--font-weight-bold);
   margin: 0;
-  color: var(--text-primary);
+  color: #ffffff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -111,9 +114,9 @@
 .btn-logout-desktop {
   min-width: 44px;
   width: 44px;
-  background: rgba(15, 23, 42, 0.06);
-  border-color: rgba(15, 23, 42, 0.1);
-  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: #ffffff;
 }
 
 .btn-logout-desktop:hover {
@@ -155,7 +158,8 @@
   @media (display-mode: standalone) {
     .navbar {
       padding-top: max(0px, env(safe-area-inset-top));
-      background: rgba(255, 255, 255, 0.97);
+      background: var(--secondary-bg);
+      background-color: var(--secondary-color);
     }
 
     .navbar-container {

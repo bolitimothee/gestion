@@ -75,7 +75,7 @@ body {
 
   --font-size-xs: 11px;
   --font-size-sm: 12px;
-  --font-size-base: 14px;
+  --font-size-base: 15px;
   --font-size-lg: 16px;
   --font-size-xl: 18px;
   --font-size-2xl: 20px;
@@ -93,8 +93,8 @@ body {
   --font-weight-extrabold: 800;
 
   --line-height-tight: 1.25;
-  --line-height-normal: 1.5;
-  --line-height-relaxed: 1.6;
+  --line-height-normal: 1.6;
+  --line-height-relaxed: 1.7;
   --line-height-loose: 1.75;
 
   /* Spacing - Enhanced scale */

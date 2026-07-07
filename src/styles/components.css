@@ -1032,6 +1032,40 @@ select {
   }
 }
 
+/* Global Buttons */
+.btn {
+  padding: 0 var(--spacing-4);
+  height: 48px;
+  min-height: 48px;
+  border-radius: var(--radius-lg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background var(--transition-normal), transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.18);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-primary);
+  border-color: rgba(15, 23, 42, 0.06);
+}
+
+.btn:focus-visible {
+  outline: 3px solid rgba(59, 130, 246, 0.18);
+  outline-offset: 2px;
+}
+
 /* Modal Styles */
 .modal-overlay {
   position: fixed;

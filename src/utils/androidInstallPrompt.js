@@ -20,13 +20,6 @@ export const androidInstallPrompt = {
       // Stocker l'événement pour l'utiliser plus tard
       deferredPrompt = e;
       console.log('PWA install prompt disponible');
-      
-      // Afficher le prompt automatiquement après 3 secondes si l'utilisateur ne l'a pas rejeté
-      setTimeout(() => {
-        if (deferredPrompt) {
-          this.show();
-        }
-      }, 3000);
     });
 
     // Écouter l'événement d'installation
