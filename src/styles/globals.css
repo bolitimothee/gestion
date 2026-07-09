@@ -37,6 +37,12 @@ html {
     width: 100% !important;
   }
 
+  /* further tighten global spacings on very small devices */
+  .page-header {
+    margin-bottom: var(--spacing-4) !important;
+    gap: var(--spacing-3) !important;
+  }
+
   /* Force tables to responsive card layout if not already applied */
   table,
   .sales-table table,

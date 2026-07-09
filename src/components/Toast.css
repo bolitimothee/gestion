@@ -1,12 +1,12 @@
 .toast-container {
   position: fixed;
-  top: 80px;
-  right: 20px;
+  top: calc(var(--navbar-height-sm, 60px) + max(0px, env(safe-area-inset-top)));
+  right: 16px;
   z-index: 9999;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  max-width: 400px;
+  gap: 8px;
+  max-width: min(400px, calc(100% - 32px));
 }
 
 .toast {

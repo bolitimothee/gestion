@@ -973,7 +973,11 @@ select {
   justify-content: space-between;
   gap: var(--spacing-5);
   flex-wrap: wrap;
-  margin-bottom: var(--spacing-6);
+  /* Reduced vertical spacing to tighten header layout */
+  margin-top: 0;
+  margin-bottom: var(--spacing-4);
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .page-header-content {
@@ -985,6 +989,15 @@ select {
   text-align: left;
   max-width: 100%;
   width: 100%;
+}
+
+@media (max-width: 767px) {
+  .page-header-content {
+    flex: 1 1 auto;
+    max-width: 100%;
+    width: 100%;
+    align-items: stretch;
+  }
 }
 
 .page-header h1,
@@ -1033,7 +1046,8 @@ select {
       overflow-y: auto;
       overflow-x: hidden;
       margin-left: 0;
-      margin-top: calc(80px + max(0px, env(safe-area-inset-top)));
+      /* keep navbar spacing but avoid extra vertical gap */
+      margin-top: calc(64px + max(0px, env(safe-area-inset-top)));
       padding-bottom: max(var(--spacing-8), max(0px, env(safe-area-inset-bottom)));
     }
   }

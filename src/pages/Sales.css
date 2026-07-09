@@ -377,6 +377,30 @@ select:focus {
   }
 }
 
+/* Tighter spacing on small screens to avoid large empty gaps */
+@media (max-width: 767px) {
+  .sales-layout {
+    gap: var(--spacing-4);
+    margin-top: var(--spacing-4);
+  }
+
+  .page-header {
+    margin-bottom: var(--spacing-4);
+    gap: var(--spacing-3);
+  }
+
+  .page-header-content {
+    flex: 1 1 auto;
+    width: 100%;
+    max-width: 100%;
+    align-items: stretch;
+  }
+
+  .sales-container {
+    padding: var(--spacing-4);
+  }
+}
+
 /* Ensure sales sections fit on very small screens (fixed after desktop tweaks) */
 @media (max-width: 767px) {
   .sales-form-section,
