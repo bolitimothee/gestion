@@ -1006,7 +1006,7 @@ select {
 @supports (padding: max(0px)) {
   @media (display-mode: standalone) and (max-width: 767px) {
     .layout {
-      min-height: 100dvh;
+      min-height: 100vh;
       height: auto;
       overflow: visible;
     }

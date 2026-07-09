@@ -1,14 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { X, CheckCircle, AlertCircle, Info } from 'lucide-react';
 import './Toast.css';
-
-let toastCallback = null;
-
-export function showToast(message, type = 'success', duration = 3000) {
-  if (toastCallback) {
-    toastCallback(message, type, duration);
-  }
-}
+import { registerToast, unregisterToast } from '../utils/toastService';
 
 export default function Toast() {
   const [toasts, setToasts] = useState([]);
@@ -32,9 +25,9 @@ export default function Toast() {
   }, []);
 
   useEffect(() => {
-    toastCallback = addToast;
+    registerToast(addToast);
     return () => {
-      toastCallback = null;
+      unregisterToast();
     };
   }, [addToast]);
 

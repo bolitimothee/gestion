@@ -10,9 +10,9 @@
   width: var(--sidebar-width);
   background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
   border-right: 1px solid rgba(203, 213, 225, 0.8);
-  height: 100dvh;
   position: fixed;
   top: 0;
+  bottom: 0;
   left: 0;
   overflow-y: auto;
   overflow-x: hidden;

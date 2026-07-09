@@ -9,7 +9,7 @@ import Sidebar from '../components/Sidebar';
 import SearchBar from '../components/SearchBar';
 import { Plus, Edit2, Trash2, AlertCircle, Download, Mail, Share2 } from 'lucide-react';
 import { formatCurrency, formatDate } from '../services/formatService';
-import { showToast } from '../components/Toast';
+import { showToast } from '../utils/toastService';
 import './Sales.css';
 
 export default function Sales() {
@@ -67,7 +67,7 @@ export default function Sales() {
     if (search.trim()) {
       const searchLower = search.toLowerCase();
       filtered = filtered.filter(sale => {
-        const product = products.find(p => p.id === sale.product_id);
+          const product = products.find(p => String(p.id) === String(sale.product_id));
         return (
           sale.customer_name.toLowerCase().includes(searchLower) ||
           (product?.name && product.name.toLowerCase().includes(searchLower)) ||
@@ -137,7 +137,7 @@ export default function Sales() {
     }
 
     try {
-      const product = products.find((p) => p.id === formData.product_id);
+      const product = products.find((p) => String(p.id) === String(formData.product_id));
       
       if (!product) {
         setError('Produit non trouvé. Veuillez sélectionner un produit valide.');
@@ -152,6 +152,7 @@ export default function Sales() {
 
       const saleData = {
         ...formData,
+        product_id: Number(formData.product_id),
         unit_price: product.selling_price,
         quantity: Number(formData.quantity),
       };
@@ -239,7 +240,7 @@ export default function Sales() {
     text += `${'='.repeat(80)}\n\n`;
 
     filteredSales.forEach((sale) => {
-      const product = products.find(p => p.id === sale.product_id);
+      const product = products.find(p => String(p.id) === String(sale.product_id));
       text += `Date: ${formatDate(sale.sale_date)}\n`;
       text += `Client: ${sale.customer_name}\n`;
       text += `Produit: ${product?.name || 'Produit supprimé'}\n`;
@@ -494,7 +495,7 @@ export default function Sales() {
                           </thead>
                           <tbody>
                             {filteredSales.map((sale) => {
-                              const product = products.find(p => p.id === sale.product_id);
+                              const product = products.find(p => String(p.id) === String(sale.product_id));
                               return (
                                 <tr key={sale.id}>
                                   <td data-label="Date">{formatDate(sale.sale_date)}</td>

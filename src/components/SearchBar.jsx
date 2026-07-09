@@ -89,7 +89,6 @@ export default function SearchBar({
   // Prevent scroll when dropdown is open on mobile
   useEffect(() => {
     if (showFilterDropdown && window.innerWidth < 768) {
-      const preventScroll = (e) => e.preventDefault();
       document.body.style.overflow = 'hidden';
       document.body.style.touchAction = 'none';
 

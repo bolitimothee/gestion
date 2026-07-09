@@ -87,7 +87,7 @@ export const useIOSLayout = () => {
         if (!value || value === '0px') return 0;
         const pixels = parseInt(value, 10);
         return isNaN(pixels) ? 0 : pixels;
-      } catch (e) {
+      } catch {
         return 0;
       }
     };

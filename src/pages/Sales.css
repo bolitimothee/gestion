@@ -10,6 +10,7 @@
 .sales-form-section,
 .sales-history-section {
   width: 100%;
+  min-width: 0; /* allow flex children to shrink on small screens */
 }
 
 /* Section historique à gauche */
@@ -285,6 +286,16 @@ select:focus {
   }
 }
 
+/* Ensure sales sections shrink on narrow screens */
+@media (max-width: 767px) {
+  .sales-history-section,
+  .sales-form-section {
+    min-width: 0 !important;
+    width: 100% !important;
+    flex: none;
+  }
+}
+
 @media (max-width: 480px) {
   .form-card {
     padding: var(--spacing-3);
@@ -363,6 +374,19 @@ select:focus {
 
   .actions-cell {
     flex-direction: column;
+  }
+}
+
+/* Ensure sales sections fit on very small screens (fixed after desktop tweaks) */
+@media (max-width: 767px) {
+  .sales-form-section,
+  .sales-history-section {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .sales-container {
+    padding: 12px;
   }
 }
 

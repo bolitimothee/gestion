@@ -11,6 +11,48 @@ html {
   background: var(--body-bg, #f4f6fb);
 }
 
+/* ======= GLOBAL MOBILE OVERRIDES (safety net pour règles desktop) ======= */
+@media (max-width: 767px) {
+  /* Ensure main content doesn't get pushed by desktop sidebars */
+  .layout-container {
+    padding-top: 0 !important;
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+    padding: var(--spacing-4) !important;
+    margin-top: calc(var(--navbar-height-sm, 60px) + max(0px, env(safe-area-inset-top))) !important;
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  /* Make any two-column page sections stack and fit */
+  .sales-form-section,
+  .sales-history-section,
+  .form-card,
+  .sales-container,
+  .products-grid,
+  .dashboard-section {
+    min-width: auto !important;
+    width: 100% !important;
+  }
+
+  /* Force tables to responsive card layout if not already applied */
+  table,
+  .sales-table table,
+  .expenses-table table {
+    max-width: 100% !important;
+    overflow-x: visible !important;
+  }
+
+  /* Buttons smaller footprint on tiny screens */
+  .btn,
+  .btn-primary,
+  .btn-secondary {
+    width: 100% !important;
+  }
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -616,8 +658,8 @@ body {
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-height: 100dvh;
-  height: 100dvh;
+  min-height: 100vh;
+  height: 100vh;
   overflow: hidden;
 }
 
@@ -664,18 +706,19 @@ body {
     }
 
     .layout {
-      height: 100dvh;
-      min-height: 100dvh;
+      height: 100vh;
+      min-height: 100vh;
       overflow: hidden;
     }
 
     .layout-container {
-      height: 100dvh;
+      height: 100vh;
+      min-height: 100vh;
       overflow: hidden;
     }
 
     .main-content {
-      height: calc(100dvh - var(--navbar-height-lg, 80px) - var(--safe-area-top));
+      height: calc(100vh - var(--navbar-height-lg, 80px) - var(--safe-area-top));
       overflow-y: auto;
       overflow-x: hidden;
       padding-top: max(var(--spacing-4), var(--safe-area-top));

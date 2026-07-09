@@ -5,7 +5,7 @@ import { useSidebar } from '../context/SidebarContext';
 import { BarChart3, Package, ShoppingCart, TrendingUp, LogOut } from 'lucide-react';
 import './Sidebar.css';
 
-export default function Sidebar({ active }) {
+export default function Sidebar() {
   const { user, signOut } = useAuth();
   const { isSidebarOpen, closeSidebar } = useSidebar();
   const location = useLocation();

@@ -8,7 +8,7 @@ import StatCard from '../components/StatCard';
 import SearchBar from '../components/SearchBar';
 import { Plus, Trash2, AlertCircle, TrendingUp, TrendingDown, DollarSign, Download, Mail, Share2, Edit2 } from 'lucide-react';
 import { formatCurrency, formatDate } from '../services/formatService';
-import { showToast } from '../components/Toast';
+import { showToast } from '../utils/toastService';
 import './Finances.css';
 
 export default function Finances() {

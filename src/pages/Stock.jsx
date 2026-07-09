@@ -7,7 +7,7 @@ import Sidebar from '../components/Sidebar';
 import SearchBar from '../components/SearchBar';
 import { Plus, Edit2, Trash2, AlertCircle } from 'lucide-react';
 import { formatCurrency, getStockStatus, getStockColor } from '../services/formatService';
-import { showToast } from '../components/Toast';
+import { showToast } from '../utils/toastService';
 import './Stock.css';
 
 export default function Stock() {
