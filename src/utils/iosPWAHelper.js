@@ -60,7 +60,6 @@ export const iOSPWAHelper = {
 
     const ua = navigator.userAgent;
     const screenHeight = window.screen.height;
-    const screenWidth = window.screen.width;
     const availHeight = window.screen.availHeight;
 
     const isIPhone = /iPhone/.test(ua) && !/iPad/.test(ua);

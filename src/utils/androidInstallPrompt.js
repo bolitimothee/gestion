@@ -28,8 +28,8 @@ export const androidInstallPrompt = {
       deferredPrompt = null;
       
       // Optionnel: tracker l'installation
-      if (window.gtag) {
-        gtag('event', 'app_installed', {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'app_installed', {
           app_name: 'Gestion de Commerce'
         });
       }

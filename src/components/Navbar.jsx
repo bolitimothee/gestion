@@ -11,6 +11,7 @@ export default function Navbar() {
   const { isIOS, isStandalone, deviceType } = useIOSLayout();
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [isInstallAvailable, setIsInstallAvailable] = useState(false);
+  const isAndroidDevice = /Android/i.test(window.navigator?.userAgent || '');
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (event) => {
@@ -79,7 +80,7 @@ export default function Navbar() {
         <div className="navbar-actions">
           {isInstallAvailable && (
             <button onClick={handleInstallPWA} className="btn-install-pwa">
-              Installer l'app
+              {isAndroidDevice ? 'Télécharger l’application' : 'Installer l’app'}
             </button>
           )}
 
