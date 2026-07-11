@@ -69,6 +69,20 @@
   min-width: 0;
 }
 
+.navbar-logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  max-width: 160px;
+}
+
+@media (max-width: 767px) {
+  .navbar-logo {
+    height: 32px;
+    max-width: 140px;
+  }
+}
+
 .navbar-brand h1 {
   font-size: clamp(1.1rem, 2.5vw, 1.9rem);
   font-weight: var(--font-weight-bold);

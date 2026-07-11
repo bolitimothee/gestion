@@ -74,7 +74,7 @@ export default function Navbar() {
         </button>
 
         <div className="navbar-brand">
-          <h1>ViewY</h1>
+          <img src="/viewy-logo.png" alt="ViewY" className="navbar-logo" />
         </div>
 
         <div className="navbar-actions">
