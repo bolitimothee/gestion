@@ -64,7 +64,7 @@ export default function Login() {
       <div className="auth-card">
         <div className="auth-header">
           <h1>Se connecter</h1>
-          <p>Gestion de Commerce</p>
+          <p>ViewY</p>
         </div>
 
         {error && (

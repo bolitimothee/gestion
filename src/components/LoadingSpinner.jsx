@@ -13,7 +13,7 @@ export default function LoadingSpinner() {
       </div>
       <div className="loading-text">
         <h2>Chargement en cours...</h2>
-        <p>Gestion de Commerce</p>
+        <p>ViewY</p>
       </div>
     </div>
   );

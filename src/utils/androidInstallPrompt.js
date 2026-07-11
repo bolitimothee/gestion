@@ -30,7 +30,7 @@ export const androidInstallPrompt = {
       // Optionnel: tracker l'installation
       if (typeof window.gtag === 'function') {
         window.gtag('event', 'app_installed', {
-          app_name: 'Gestion de Commerce'
+          app_name: 'ViewY'
         });
       }
     });

@@ -74,7 +74,7 @@ export default function Navbar() {
         </button>
 
         <div className="navbar-brand">
-          <h1>Gestion Commerce</h1>
+          <h1>ViewY</h1>
         </div>
 
         <div className="navbar-actions">

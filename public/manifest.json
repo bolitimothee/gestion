@@ -1,6 +1,6 @@
 {
-  "name": "Gestion de Commerce",
-  "short_name": "Gestion",
+  "name": "ViewY",
+  "short_name": "ViewY",
   "description": "Système de gestion des stocks et finances pour votre commerce",
   "start_url": "/",
   "display": "standalone",
