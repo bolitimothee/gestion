@@ -12,29 +12,26 @@ if (import.meta.env.DEV) {
 // Import optimisations PWA après les styles
 import { iOSPWAHelper } from './utils/iosPWAHelper.js'
 import { androidInstallPrompt } from './utils/androidInstallPrompt.js'
+import logger from './utils/logger.js'
 
-// Enregistrement du Service Worker pour PWA
-if ('serviceWorker' in navigator) {
+// Enregistrement du Service Worker pour PWA (protection contre SSR/contexts non-navigateur)
+if (typeof navigator !== 'undefined' && typeof window !== 'undefined' && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
       .then((registration) => {
-        if (import.meta.env.MODE === 'development') {
-          console.log('Service Worker enregistré avec succès:', registration);
-        }
+        logger.debug('Service Worker enregistré avec succès:', registration);
         // Initialiser les optimisations PWA après l'enregistrement
         iOSPWAHelper.init()
         androidInstallPrompt.init()
       })
       .catch((error) => {
-        if (import.meta.env.MODE === 'development') {
-          console.log('Erreur lors de l\'enregistrement du Service Worker:', error);
-        }
+        logger.error('Erreur lors de l\'enregistrement du Service Worker:', error);
         // Même si le SW échoue, essayer d'optimiser PWA
         iOSPWAHelper.init()
         androidInstallPrompt.init()
       })
   })
-} else {
+} else if (typeof window !== 'undefined') {
   // Si pas de service worker, quand même optimiser PWA
   iOSPWAHelper.init()
   androidInstallPrompt.init()

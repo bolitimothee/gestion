@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import logger from '../utils/logger';
 
 const withTimeout = async (promise, ms, errorMessage) => {
   let timeoutId;
@@ -53,12 +54,10 @@ export const authService = {
     try {
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       const supabaseAnonKeyPresent = Boolean(import.meta.env.VITE_SUPABASE_ANON_KEY);
-      if (import.meta.env.MODE === 'development') {
-        console.debug('[authService] signIn request for', email, {
-          supabaseUrl,
-          supabaseAnonKeyPresent,
-        });
-      }
+      logger.debug('[authService] signIn request for', email, {
+        supabaseUrl,
+        supabaseAnonKeyPresent,
+      });
 
       const { data, error } = await withTimeout(
         supabase.auth.signInWithPassword({
@@ -69,9 +68,7 @@ export const authService = {
         'Connexion trop longue — vérifiez votre réseau et réessayez.'
       );
 
-      if (import.meta.env.MODE === 'development') {
-        console.debug('[authService] signIn response', { data, error });
-      }
+      logger.debug('[authService] signIn response', { data, error });
 
       if (error) {
         const message = error.status === 400 || error.status === 401
@@ -86,9 +83,7 @@ export const authService = {
 
       // Support response shape where user may be under data.user or data.session.user
       const user = data.user || data.session?.user;
-      if (import.meta.env.MODE === 'development') {
-        console.debug('[authService] user extracted', { userId: user?.id });
-      }
+      logger.debug('[authService] user extracted', { userId: user?.id });
 
       // Vérifier si le compte est actif et valide
       if (user) {
@@ -135,7 +130,7 @@ export const authService = {
 
       return { data: normalizedData, error: null };
     } catch (error) {
-      console.error('[authService] signIn caught error:', {
+      logger.error('[authService] signIn caught error:', {
         message: error?.message,
         status: error?.status,
         fullError: error
@@ -147,9 +142,11 @@ export const authService = {
   async signOut() {
     const cleanupLocalSession = () => {
       try {
-        localStorage.removeItem('supabase.auth.token');
+        if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+          localStorage.removeItem('supabase.auth.token');
+        }
       } catch (err) {
-        console.warn('Impossible de nettoyer le storage local Supabase:', err);
+        logger.warn('Impossible de nettoyer le storage local Supabase:', err);
       }
     };
 
@@ -157,7 +154,7 @@ export const authService = {
       const { error } = await supabase.auth.signOut();
       if (error) {
         if (error.status === 403 || error.message?.toLowerCase().includes('forbidden')) {
-          console.warn('Suppression de session bloquée par Supabase, ignorer le code 403.');
+          logger.warn('Suppression de session bloquée par Supabase, ignorer le code 403.');
           cleanupLocalSession();
           return { error: null };
         }
@@ -167,11 +164,12 @@ export const authService = {
       return { error: null };
     } catch (error) {
       if (error?.status === 403 || error?.message?.toLowerCase().includes('forbidden')) {
-        console.warn('Suppression de session bloquée par Supabase, ignorer le code 403.');
+        logger.warn('Suppression de session bloquée par Supabase, ignorer le code 403.');
         cleanupLocalSession();
         return { error: null };
       }
       cleanupLocalSession();
+      logger.error('Erreur signOut:', error);
       return { error };
     }
   },
@@ -199,25 +197,18 @@ export const authService = {
         'Chargement des détails du compte trop longue.'
       );
 
-      // Si table n'existe pas ou erreur, retourner objet vide
       if (error) {
-        if (error.message?.includes('Chargement des détails du compte trop longue')) {
-          console.debug('Timeout getAccountDetails, using fallback account data.', error.message);
-        } else {
-          console.warn('Impossible de charger les détails du compte:', error.message);
-        }
-        return { data: { user_id: userId, account_name: 'Utilisateur', email: '' }, error: null };
+        // Ne pas masquer l'erreur : la faire remonter pour prise de décision en amont
+        return { data: null, error };
       }
-      
-      // Si pas de données, retourner objet fallback
+
       if (!data) {
-        return { data: { user_id: userId, account_name: 'Utilisateur', email: '' }, error: null };
+        return { data: null, error: null };
       }
-      
+
       return { data, error: null };
     } catch (err) {
-      console.warn('Erreur getAccountDetails:', err);
-      return { data: { user_id: userId, account_name: 'Utilisateur', email: '' }, error: null };
+      return { data: null, error: err };
     }
   },
 
@@ -232,14 +223,9 @@ export const authService = {
         10000,
         'Vérification du compte trop longue.'
       );
-
       if (error) {
-        if (error.message?.includes('Vérification du compte trop longue')) {
-          console.debug('Vérification du compte a expiré, on envoie un état valide par défaut pour éviter le blocage.', error.message);
-        } else {
-          console.warn('Impossible de vérifier la validité du compte:', error.message);
-        }
-        return { isValid: true, error: null, account: null };
+        // Remonter l'erreur pour décision côté appelant
+        return { isValid: false, error, account: null };
       }
 
       if (!data) {
@@ -270,8 +256,7 @@ export const authService = {
 
       return { isValid: true, error: null, account: data };
     } catch (err) {
-      console.warn('Erreur checkAccountValidity:', err);
-      return { isValid: true, error: null }; // Par défaut, considérer valide si erreur
+      return { isValid: false, error: err, account: null };
     }
   },
 };

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import logger from '../utils/logger';
 import { useAuth } from '../context/AuthContext';
 import { useSidebar } from '../context/SidebarContext';
 import { LogOut, Menu, X } from 'lucide-react';
@@ -11,7 +12,7 @@ export default function Navbar() {
   const { isIOS, isStandalone, deviceType } = useIOSLayout();
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [isInstallAvailable, setIsInstallAvailable] = useState(false);
-  const isAndroidDevice = /Android/i.test(window.navigator?.userAgent || '');
+  const isAndroidDevice = (typeof navigator !== 'undefined') ? /Android/i.test(window.navigator?.userAgent || '') : false;
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (event) => {
@@ -41,13 +42,9 @@ export default function Navbar() {
     const choiceResult = await deferredPrompt.userChoice;
 
     if (choiceResult.outcome === 'accepted') {
-      if (import.meta.env.MODE === 'development') {
-        console.log('PWA installation accepted');
-      }
+      logger.debug('PWA installation accepted');
     } else {
-      if (import.meta.env.MODE === 'development') {
-        console.log('PWA installation dismissed');
-      }
+      logger.debug('PWA installation dismissed');
     }
 
     setDeferredPrompt(null);
@@ -59,7 +56,7 @@ export default function Navbar() {
       await signOut();
       window.location.href = '/login';
     } catch (error) {
-      console.error('Erreur lors de la déconnexion:', error);
+      logger.error('Erreur lors de la déconnexion:', error);
       // En cas d'erreur, quand même rediriger vers login
       window.location.href = '/login';
     }

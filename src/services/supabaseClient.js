@@ -3,8 +3,10 @@ import { createClient } from '@supabase/supabase-js';
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
+import logger from '../utils/logger';
+
 if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-  console.error('Supabase client initialization failed: VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY must be defined.');
+  logger.error('Supabase client initialization failed: VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY must be defined.');
   throw new Error('Supabase environment variables not defined');
 }
 
@@ -14,7 +16,7 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     persistSession: true,
     autoRefreshToken: true,
     detectSessionInUrl: true,
-    storage: localStorage,
+    storage: (typeof window !== 'undefined' && typeof localStorage !== 'undefined') ? localStorage : undefined,
     // Ajouter une clé unique pour éviter les conflits
     storageKey: 'supabase.auth.token',
   },

@@ -138,6 +138,8 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-4);
   }
 
   .page-header h1 {
@@ -187,12 +189,17 @@
   }
 
   .main-content {
-    margin-left: 260px;
+    margin-left: var(--sidebar-width);
     padding: var(--spacing-6);
   }
 
   .page-header h1 {
     font-size: 32px;
+  }
+
+  .page-header {
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-4);
   }
 
   .stats-grid {
@@ -236,7 +243,7 @@
   }
 
   .main-content {
-    margin-left: 300px;
+    margin-left: var(--sidebar-width);
     padding: var(--spacing-8);
   }
 
@@ -281,7 +288,7 @@
   }
 
   .main-content {
-    margin-left: 340px;
+    margin-left: var(--sidebar-width);
     padding: var(--spacing-10);
   }
 
@@ -322,7 +329,7 @@
   }
 
   .main-content {
-    margin-left: 380px;
+    margin-left: var(--sidebar-width);
     padding: var(--spacing-12);
   }
 
@@ -723,7 +730,7 @@
   /* iOS PWA - iPad behavior (desktop-like) */
   @media (display-mode: standalone) and (min-width: 768px) {
     .main-content {
-      margin-left: var(--sidebar-width-md, 240px);
+      margin-left: var(--sidebar-width-tablet, 240px);
       margin-top: var(--navbar-height-md, 70px);
       height: calc(100vh - var(--navbar-height-md, 70px));
       padding: var(--spacing-5);

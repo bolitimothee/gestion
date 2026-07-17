@@ -52,6 +52,8 @@ export const ERROR_MESSAGES = {
   EXPORT_NO_DATA: 'Aucune donnée à exporter.',
 };
 
+import logger from './logger';
+
 /**
  * Utility function pour obtenir un message d'erreur
  * @param {string} key - Clé du message d'erreur
@@ -70,23 +72,23 @@ export function getErrorMessage(key, fallback = ERROR_MESSAGES.GENERAL_ERROR) {
  */
 export function devLog(level = 'log', context = '', data = null) {
   if (import.meta.env.MODE !== 'development') return;
-  
+
   const timestamp = new Date().toLocaleTimeString();
   const prefix = `[${timestamp}] ${context}`;
-  
+
   switch (level) {
     case 'error':
-      console.error(prefix, data);
+      logger.error(prefix, data);
       break;
     case 'warn':
-      console.warn(prefix, data);
+      logger.warn(prefix, data);
       break;
     case 'debug':
-      console.debug(prefix, data);
+      logger.debug(prefix, data);
       break;
     case 'log':
     default:
-      console.log(prefix, data);
+      logger.debug(prefix, data);
   }
 }
 

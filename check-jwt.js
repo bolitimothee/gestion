@@ -5,44 +5,47 @@
 
 const anon_key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvZ2x6c2VhZG1td2ZzanhibWRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAyNTUwOTgsImV4cCI6MjA4NTgzMTA5OH0.XFuIKASLMIOvhXSpqWNuh7DX2DTzV6DR1C_GVlrPRKs';
 
+// logger wrapper pour snippet console (exécuté dans navigateur ou node)
+const logger = { debug: (...a) => console.log(...a), info: (...a) => console.log(...a), warn: (...a) => console.warn(...a), error: (...a) => console.error(...a) };
+
 // Décoder le JWT
 function decodeJWT(token) {
   const parts = token.split('.');
   if (parts.length !== 3) {
-    console.error('❌ JWT invalide (format incorrect)');
+    logger.error('❌ JWT invalide (format incorrect)');
     return null;
   }
 
   try {
     const decoded = JSON.parse(atob(parts[1]));
-    console.log('✅ JWT Valide');
-    console.log('   Émetteur:', decoded.iss);
-    console.log('   Rôle:', decoded.role);
-    console.log('   Émis le:', new Date(decoded.iat * 1000));
-    console.log('   Expire le:', new Date(decoded.exp * 1000));
+    logger.debug('✅ JWT Valide');
+    logger.debug('   Émetteur:', decoded.iss);
+    logger.debug('   Rôle:', decoded.role);
+    logger.debug('   Émis le:', new Date(decoded.iat * 1000));
+    logger.debug('   Expire le:', new Date(decoded.exp * 1000));
     
     const now = Math.floor(Date.now() / 1000);
     if (decoded.exp < now) {
-      console.error('❌ JWT EXPIRÉ!');
+      logger.error('❌ JWT EXPIRÉ!');
       return null;
     } else {
-      console.log('✅ JWT non expiré');
+      logger.debug('✅ JWT non expiré');
     }
     
     return decoded;
   } catch (error) {
-    console.error('❌ Erreur de décodage:', error);
+    logger.error('❌ Erreur de décodage:', error);
     return null;
   }
 }
 
 // Test
-console.log('🔐 Analyse du token ANON_KEY:');
+logger.debug('🔐 Analyse du token ANON_KEY:');
 decodeJWT(anon_key);
 
-console.log('\n💡 Solution si problème:');
-console.log('1. Allez dans Supabase Dashboard');
-console.log('2. Project Settings > API');
-console.log('3. Copiez la clé "anon public"');
-console.log('4. Remplacez VITE_SUPABASE_ANON_KEY dans .env.local');
-console.log('5. Redémarrez npm run dev');
+logger.debug('\n💡 Solution si problème:');
+logger.debug('1. Allez dans Supabase Dashboard');
+logger.debug('2. Project Settings > API');
+logger.debug('3. Copiez la clé "anon public"');
+logger.debug('4. Remplacez VITE_SUPABASE_ANON_KEY dans .env.local');
+logger.debug('5. Redémarrez npm run dev');

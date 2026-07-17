@@ -21,6 +21,7 @@
   user-select: none;
   outline: none;
   min-height: 44px;
+  width: auto;
 }
 
 .btn:disabled {
@@ -143,6 +144,38 @@
 
 .btn-block {
   width: 100%;
+}
+
+@media (max-width: 767px) {
+  .page-header .btn,
+  .page-header .btn-primary,
+  .page-header .btn-secondary,
+  .form-actions .btn,
+  .modal-actions .btn {
+    width: 100%;
+  }
+}
+
+/* Uniformise les boutons d'ajout sur tablettes en orientation portrait (iPad mini/pro/air) */
+@media (min-width: 768px) and (max-width: 1023px) and (orientation: portrait) {
+  .page-header .btn,
+  .page-header .btn-primary,
+  .page-header .btn-secondary {
+    width: 100% !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    align-self: stretch !important;
+  }
+
+  .export-actions {
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+
+  .export-actions button {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 .btn-icon {
@@ -897,6 +930,16 @@ select {
   margin-top: calc(var(--navbar-height, 80px) + max(0px, env(safe-area-inset-top)));
 }
 
+/* Prevent flex children from forcing horizontal overflow (mobile/portrait fix) */
+.page-header,
+.page-header-content,
+.sales-layout,
+.stock-layout,
+.page-header .page-header-content {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
 @media (max-width: 767px) {
   .layout-container {
     padding-top: 0;
@@ -935,11 +978,19 @@ select {
     padding: var(--spacing-6);
     margin-top: calc(var(--navbar-height-md, 70px) + max(0px, env(safe-area-inset-top)));
   }
+
+  /* On portrait tablets keep main content full width and use overlay sidebar */
+  @media (orientation: portrait) {
+    .main-content {
+      margin-left: 0;
+      padding-left: var(--spacing-5);
+    }
+  }
 }
 
 @media (min-width: 1024px) {
   .main-content {
-    margin-left: 280px;
+    margin-left: var(--sidebar-width, 280px);
   }
 }
 
@@ -947,13 +998,13 @@ select {
   .main-content {
     padding: var(--spacing-10);
     padding-left: calc(var(--spacing-10) + 12px);
-    margin-top: calc(var(--navbar-height-lg, 80px) + max(0px, env(safe-area-inset-top)));
+    margin-top: calc(var(--navbar-height, 80px) + max(0px, env(safe-area-inset-top)));
   }
 }
 
 @media (min-width: 1920px) {
   .main-content {
-    margin-left: 320px;
+    margin-left: var(--sidebar-width, 320px);
     padding: var(--spacing-12);
     padding-left: calc(var(--spacing-12) + 16px);
   }
@@ -961,7 +1012,7 @@ select {
 
 @media (min-width: 2560px) {
   .main-content {
-    margin-left: 340px;
+    margin-left: var(--sidebar-width, 340px);
     padding: var(--spacing-16);
     padding-left: calc(var(--spacing-16) + 20px);
   }
@@ -971,9 +1022,8 @@ select {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-5);
+  gap: var(--spacing-4);
   flex-wrap: wrap;
-  /* Reduced vertical spacing to tighten header layout */
   margin-top: 0;
   margin-bottom: var(--spacing-4);
   padding-top: 0;
@@ -1034,7 +1084,7 @@ select {
       top: 0;
       left: 0;
       right: 0;
-      z-index: 9999;
+      z-index: var(--z-navbar);
     }
     
     .navbar-container {
@@ -1098,7 +1148,7 @@ select {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10000;
+  z-index: var(--z-modal-backdrop);
   padding: var(--spacing-4);
 }
 

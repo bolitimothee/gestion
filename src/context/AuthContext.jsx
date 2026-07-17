@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { authService } from '../services/authService';
+import logger from '../utils/logger';
 
 const AuthContext = createContext();
 
@@ -30,7 +31,7 @@ export function AuthProvider({ children }) {
         return data;
       }
     } catch (err) {
-      console.warn('Erreur chargement compte:', err);
+      logger.warn('Erreur chargement compte:', err);
       // Définir un compte par défaut pour éviter les blocages
       setAccount({ user_id: userId, account_name: 'Utilisateur', email: '' });
     }
@@ -68,7 +69,7 @@ export function AuthProvider({ children }) {
 
         if (data?.session) {
           if (isSessionExpired(data.session)) {
-            console.warn('Session expirée détectée, déconnexion en cours.');
+            logger.warn('Session expirée détectée, déconnexion en cours.');
             await authService.signOut();
             setUser(null);
             setAccount(null);
@@ -83,13 +84,13 @@ export function AuthProvider({ children }) {
               setUser(data.session.user);
               setLoading(false);
               setIsAuthReady(true);
-              loadAccountDetails(data.session.user.id).catch((err) => console.warn('Erreur chargement compte asynchrone:', err));
+              loadAccountDetails(data.session.user.id).catch((err) => logger.warn('Erreur chargement compte asynchrone:', err));
               return;
             }
           }
         } else if (timeout) {
           // En cas de timeout, vérifier si on a une session dans localStorage
-          console.warn('Session check timeout, attempting to recover from localStorage');
+          logger.warn('Session check timeout, attempting to recover from localStorage');
           try {
             const { data: localSession } = await supabase.auth.getSession();
             if (localSession?.session && !isSessionExpired(localSession.session)) {
@@ -98,16 +99,16 @@ export function AuthProvider({ children }) {
                 setUser(localSession.session.user);
                 setLoading(false);
                 setIsAuthReady(true);
-                loadAccountDetails(localSession.session.user.id).catch((err) => console.warn('Erreur chargement compte asynchrone:', err));
+                loadAccountDetails(localSession.session.user.id).catch((err) => logger.warn('Erreur chargement compte asynchrone:', err));
                 return;
               }
             }
           } catch (localErr) {
-            console.warn('Failed to recover session from localStorage:', localErr);
+            logger.warn('Failed to recover session from localStorage:', localErr);
           }
         }
       } catch (_err) {
-        console.error('Error checking session:', _err);
+        logger.error('Error checking session:', _err);
         // En cas d'erreur, essayer de récupérer la session depuis localStorage
         try {
           const { data: localSession } = await supabase.auth.getSession();
@@ -117,17 +118,18 @@ export function AuthProvider({ children }) {
               setUser(localSession.session.user);
               setLoading(false);
               setIsAuthReady(true);
-              loadAccountDetails(localSession.session.user.id).catch((err) => console.warn('Erreur chargement compte asynchrone:', err));
+              loadAccountDetails(localSession.session.user.id).catch((err) => logger.warn('Erreur chargement compte asynchrone:', err));
               return;
             }
           }
         } catch (localErr) {
-          console.warn('Failed to recover session from localStorage after error:', localErr);
+          logger.warn('Failed to recover session from localStorage after error:', localErr);
         }
-      } finally {
-        setLoading(false);
-        setIsAuthReady(true);
       }
+
+      // Si on arrive ici, aucune session valide n'a été trouvée ou récupérée
+      setLoading(false);
+      setIsAuthReady(true);
     };
 
     checkSession();
@@ -136,7 +138,7 @@ export function AuthProvider({ children }) {
     const res = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
         if (isSessionExpired(session)) {
-          console.warn('Session expirée détectée dans onAuthStateChange, déconnexion en cours.');
+          logger.warn('Session expirée détectée dans onAuthStateChange, déconnexion en cours.');
           await authService.signOut();
           setUser(null);
           setAccount(null);
@@ -153,7 +155,7 @@ export function AuthProvider({ children }) {
             setIsAccountExpired(false);
             setLoading(false);
             setIsAuthReady(true);
-            loadAccountDetails(session.user.id).catch((err) => console.warn('Erreur chargement compte asynchrone:', err));
+            loadAccountDetails(session.user.id).catch((err) => logger.warn('Erreur chargement compte asynchrone:', err));
             return;
           }
         }
@@ -191,7 +193,7 @@ export function AuthProvider({ children }) {
           setUser(createdUser);
           setLoading(false);
           setIsAuthReady(true);
-          loadAccountDetails(createdUser.id).catch((err) => console.warn('Erreur chargement compte asynchrone:', err));
+          loadAccountDetails(createdUser.id).catch((err) => logger.warn('Erreur chargement compte asynchrone:', err));
         }
 
         return result;
@@ -202,11 +204,11 @@ export function AuthProvider({ children }) {
     signIn: async (email, password) => {
       try {
         if (import.meta.env.MODE === 'development') {
-          console.debug('[AuthContext] signIn start', { email });
+          logger.debug('[AuthContext] signIn start', { email });
         }
         const result = await authService.signIn(email, password);
         if (import.meta.env.MODE === 'development') {
-          console.debug('[AuthContext] signIn result', result);
+          logger.debug('[AuthContext] signIn result', result);
         }
         if (result.error) {
           await authService.signOut();
@@ -223,7 +225,7 @@ export function AuthProvider({ children }) {
           setIsAccountExpired(false); // Réinitialiser l'état d'expiration
           setLoading(false);
           setIsAuthReady(true);
-          loadAccountDetails(loggedUser.id).catch((err) => console.warn('Erreur chargement compte asynchrone:', err));
+              loadAccountDetails(loggedUser.id).catch((err) => logger.warn('Erreur chargement compte asynchrone:', err));
         }
 
         return result;

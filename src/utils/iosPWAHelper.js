@@ -3,6 +3,8 @@
  * Gère le Dynamic Island, le notch, et les safe areas
  * Version optimisée avec détection moderne
  */
+import logger from './logger';
+
 export const iOSPWAHelper = {
   // ===== DÉTECTION MODERNE =====
 
@@ -138,7 +140,7 @@ export const iOSPWAHelper = {
     viewport.setAttribute('content', content);
 
     if (import.meta.env.MODE === 'development') {
-      console.log('[iOS PWA] Viewport configuré:', viewport.getAttribute('content'));
+      try { logger.debug('[iOS PWA] Viewport configuré:', viewport.getAttribute('content')); } catch { /* ignore */ }
     }
   },
 
@@ -175,9 +177,7 @@ export const iOSPWAHelper = {
     root.style.setProperty('--has-notch', hasNotch ? '1' : '0');
 
     if (import.meta.env.MODE === 'development') {
-      const computedStyle = getComputedStyle(root);
-      console.log('[iOS PWA] Safe Area - Top:', computedStyle.getPropertyValue('--safe-area-inset-top'));
-      console.log('[iOS PWA] Device:', deviceType);
+      try { const computedStyle = getComputedStyle(root); logger.debug('[iOS PWA] Safe Area - Top:', computedStyle.getPropertyValue('--safe-area-inset-top')); logger.debug('[iOS PWA] Device:', deviceType); } catch { /* ignore */ }
     }
   },
 
@@ -235,7 +235,7 @@ export const iOSPWAHelper = {
     document.documentElement.style.overscrollBehavior = 'none';
 
     if (import.meta.env.MODE === 'development') {
-      console.log('[iOS PWA] Gestion du zoom et scroll configurée');
+      try { logger.debug('[iOS PWA] Gestion du zoom et scroll configurée'); } catch { /* ignore */ }
     }
   },
 
@@ -266,12 +266,7 @@ export const iOSPWAHelper = {
       }, 100);
 
       if (import.meta.env.MODE === 'development') {
-        console.log('[iOS PWA] Orientation changée:', {
-          type: deviceType,
-          isDynamicIsland: hasDynamicIsland,
-          width: window.innerWidth,
-          height: window.innerHeight
-        });
+        try { logger.debug('[iOS PWA] Orientation changée:', { type: deviceType, isDynamicIsland: hasDynamicIsland, width: window.innerWidth, height: window.innerHeight }); } catch { /* ignore */ }
       }
     };
 
@@ -351,7 +346,7 @@ export const iOSPWAHelper = {
     }
 
     if (import.meta.env.MODE === 'development') {
-      console.log('[Android PWA] Optimisé');
+      try { logger.debug('[Android PWA] Optimisé'); } catch { /* ignore */ }
     }
   },
 
@@ -369,12 +364,7 @@ export const iOSPWAHelper = {
     const deviceInfo = this.detectDevice();
 
     if (import.meta.env.MODE === 'development') {
-      console.log('[PWA Helper] Initialisation:', {
-        isIOS,
-        isPWA,
-        isAndroidPWA: this.isAndroidPWA(),
-        deviceType: deviceInfo.deviceType
-      });
+      try { logger.debug('[PWA Helper] Initialisation:', { isIOS, isPWA, isAndroidPWA: this.isAndroidPWA(), deviceType: deviceInfo.deviceType }); } catch { /* ignore */ }
     }
 
     // Fonction qui s'exécute quand le DOM est prêt
@@ -432,7 +422,7 @@ export const iOSPWAHelper = {
     });
 
     if (import.meta.env.MODE === 'development') {
-      console.log('[PWA Helper] Initialisation complète');
+      try { logger.debug('[PWA Helper] Initialisation complète'); } catch { /* ignore */ }
     }
   }
 };

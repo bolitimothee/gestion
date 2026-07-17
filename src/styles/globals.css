@@ -11,6 +11,54 @@ html {
   background: var(--body-bg, #f4f6fb);
 }
 
+/* ============================================ */
+/* Portrait fixes — overrides to avoid layout break */
+/* Applied last to be a safety net for conflicting rules */
+/* ============================================ */
+@media (orientation: portrait) {
+  .main-content {
+    margin-left: 0 !important;
+    padding-left: var(--spacing-4) !important;
+    padding-right: var(--spacing-4) !important;
+    box-sizing: border-box;
+  }
+
+  .page-header,
+  .page-header-content,
+  .sales-layout,
+  .stock-layout,
+  .products-grid {
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+    width: 100% !important;
+  }
+
+  .page-header .btn-primary {
+    min-width: 0 !important;
+    width: auto !important;
+    align-self: stretch !important;
+  }
+
+  /* Force search inputs to occupy available width on portrait */
+  .search-bar .search-input,
+  .search-bar .search-input-container,
+  .sales-search-bar,
+  .stock-search-bar {
+    min-width: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Ensure overlay sidebar covers content when open */
+  .sidebar {
+    transform: translateX(-100%) !important;
+  }
+
+  .sidebar.open {
+    transform: translateX(0) !important;
+  }
+}
+
 /* ======= GLOBAL MOBILE OVERRIDES (safety net pour règles desktop) ======= */
 @media (max-width: 767px) {
   /* Ensure main content doesn't get pushed by desktop sidebars */
@@ -51,11 +99,9 @@ html {
     overflow-x: visible !important;
   }
 
-  /* Buttons smaller footprint on tiny screens */
-  .btn,
-  .btn-primary,
-  .btn-secondary {
-    width: 100% !important;
+  /* Preserve compact button sizing, except in headers/forms where full width is preferable */
+  .btn:not(.btn-icon):not(.btn-icon-sm):not(.btn-icon-lg):not(.btn-sm) {
+    width: auto !important;
   }
 }
 
@@ -244,8 +290,8 @@ body {
 
   /* iOS PWA Z-Index hierarchy (FIXED) */
   --z-navbar: 10000;
-  --z-sidebar: 10001;
-  --z-sidebar-overlay: 10000;
+  --z-sidebar: 9990;
+  --z-sidebar-overlay: 9995;
   --z-sidebar-mobile: 10010;
   --z-sidebar-overlay-mobile: 10005;
   --z-modal: 10050;
@@ -768,7 +814,9 @@ body {
   /* iOS PWA iPad */
   @media (display-mode: standalone) and (min-width: 768px) {
     .main-content {
-      margin-left: var(--sidebar-width-md, 240px);
+      margin-left: var(--sidebar-width-tablet, 240px);
+      padding-left: var(--spacing-5);
+      padding-right: var(--spacing-5);
     }
   }
 }

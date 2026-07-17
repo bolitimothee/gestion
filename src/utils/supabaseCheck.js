@@ -1,4 +1,5 @@
 import { supabase } from '../services/supabaseClient';
+import logger from './logger';
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -6,43 +7,43 @@ const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 const isDev = import.meta.env.MODE === 'development';
 
 if (isDev) {
-  console.log('=== SUPABASE CONFIGURATION CHECK (dev only) ===');
-  console.log('URL configured:', SUPABASE_URL ? '✅ YES' : '❌ NO');
-  console.log('ANON KEY configured:', SUPABASE_ANON_KEY ? '✅ YES' : '❌ NO');
+  logger.debug('=== SUPABASE CONFIGURATION CHECK (dev only) ===');
+  logger.debug('URL configured:', SUPABASE_URL ? '✅ YES' : '❌ NO');
+  logger.debug('ANON KEY configured:', SUPABASE_ANON_KEY ? '✅ YES' : '❌ NO');
 }
 
 if (!SUPABASE_URL) {
-  console.error('❌ ERROR: VITE_SUPABASE_URL is not set');
+  logger.error('❌ ERROR: VITE_SUPABASE_URL is not set');
 }
 if (!SUPABASE_ANON_KEY) {
-  console.error('❌ ERROR: VITE_SUPABASE_ANON_KEY is not set');
+  logger.error('❌ ERROR: VITE_SUPABASE_ANON_KEY is not set');
 }
 
 if (SUPABASE_URL && SUPABASE_ANON_KEY) {
   if (isDev) {
-    console.log('\n=== TESTING SUPABASE CONNECTION ===');
-    console.log('Using shared Supabase client from services/supabaseClient');
+    logger.debug('\n=== TESTING SUPABASE CONNECTION ===');
+    logger.debug('Using shared Supabase client from services/supabaseClient');
   }
   
   supabase.auth.getSession()
     .then(({ data, error }) => {
       if (error) {
-        console.error('❌ Session check error:', error.message);
+        logger.error('❌ Session check error:', error.message);
       } else if (data?.session) {
         if (isDev) {
-          console.log('✅ Active session found:', data.session.user.email);
+          logger.debug('✅ Active session found:', data.session.user.email);
         }
       } else {
         if (isDev) {
-          console.log('⚠️ No active session (this is normal if not logged in)');
+          logger.debug('⚠️ No active session (this is normal if not logged in)');
         }
       }
     })
     .catch(err => {
-      console.error('❌ Connection error:', err.message);
+      logger.error('❌ Connection error:', err.message);
     });
 } else {
-  console.error('\n⚠️ CONFIGURATION INCOMPLETE - set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY');
+  logger.error('\n⚠️ CONFIGURATION INCOMPLETE - set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY');
 }
 
 export {};

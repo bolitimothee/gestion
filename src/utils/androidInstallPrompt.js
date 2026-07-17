@@ -3,13 +3,15 @@
  * Chrome affiche automatiquement le prompt si les conditions sont remplies
  */
 
+import logger from './logger';
+
 let deferredPrompt = null;
 
 export const androidInstallPrompt = {
   // Initialiser et écouter le prompt d'installation
   init() {
-    if (!('serviceWorker' in navigator)) {
-      console.log('Service Worker non supporté');
+    if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) {
+      logger.debug('Service Worker non supporté');
       return;
     }
 
@@ -19,12 +21,12 @@ export const androidInstallPrompt = {
       e.preventDefault();
       // Stocker l'événement pour l'utiliser plus tard
       deferredPrompt = e;
-      console.log('PWA install prompt disponible');
+      logger.debug('PWA install prompt disponible');
     });
 
     // Écouter l'événement d'installation
     window.addEventListener('appinstalled', () => {
-      console.log('App PWA installée avec succès');
+      logger.debug('App PWA installée avec succès');
       deferredPrompt = null;
       
       // Optionnel: tracker l'installation
@@ -39,7 +41,7 @@ export const androidInstallPrompt = {
   // Afficher le prompt d'installation manuellement
   async show() {
     if (!deferredPrompt) {
-      console.log('Prompt d\'installation non disponible');
+      logger.debug('Prompt d\'installation non disponible');
       return false;
     }
 
@@ -51,16 +53,16 @@ export const androidInstallPrompt = {
       const { outcome } = await deferredPrompt.userChoice;
       
       if (outcome === 'accepted') {
-        console.log('Utilisateur a accepté l\'installation');
+        logger.debug('Utilisateur a accepté l\'installation');
       } else {
-        console.log('Utilisateur a rejeté l\'installation');
+        logger.debug('Utilisateur a rejeté l\'installation');
       }
       
       // Réinitialiser le prompt
       deferredPrompt = null;
       return outcome === 'accepted';
     } catch (error) {
-      console.error('Erreur lors de l\'affichage du prompt:', error);
+      logger.error('Erreur lors de l\'affichage du prompt:', error);
       return false;
     }
   },

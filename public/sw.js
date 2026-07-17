@@ -1,51 +1,59 @@
-const CACHE_NAME = 'gestion-commerce-v3';
-const STATIC_CACHE = 'static-v3';
-const DYNAMIC_CACHE = 'dynamic-v3';
+const CACHE_NAME = 'gestion-commerce-v4';
+const STATIC_CACHE = 'static-v4';
+const DYNAMIC_CACHE = 'dynamic-v4';
+
+// Simple logger pour le service worker. Active les debug seulement si self.__DEV__ est vrai.
+const swLogger = {
+  debug: (...args) => { try { if (self && self.__DEV__) console.debug(...args); } catch (e) {} },
+  info: (...args) => { try { if (self && self.__DEV__) console.info(...args); } catch (e) {} },
+  warn: (...args) => { try { console.warn(...args); } catch (e) {} },
+  error: (...args) => { try { console.error(...args); } catch (e) {} }
+};
 
 // URLs à mettre en cache pour PWA
 const urlsToCache = [
   '/',
   '/manifest.json',
   '/index.html',
-  '/icon-192.png',
-  '/icon-512.png'
+  '/icon-192.png?v=2',
+  '/icon-512.png?v=2'
 ];
 
 // Installation du service worker
 self.addEventListener('install', (event) => {
-  console.log('Service Worker: Installation PWA iOS');
+  swLogger.debug('Service Worker: Installation PWA iOS');
   event.waitUntil(
     caches.open(STATIC_CACHE)
       .then((cache) => {
-        console.log('Service Worker: Mise en cache des assets PWA');
+        swLogger.debug('Service Worker: Mise en cache des assets PWA');
         return cache.addAll(urlsToCache);
       })
       .then(() => {
-        console.log('Service Worker: Installation terminée');
+        swLogger.debug('Service Worker: Installation terminée');
         return self.skipWaiting();
       })
       .catch((error) => {
-        console.error('Service Worker: Erreur lors de l\'installation:', error);
+        swLogger.error('Service Worker: Erreur lors de l\'installation:', error);
       })
   );
 });
 
 // Activation du service worker
 self.addEventListener('activate', (event) => {
-  console.log('Service Worker: Activation PWA iOS');
+  swLogger.debug('Service Worker: Activation PWA iOS');
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
-            console.log('Service Worker: Suppression de l\'ancien cache:', cacheName);
+            swLogger.debug('Service Worker: Suppression de l\'ancien cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
     })
     .then(() => {
-      console.log('Service Worker: Activation terminée');
+      swLogger.debug('Service Worker: Activation terminée');
       return self.clients.claim();
     })
   );

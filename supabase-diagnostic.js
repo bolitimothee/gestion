@@ -1,19 +1,27 @@
 import { supabase } from './src/services/supabaseClient.js';
 
+// simple logger for node/dev scripts
+const logger = {
+  debug: (...args) => console.log(...args),
+  info: (...args) => console.log(...args),
+  warn: (...args) => console.warn(...args),
+  error: (...args) => console.error(...args),
+};
+
 /**
  * 🔍 Script de diagnostic Supabase
  * Vérifie que les tables et politiques RLS sont bien configurées
  */
 
 async function runDiagnostics() {
-  console.log('🔍 Diagnostic Supabase en cours...\n');
+  logger.debug('🔍 Diagnostic Supabase en cours...\n');
 
   // 1. Vérifier la connexion
-  console.log('1️⃣  Vérification de la connexion Supabase...');
+  logger.debug('1️⃣  Vérification de la connexion Supabase...');
   try {
-    console.log('✅ Connexion réussie');
+    logger.debug('✅ Connexion réussie');
   } catch (error) {
-    console.error('❌ Erreur de connexion:', error.message);
+    logger.error('❌ Erreur de connexion:', error.message);
     return;
   }
 
@@ -21,7 +29,7 @@ async function runDiagnostics() {
   const tables = ['accounts', 'products', 'sales', 'expenses'];
   
   for (const table of tables) {
-    console.log(`\n2️⃣  Vérification de la table "${table}"...`);
+    logger.debug(`\n2️⃣  Vérification de la table "${table}"...`);
     try {
       const { error, count } = await supabase
         .from(table)
@@ -29,31 +37,31 @@ async function runDiagnostics() {
         .limit(1);
 
       if (error) {
-        console.error(`❌ Erreur: ${error.message}`);
+        logger.error(`❌ Erreur: ${error.message}`);
       } else {
-        console.log(`✅ Table "${table}" accessible (${count} lignes)`);
+        logger.debug(`✅ Table "${table}" accessible (${count} lignes)`);
       }
     } catch (error) {
-      console.error(`❌ Erreur: ${error.message}`);
+      logger.error(`❌ Erreur: ${error.message}`);
     }
   }
 
   // 3. Vérifier l'authentification
-  console.log(`\n3️⃣  Vérification de l'authentification...`);
+  logger.debug(`\n3️⃣  Vérification de l'authentification...`);
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-      console.log(`✅ Authentifié: ${user.email}`);
-      console.log(`   User ID: ${user.id}`);
+      logger.debug(`✅ Authentifié: ${user.email}`);
+      logger.debug(`   User ID: ${user.id}`);
     } else {
-      console.log('⚠️  Non authentifié');
+      logger.debug('⚠️  Non authentifié');
     }
   } catch (error) {
-    console.error(`❌ Erreur: ${error.message}`);
+    logger.error(`❌ Erreur: ${error.message}`);
   }
 
-  console.log('\n✅ Diagnostic terminé!');
+  logger.debug('\n✅ Diagnostic terminé!');
 }
 
 // Lancer le diagnostic
-runDiagnostics().catch(console.error);
+runDiagnostics().catch((e) => logger.error(e));

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import logger from '../utils/logger';
 import { useAuth } from '../context/AuthContext';
 import { financeService } from '../services/financeService';
 import { salesService } from '../services/salesService';
@@ -30,7 +31,7 @@ export default function Dashboard() {
       ]);
 
       if (financeRes.error || salesRes.error || stockRes.error) {
-        console.error('Erreurs des services:', {
+        logger.error('Erreurs des services:', {
           finance: financeRes.error,
           sales: salesRes.error,
           stock: stockRes.error,
@@ -51,10 +52,10 @@ export default function Dashboard() {
       if (recentSalesRes.data) {
         setRecentSales(recentSalesRes.data || []);
       } else if (recentSalesRes.error) {
-        console.warn('Erreur getRecentSales:', recentSalesRes.error);
+        logger.warn('Erreur getRecentSales:', recentSalesRes.error);
       }
     } catch (_err) {
-      console.error('Error loading dashboard:', _err);
+      logger.error('Error loading dashboard:', _err);
       setError('Erreur système lors du chargement des données.');
     }
     setLoading(false);
@@ -87,7 +88,7 @@ export default function Dashboard() {
         <Sidebar active="/dashboard" />
         <main className="main-content">
           <div className="page-header">
-            <div style={{ flex: 1 }}>
+            <div className="page-header-content">
               <h1>Tableau de Bord</h1>
               <p>Système de gestion des stocks et finances</p>
             </div>

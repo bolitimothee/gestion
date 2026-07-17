@@ -16,7 +16,7 @@
   left: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  z-index: 10010;
+  z-index: var(--z-sidebar);
   display: flex;
   flex-direction: column;
   box-shadow: 6px 0 32px rgba(0, 0, 0, 0.08);
@@ -198,7 +198,7 @@
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
-  z-index: 10005;
+  z-index: var(--z-sidebar-overlay);
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.25s ease;
@@ -210,11 +210,16 @@
   opacity: 1;
 }
 
-/* ========= DESKTOP (≥769px) ========= */
-@media (min-width: 769px) {
+/* ========= DESKTOP & TABLET (≥768px) ========= */
+@media (min-width: 768px) {
   .sidebar {
+    /* position the sidebar under the navbar so the navbar visually overlays it */
+    top: 0;
+    height: 100vh;
+    padding-top: calc(var(--navbar-height, 80px) + env(safe-area-inset-top, 0px));
     transform: translateX(0);
   }
+
   .sidebar-overlay {
     display: none !important;
   }
@@ -311,6 +316,39 @@
   .btn-logout-sidebar svg { width: 16px; height: 16px; }
 }
 
+/* Portrait tablets: use overlay sidebar to preserve main content width */
+@media (min-width: 768px) and (max-width: 1023px) and (orientation: portrait) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: min(85vw, 320px);
+    max-width: 320px;
+    height: 100vh;
+    transform: translateX(-100%);
+    transition: transform 0.28s ease;
+    z-index: var(--z-sidebar-mobile, 10010);
+    box-shadow: 8px 0 40px rgba(0,0,0,0.2);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    display: block;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.28s ease;
+  }
+
+  .sidebar.open ~ .sidebar-overlay,
+  .sidebar-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
 /* ========= LARGE SCREENS (1280px+) ========= */
 @media (min-width: 1280px) {
   .sidebar { width: 300px; box-shadow: 8px 0 36px rgba(0, 0, 0, 0.1); }
@@ -339,7 +377,7 @@
 }
 
 /* ========= MOBILE OFF-CANVAS (<768px) ========= */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .sidebar {
     position: fixed;
     left: 0;
@@ -351,7 +389,7 @@
     transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     box-shadow: 8px 0 40px rgba(0, 0, 0, 0.2);
     border-right: none;
-    z-index: 10010;
+    z-index: var(--z-sidebar-mobile);
   }
 
   .sidebar.open {
@@ -536,7 +574,7 @@
 }
 
 /* ========= MOBILE LANDSCAPE ========= */
-@media (max-width: 768px) and (orientation: landscape) {
+@media (max-width: 767px) and (orientation: landscape) {
   .sidebar {
     width: 70%;
     max-width: 280px;
@@ -762,7 +800,7 @@
 }
 
 /* ========= ANDROID PWA ========= */
-@media (display-mode: fullscreen) and (max-width: 768px) {
+@media (display-mode: fullscreen) and (max-width: 767px) {
   .sidebar {
     height: 100vh;
   }
@@ -785,7 +823,7 @@
 }
 
 /* ========= ACCESSIBILITY ========= */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .sidebar-item,
   .btn-logout-sidebar {
     cursor: pointer;

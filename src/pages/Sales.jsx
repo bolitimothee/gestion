@@ -1,5 +1,5 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 import React, { useState, useEffect, useCallback } from 'react';
+import logger from '../utils/logger';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { salesService } from '../services/salesService';
@@ -109,9 +109,17 @@ export default function Sales() {
   }, [sales, products]);
 
   useEffect(() => {
-    if (user) {
-      loadData();
-    }
+    if (!user) return undefined;
+
+    (async () => {
+      try {
+        await loadData();
+      } catch (e) {
+        logger.error('Erreur chargement données Ventes:', e);
+      }
+    })();
+
+    return undefined;
   }, [user, loadData]);
 
   async function handleSubmit(e) {
@@ -167,7 +175,7 @@ export default function Sales() {
       }
 
       if (result.error) {
-        console.error('Erreur service ventes:', result.error);
+        logger.error('Erreur service ventes:', result.error);
         setError(result.error.message || 'Erreur lors de l\'ajout de la vente');
         return;
       }
@@ -185,7 +193,7 @@ export default function Sales() {
       setShowForm(false);
       await loadData();
     } catch (error) {
-      console.error('Erreur handleSubmit ventes:', error);
+      logger.error('Erreur handleSubmit ventes:', error);
       setError(error.message || 'Erreur lors de l\'ajout de la vente');
     }
   }
@@ -276,7 +284,7 @@ export default function Sales() {
       <div className="layout-container">
         <Sidebar active="/sales" />
         <main className="main-content">
-          <div className="page-header">
+          <div className="page-header sales-page-header">
             <div className="page-header-content">
               <h1>Gestion des Ventes</h1>
               <SearchBar
@@ -287,7 +295,7 @@ export default function Sales() {
                 className="sales-search-bar"
               />
             </div>
-            <button onClick={() => setShowForm(!showForm)} className="btn btn-primary">
+            <button type="button" onClick={() => setShowForm(!showForm)} className="btn btn-primary">
               <Plus size={20} />
               Ajouter une vente
             </button>
@@ -314,7 +322,7 @@ export default function Sales() {
               </button>
             </div>
           ) : (
-            <div className="sales-layout">
+            <>
               {showForm && (
                 <div className="sales-form-section">
                   <div className="form-card">
@@ -459,80 +467,82 @@ export default function Sales() {
                 </div>
               )}
 
-              <div className="sales-history-section">
-                <div className="sales-container">
-                  {sales.length > 0 && (
-                    <div className="export-actions">
-                      <button onClick={downloadHistorique} className="btn btn-secondary btn-sm" title="Télécharger l'historique">
-                        <Download size={20} />
-                        Télécharger
-                      </button>
-                      <button onClick={shareViaWhatsApp} className="btn btn-secondary btn-sm" title="Partager via WhatsApp">
-                        <Share2 size={20} />
-                        WhatsApp
-                      </button>
-                      <button onClick={shareViaMail} className="btn btn-secondary btn-sm" title="Envoyer par e-mail">
-                        <Mail size={20} />
-                        Email
-                      </button>
-                    </div>
-                  )}
-
-                  <div className="sales-table">
-                    {filteredSales.length > 0 ? (
-                      <div className="table-responsive">
-                        <table>
-                          <thead>
-                            <tr>
-                              <th>Date</th>
-                              <th>Heure</th>
-                              <th>Client</th>
-                              <th>Produit</th>
-                              <th>Quantité</th>
-                              <th>Montant</th>
-                              <th>Actions</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {filteredSales.map((sale) => {
-                              const product = products.find(p => String(p.id) === String(sale.product_id));
-                              return (
-                                <tr key={sale.id}>
-                                  <td data-label="Date">{formatDate(sale.sale_date)}</td>
-                                  <td data-label="Heure">{sale.sale_time || '--'}</td>
-                                  <td data-label="Client">{sale.customer_name}</td>
-                                  <td data-label="Produit">{product?.name || 'Produit supprimé'}</td>
-                                  <td data-label="Quantité" className="quantity">{sale.quantity}</td>
-                                  <td data-label="Montant" className="amount">{formatCurrency(sale.total_amount || (sale.quantity * sale.unit_price))}</td>
-                                  <td className="actions-cell" data-label="Actions">
-                                    <button
-                                      onClick={() => handleEdit(sale)}
-                                      className="btn btn-sm btn-edit"
-                                      title="Modifier"
-                                    >
-                                      <Edit2 size={16} />
-                                    </button>
-                                    <button
-                                      onClick={() => handleDelete(sale.id)}
-                                      className="btn btn-sm btn-delete"
-                                      title="Supprimer"
-                                    >
-                                      <Trash2 size={16} />
-                                    </button>
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                          </tbody>
-                        </table>
+              <div className="sales-layout">
+                <div className="sales-history-section">
+                  <div className="sales-container">
+                    {sales.length > 0 && (
+                      <div className="export-actions">
+                        <button onClick={downloadHistorique} className="btn btn-secondary btn-sm" title="Télécharger l'historique">
+                          <Download size={20} />
+                          Télécharger
+                        </button>
+                        <button onClick={shareViaWhatsApp} className="btn btn-secondary btn-sm" title="Partager via WhatsApp">
+                          <Share2 size={20} />
+                          WhatsApp
+                        </button>
+                        <button onClick={shareViaMail} className="btn btn-secondary btn-sm" title="Envoyer par e-mail">
+                          <Mail size={20} />
+                          Email
+                        </button>
                       </div>
-                    ) : (
-                      <p className="empty-message">Aucune vente enregistrée</p>
                     )}
+
+                    <div className="sales-table">
+                      {filteredSales.length > 0 ? (
+                        <div className="table-responsive">
+                          <table>
+                            <thead>
+                              <tr>
+                                <th>Date</th>
+                                <th>Heure</th>
+                                <th>Client</th>
+                                <th>Produit</th>
+                                <th>Quantité</th>
+                                <th>Montant</th>
+                                <th>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {filteredSales.map((sale) => {
+                                const product = products.find(p => String(p.id) === String(sale.product_id));
+                                return (
+                                  <tr key={sale.id}>
+                                    <td data-label="Date">{formatDate(sale.sale_date)}</td>
+                                    <td data-label="Heure">{sale.sale_time || '--'}</td>
+                                    <td data-label="Client">{sale.customer_name}</td>
+                                    <td data-label="Produit">{product?.name || 'Produit supprimé'}</td>
+                                    <td data-label="Quantité" className="quantity">{sale.quantity}</td>
+                                    <td data-label="Montant" className="amount">{formatCurrency(sale.total_amount || (sale.quantity * sale.unit_price))}</td>
+                                    <td className="actions-cell" data-label="Actions">
+                                      <button
+                                        onClick={() => handleEdit(sale)}
+                                        className="btn btn-sm btn-edit"
+                                        title="Modifier"
+                                      >
+                                        <Edit2 size={16} />
+                                      </button>
+                                      <button
+                                        onClick={() => handleDelete(sale.id)}
+                                        className="btn btn-sm btn-delete"
+                                        title="Supprimer"
+                                      >
+                                        <Trash2 size={16} />
+                                      </button>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+                      ) : (
+                        <p className="empty-message">Aucune vente enregistrée</p>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </>
           )}
 
           {deleteConfirm.show && (

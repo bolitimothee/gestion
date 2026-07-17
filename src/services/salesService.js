@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import logger from '../utils/logger';
 
 export const salesService = {
   async getSales(userId) {
@@ -57,10 +58,10 @@ export const salesService = {
           .eq('user_id', userId);
 
         if (stockError) {
-          console.warn('Erreur mise à jour stock:', stockError);
+          logger.warn('Erreur mise à jour stock:', stockError);
         }
       } else {
-        console.warn('Erreur récupération produit pour mise à jour stock:', fetchError);
+        logger.warn('Erreur récupération produit pour mise à jour stock:', fetchError);
       }
 
       return { data, error: null };
@@ -238,7 +239,7 @@ export const salesService = {
             .eq('id', saleData.product_id);
 
           if (stockError) {
-            console.warn('Erreur remise en stock:', stockError);
+            logger.warn('Erreur remise en stock:', stockError);
           }
         }
       }

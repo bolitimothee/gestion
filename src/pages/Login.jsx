@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import logger from '../utils/logger';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Mail, Lock, AlertCircle } from 'lucide-react';
@@ -34,13 +35,13 @@ export default function Login() {
 
     try {
       if (import.meta.env.MODE === 'development') {
-        console.debug('Login submit', { email });
+        logger.debug('Login submit', { email });
       }
       // Appel direct à signIn; les timeouts internes sont gérés dans le service
       const result = await signIn(email, password);
       if (import.meta.env.MODE === 'development') {
-        console.debug('Login result', result);
-        console.debug('Login result data/error', {
+        logger.debug('Login result', result);
+        logger.debug('Login result data/error', {
           data: result?.data,
           error: result?.error,
         });
@@ -52,7 +53,7 @@ export default function Login() {
 
       // Le useEffect ci-dessus va gérer la redirection
     } catch (err) {
-      console.error('Login error', err);
+      logger.error('Login error', err);
       setError(err.message || 'Erreur lors de la connexion. Veuillez contacter l\'administrateur.');
     } finally {
       setLoading(false);

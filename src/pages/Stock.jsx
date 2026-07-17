@@ -1,5 +1,5 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 import React, { useState, useEffect, useCallback } from 'react';
+import logger from '../utils/logger';
 import { useAuth } from '../context/AuthContext';
 import { stockService } from '../services/stockService';
 import Navbar from '../components/Navbar';
@@ -35,7 +35,7 @@ export default function Stock() {
     setError('');
     const { data, error } = await stockService.getProducts(user.id);
     if (error) {
-      console.error('Erreur stockService:', error);
+      logger.error('Erreur stockService:', error);
       setError('Erreur lors du chargement des produits. Vérifiez que la table "products" existe dans Supabase.');
       setProducts([]);
       setFilteredProducts([]);
@@ -79,9 +79,17 @@ export default function Stock() {
   }, [products]);
 
   useEffect(() => {
-    if (user) {
-      loadProducts();
-    }
+    if (!user) return undefined;
+
+    (async () => {
+      try {
+        await loadProducts();
+      } catch (e) {
+        logger.error('Erreur chargement produits:', e);
+      }
+    })();
+
+    return undefined;
   }, [user, loadProducts]);
 
   async function handleSubmit(e) {

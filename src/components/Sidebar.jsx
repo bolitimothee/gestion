@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
+import logger from '../utils/logger';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useSidebar } from '../context/SidebarContext';
@@ -32,14 +33,31 @@ export default function Sidebar() {
       await signOut();
       window.location.href = '/login';
     } catch (error) {
-      console.error('Erreur lors de la déconnexion:', error);
+      logger.error('Erreur lors de la déconnexion:', error);
       window.location.href = '/login';
     }
   }
 
+  // Fermer la sidebar quand on clique en dehors (utile pour tablettes portrait)
+  const sidebarRef = useRef(null);
+
+  useEffect(() => {
+    function handleOutsideClick(e) {
+      if (!isSidebarOpen) return;
+      const el = sidebarRef.current;
+      if (!el) return;
+      if (!el.contains(e.target)) {
+        closeSidebar();
+      }
+    }
+
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, [isSidebarOpen, closeSidebar]);
+
   return (
     <>
-      <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
+      <aside ref={sidebarRef} className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-content">
           <nav className="sidebar-menu">
             {menuItems.map((item) => (

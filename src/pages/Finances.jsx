@@ -1,5 +1,5 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 import React, { useState, useEffect, useCallback } from 'react';
+import logger from '../utils/logger';
 import { useAuth } from '../context/AuthContext';
 import { financeService } from '../services/financeService';
 import Navbar from '../components/Navbar';
@@ -75,9 +75,17 @@ export default function Finances() {
   }, [expenses]);
 
   useEffect(() => {
-    if (user) {
-      loadData();
-    }
+    if (!user) return undefined;
+
+    (async () => {
+      try {
+        await loadData();
+      } catch (e) {
+        logger.error('Erreur chargement données Finances:', e);
+      }
+    })();
+
+    return undefined;
   }, [user, loadData]);
 
   async function handleSubmit(e) {
@@ -104,7 +112,7 @@ export default function Finances() {
       setShowForm(false);
       await loadData();
     } catch (error) {
-      console.error('Erreur handleSubmit dépenses:', error);
+      logger.error('Erreur handleSubmit dépenses:', error);
       setError(editingId ? 'Erreur lors de la modification de la dépense' : 'Erreur lors de l\'ajout de la dépense');
     }
   }

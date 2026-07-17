@@ -1,3 +1,5 @@
+import logger from '../utils/logger';
+
 // Taux de change par rapport à USD (mis à jour manuellement)
 const EXCHANGE_RATES = {
   USD: 1,
@@ -78,6 +80,7 @@ const DEFAULT_CURRENCY = 'USD';
  * Récupère la devise préférée de l'utilisateur depuis le localStorage
  */
 export const getUserCurrency = () => {
+  if (typeof window === 'undefined' || typeof localStorage === 'undefined') return DEFAULT_CURRENCY;
   const stored = localStorage.getItem('userCurrency');
   return stored || DEFAULT_CURRENCY;
 };
@@ -87,7 +90,9 @@ export const getUserCurrency = () => {
  */
 export const setUserCurrency = (currency) => {
   if (EXCHANGE_RATES[currency]) {
-    localStorage.setItem('userCurrency', currency);
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      localStorage.setItem('userCurrency', currency);
+    }
     return true;
   }
   return false;
@@ -102,7 +107,7 @@ export const setUserCurrency = (currency) => {
  */
 export const convertCurrency = (amount, fromCurrency = 'USD', toCurrency = 'USD') => {
   if (!EXCHANGE_RATES[fromCurrency] || !EXCHANGE_RATES[toCurrency]) {
-    console.warn(`Devise inconnue: ${fromCurrency} ou ${toCurrency}`);
+    logger.warn(`Devise inconnue: ${fromCurrency} ou ${toCurrency}`);
     return amount;
   }
 
