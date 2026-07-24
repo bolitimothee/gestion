@@ -4,10 +4,10 @@ const DYNAMIC_CACHE = 'dynamic-v4';
 
 // Simple logger pour le service worker. Active les debug seulement si self.__DEV__ est vrai.
 const swLogger = {
-  debug: (...args) => { try { if (self && self.__DEV__) console.debug(...args); } catch (e) {} },
-  info: (...args) => { try { if (self && self.__DEV__) console.info(...args); } catch (e) {} },
-  warn: (...args) => { try { console.warn(...args); } catch (e) {} },
-  error: (...args) => { try { console.error(...args); } catch (e) {} }
+  debug: (...args) => { try { if (self && self.__DEV__) console.debug(...args); } catch { /* ignore */ } },
+  info: (...args) => { try { if (self && self.__DEV__) console.info(...args); } catch { /* ignore */ } },
+  warn: (...args) => { try { console.warn(...args); } catch { /* ignore */ } },
+  error: (...args) => { try { console.error(...args); } catch { /* ignore */ } }
 };
 
 // URLs à mettre en cache pour PWA

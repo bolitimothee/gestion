@@ -56,14 +56,13 @@
   transform: translateY(-1px);
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1025px) {
   .navbar-toggle {
     display: none;
   }
 }
 
-/* Show hamburger on tablet portrait (behave like mobile) */
-@media (min-width: 768px) and (max-width: 1023px) and (orientation: portrait) {
+@media (max-width: 1024px) {
   .navbar-toggle {
     display: flex;
   }
@@ -81,18 +80,29 @@
 }
 
 .navbar-logo {
-  height: 65px;
+  height: 114px; /* 65px * 1.75 ~ 114px */
   width: auto;
   object-fit: contain;
-  max-width: 259px;
+  max-width: 619px; /* increased by 65% then +45% (~259 * 1.65 * 1.45 ~ 619) */
 }
 
 @media (max-width: 767px) {
   .navbar-logo {
     display: block;
-    height: 52px;
+    /* Mobile: reduce size by 60% (keep 40%) */
+    height: 53px; /* ~132 * 0.4 */
     width: auto;
-    max-width: 228px;
+    max-width: 110px; /* increased by 65% then +45% (~46 * 1.65 * 1.45 ~ 110) */
+  }
+}
+
+/* Tablet: apply similar adjustments for widths up to 1024px */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .navbar-logo {
+    /* Tablet: reduce size by 60% (keep 40%) */
+    height: 66px; /* ~165 * 0.4 */
+    width: auto;
+    max-width: 125px; /* increased by 65% then +45% (~52 * 1.65 * 1.45 ~ 125) */
   }
 }
 

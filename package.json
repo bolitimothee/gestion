@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "generate:favicon": "node tools/generate-favicon.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },

@@ -71,7 +71,7 @@ export default function Navbar() {
         </button>
 
         <div className="navbar-brand">
-          <img src="/viewy-logo.png" alt="ViewY" className="navbar-logo" />
+          <img src="/icons/icon-192.png?v=2" alt="ViewY" className="navbar-logo" />
         </div>
 
         <div className="navbar-actions">

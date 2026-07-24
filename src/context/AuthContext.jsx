@@ -3,6 +3,35 @@ import { supabase } from '../services/supabaseClient';
 import { authService } from '../services/authService';
 import logger from '../utils/logger';
 
+const AUTH_RECOVERY_TIMEOUT_MS = 10000;
+const AUTH_RECOVERY_RETRY_DELAY_MS = 1500;
+const SUPABASE_STORAGE_KEYS = ['supabase.auth.token', 'sb-undefined-auth-token'];
+
+const clearCorruptedSupabaseStorage = () => {
+  if (typeof window === 'undefined' || typeof localStorage === 'undefined') return false;
+
+  let cleaned = false;
+  for (const key of SUPABASE_STORAGE_KEYS) {
+    try {
+      const value = localStorage.getItem(key);
+      if (!value) continue;
+
+      const parsed = JSON.parse(value);
+      const hasSession = parsed?.currentSession || parsed?.session || parsed?.access_token;
+      const hasUser = parsed?.user || parsed?.currentUser;
+      if (!hasSession && !hasUser) {
+        localStorage.removeItem(key);
+        cleaned = true;
+      }
+    } catch {
+      localStorage.removeItem(key);
+      cleaned = true;
+    }
+  }
+
+  return cleaned;
+};
+
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
@@ -12,6 +41,7 @@ export function AuthProvider({ children }) {
   const [isAuthReady, setIsAuthReady] = useState(false);
   const [isAccountExpired, setIsAccountExpired] = useState(false);
   const sessionCheckRef = useRef(false);
+  const authRecoveryAttemptedRef = useRef(false);
 
   const loadAccountDetails = useCallback(async (userId) => {
     if (!userId) {
@@ -52,118 +82,127 @@ export function AuthProvider({ children }) {
     return false;
   };
 
+  const isTransientAuthError = (error) => {
+    if (!error) return false;
+    const message = error.message || '';
+    return /timeout|trop longue|network|fetch|temporair|connection/i.test(message.toLowerCase());
+  };
+
   useEffect(() => {
-    // Vérifier la session au chargement (une seule fois)
     if (sessionCheckRef.current) return;
     sessionCheckRef.current = true;
 
-    const checkSession = async () => {
-      try {
-        // Augmenter le timeout à 30 secondes pour les connexions lentes
-        // En cas de timeout, on essaie quand même de récupérer la session depuis le localStorage
-        const timeoutPromise = new Promise((resolve) =>
-          setTimeout(() => resolve({ data: { session: null }, timeout: true }), 30000)
-        );
-        const sessionPromise = supabase.auth.getSession();
-        const { data, timeout } = await Promise.race([sessionPromise, timeoutPromise]);
-
-        if (data?.session) {
-          if (isSessionExpired(data.session)) {
-            logger.warn('Session expirée détectée, déconnexion en cours.');
-            await authService.signOut();
-            setUser(null);
-            setAccount(null);
-          } else {
-            const validityCheck = await authService.checkAccountValidity(data.session.user.id);
-            if (!validityCheck.isValid) {
-              setIsAccountExpired(true);
-              await authService.signOut();
-              setUser(null);
-              setAccount(null);
-            } else {
-              setUser(data.session.user);
-              setLoading(false);
-              setIsAuthReady(true);
-              loadAccountDetails(data.session.user.id).catch((err) => logger.warn('Erreur chargement compte asynchrone:', err));
-              return;
-            }
-          }
-        } else if (timeout) {
-          // En cas de timeout, vérifier si on a une session dans localStorage
-          logger.warn('Session check timeout, attempting to recover from localStorage');
-          try {
-            const { data: localSession } = await supabase.auth.getSession();
-            if (localSession?.session && !isSessionExpired(localSession.session)) {
-              const validityCheck = await authService.checkAccountValidity(localSession.session.user.id);
-              if (validityCheck.isValid) {
-                setUser(localSession.session.user);
-                setLoading(false);
-                setIsAuthReady(true);
-                loadAccountDetails(localSession.session.user.id).catch((err) => logger.warn('Erreur chargement compte asynchrone:', err));
-                return;
-              }
-            }
-          } catch (localErr) {
-            logger.warn('Failed to recover session from localStorage:', localErr);
-          }
-        }
-      } catch (_err) {
-        logger.error('Error checking session:', _err);
-        // En cas d'erreur, essayer de récupérer la session depuis localStorage
-        try {
-          const { data: localSession } = await supabase.auth.getSession();
-          if (localSession?.session && !isSessionExpired(localSession.session)) {
-            const validityCheck = await authService.checkAccountValidity(localSession.session.user.id);
-            if (validityCheck.isValid) {
-              setUser(localSession.session.user);
-              setLoading(false);
-              setIsAuthReady(true);
-              loadAccountDetails(localSession.session.user.id).catch((err) => logger.warn('Erreur chargement compte asynchrone:', err));
-              return;
-            }
-          }
-        } catch (localErr) {
-          logger.warn('Failed to recover session from localStorage after error:', localErr);
-        }
-      }
-
-      // Si on arrive ici, aucune session valide n'a été trouvée ou récupérée
+    const clearAuthState = () => {
+      setUser(null);
+      setAccount(null);
+      setIsAccountExpired(false);
       setLoading(false);
       setIsAuthReady(true);
     };
 
-    checkSession();
+    const initializeAuth = async () => {
+      if (typeof window !== 'undefined') {
+        const cleaned = clearCorruptedSupabaseStorage();
+        if (cleaned) {
+          logger.warn('Session Supabase nettoyée dans le storage local à l’initialisation.');
+        }
+      }
 
-    // Écouter les changements d'authentification (défensif)
-    const res = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session?.user) {
-        if (isSessionExpired(session)) {
-          logger.warn('Session expirée détectée dans onAuthStateChange, déconnexion en cours.');
-          await authService.signOut();
-          setUser(null);
-          setAccount(null);
+      await recoverSession();
+    };
+
+    const finalizeSession = async (session, source = 'initial') => {
+      if (!session) {
+        clearAuthState();
+        return;
+      }
+
+      if (isSessionExpired(session)) {
+        logger.warn(`Session expirée détectée via ${source}, déconnexion en cours.`);
+        await authService.signOut();
+        clearAuthState();
+        return;
+      }
+
+      const validityCheck = await authService.checkAccountValidity(session.user.id);
+      if (!validityCheck.isValid) {
+        if (isTransientAuthError(validityCheck.error)) {
+          logger.warn('Vérification du compte impossible temporairement, conservation de la session locale.');
+          setUser(session.user);
           setIsAccountExpired(false);
-        } else {
-          const validityCheck = await authService.checkAccountValidity(session.user.id);
-          if (!validityCheck.isValid) {
-            setIsAccountExpired(true);
-            await authService.signOut();
-            setUser(null);
-            setAccount(null);
-          } else {
-            setUser(session.user);
-            setIsAccountExpired(false);
-            setLoading(false);
-            setIsAuthReady(true);
-            loadAccountDetails(session.user.id).catch((err) => logger.warn('Erreur chargement compte asynchrone:', err));
+          setLoading(false);
+          setIsAuthReady(true);
+          loadAccountDetails(session.user.id).catch((err) => logger.warn('Erreur chargement compte asynchrone:', err));
+          return;
+        }
+
+        setIsAccountExpired(true);
+        await authService.signOut();
+        clearAuthState();
+        return;
+      }
+
+      setUser(session.user);
+      setIsAccountExpired(false);
+      setLoading(false);
+      setIsAuthReady(true);
+      loadAccountDetails(session.user.id).catch((err) => logger.warn('Erreur chargement compte asynchrone:', err));
+    };
+
+    const recoverSession = async () => {
+      if (authRecoveryAttemptedRef.current) {
+        clearAuthState();
+        return;
+      }
+      authRecoveryAttemptedRef.current = true;
+
+      for (let attempt = 1; attempt <= 2; attempt += 1) {
+        try {
+          const timeoutPromise = new Promise((resolve) =>
+            setTimeout(() => resolve({ data: { session: null }, timeout: true }), AUTH_RECOVERY_TIMEOUT_MS)
+          );
+          const sessionPromise = supabase.auth.getSession();
+          const { data, timeout } = await Promise.race([sessionPromise, timeoutPromise]);
+
+          if (data?.session) {
+            await finalizeSession(data.session, 'getSession');
             return;
           }
+
+          if (timeout && attempt < 2) {
+            logger.warn(`Session check timeout, retrying recovery (${attempt}/2)`);
+            await new Promise((resolve) => setTimeout(resolve, AUTH_RECOVERY_RETRY_DELAY_MS));
+            continue;
+          }
+
+          const { data: localSessionData } = await supabase.auth.getSession();
+          if (localSessionData?.session) {
+            await finalizeSession(localSessionData.session, 'cached-session');
+            return;
+          }
+        } catch (error) {
+          logger.warn(`Échec de la récupération de session (essai ${attempt}/2):`, error);
+          if (attempt < 2) {
+            await new Promise((resolve) => setTimeout(resolve, AUTH_RECOVERY_RETRY_DELAY_MS));
+          }
         }
-      } else {
-        setUser(null);
-        setAccount(null);
-        setIsAccountExpired(false);
       }
+
+      clearAuthState();
+    };
+
+    initializeAuth();
+
+    // Écouter les changements d'authentification (défensif)
+    const res = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session?.user) {
+        await finalizeSession(session, 'auth-state-change');
+        return;
+      }
+
+      setUser(null);
+      setAccount(null);
+      setIsAccountExpired(false);
       setLoading(false);
       setIsAuthReady(true);
     });
