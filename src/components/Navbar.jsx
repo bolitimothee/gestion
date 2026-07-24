@@ -10,6 +10,17 @@ export default function Navbar() {
   const { signOut } = useAuth();
   const { isSidebarOpen, toggleSidebar } = useSidebar();
   const { isIOS, isStandalone, deviceType } = useIOSLayout();
+  // Ensure class presence for legacy iOS detection when running as PWA
+  useEffect(() => {
+    try {
+      const nav = document.querySelector('.navbar');
+      if (!nav) return;
+      if (isIOS && isStandalone) nav.classList.add('ios-pwa');
+      else nav.classList.remove('ios-pwa');
+    } catch (e) {
+      // ignore DOM errors
+    }
+  }, [isIOS, isStandalone]);
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [isInstallAvailable, setIsInstallAvailable] = useState(false);
   const isAndroidDevice = (typeof navigator !== 'undefined') ? /Android/i.test(window.navigator?.userAgent || '') : false;

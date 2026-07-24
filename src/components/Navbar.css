@@ -215,3 +215,32 @@
     height: 20px;
   }
 }
+
+/* iOS PWA installed: keep navbar dimensions same as non-standalone
+   Reduce extra safe-area padding that makes the bar too thick on iPhone */
+.navbar.ios-pwa {
+  padding-top: 0;
+}
+
+.navbar.ios-pwa .navbar-safe-top {
+  height: 0 !important;
+}
+
+.navbar.ios-pwa .navbar-container {
+  /* restore the standard min-heights used outside of standalone mode */
+  min-height: var(--navbar-height-lg, 80px) !important;
+  padding: 0 min(24px, 4vw) !important;
+}
+
+@media (max-width: 767px) {
+  .navbar.ios-pwa .navbar-container {
+    min-height: var(--navbar-height-sm, 60px) !important;
+    padding: 0 16px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar.ios-pwa .navbar-container {
+    min-height: var(--navbar-height-xs, 56px) !important;
+  }
+}
