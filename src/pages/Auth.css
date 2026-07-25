@@ -34,14 +34,16 @@
   font-size: var(--font-size-4xl);
   font-weight: var(--font-weight-bold);
   color: var(--text-primary);
-  margin-bottom: var(--spacing-2);
+  margin-bottom: var(--spacing-4);
   line-height: var(--line-height-tight);
 }
 
-.auth-header p {
-  color: rgba(255, 255, 255, 0.82);
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-medium);
+.auth-logo {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  margin: 0 auto;
+  display: block;
 }
 
 .auth-form {

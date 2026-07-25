@@ -65,7 +65,7 @@ export default function Login() {
       <div className="auth-card">
         <div className="auth-header">
           <h1>Se connecter</h1>
-          <p>ViewY</p>
+          <img src="/icons/icon-192.png?v=2" alt="ViewY" className="auth-logo" />
         </div>
 
         {error && (
