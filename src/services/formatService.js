@@ -172,7 +172,7 @@ export const getStockStatus = (quantity, maxQuantity = 100) => {
     label = 'Bon';
   } else {
     status = 'high';
-    color = '#2563eb'; // bleu
+    color = '#003152'; // bleu marine
     label = 'Élevé';
   }
   

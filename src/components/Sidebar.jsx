@@ -59,6 +59,9 @@ export default function Sidebar() {
     <>
       <aside ref={sidebarRef} className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-content">
+          <div className="sidebar-brand-mobile">
+            <img src="/icons/icon-192.png?v=2" alt="ViewY" className="sidebar-logo" />
+          </div>
           <nav className="sidebar-menu">
             {menuItems.map((item) => (
               <Link

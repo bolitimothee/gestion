@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import logger from '../utils/logger';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -22,6 +22,7 @@ export default function Sales() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState('');
+  const formRef = useRef(null);
   const [deleteConfirm, setDeleteConfirm] = useState({ show: false, saleId: null, customerName: '' });
   const [formData, setFormData] = useState({
     product_id: '',
@@ -121,6 +122,12 @@ export default function Sales() {
 
     return undefined;
   }, [user, loadData]);
+
+  useEffect(() => {
+    if (showForm && editingId !== null) {
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [showForm, editingId]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -295,7 +302,7 @@ export default function Sales() {
                 className="sales-search-bar"
               />
             </div>
-            <button type="button" onClick={() => setShowForm(!showForm)} className="btn btn-primary">
+            <button type="button" onClick={() => setShowForm(!showForm)} className="btn btn-add">
               <Plus size={20} />
               Ajouter une vente
             </button>
@@ -324,7 +331,7 @@ export default function Sales() {
           ) : (
             <>
               {showForm && (
-                <div className="sales-form-section">
+                <div className="sales-form-section" ref={formRef}>
                   <div className="form-card">
                     <h2>{editingId ? 'Modifier la vente' : 'Nouvelle Vente'}</h2>
                     <form onSubmit={handleSubmit}>

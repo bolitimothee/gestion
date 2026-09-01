@@ -219,7 +219,7 @@ export default function Finances() {
                 className="finances-search-bar"
               />
             </div>
-            <button onClick={() => setShowForm(!showForm)} className="btn btn-primary">
+            <button onClick={() => setShowForm(!showForm)} className="btn btn-add">
               <Plus size={20} />
               Ajouter une dépense
             </button>

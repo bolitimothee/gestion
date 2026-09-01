@@ -86,11 +86,10 @@ export default function Dashboard() {
       <Navbar />
       <div className="layout-container">
         <Sidebar active="/dashboard" />
-        <main className="main-content">
+        <main className="main-content dashboard-page">
           <div className="page-header">
             <div className="page-header-content">
               <h1>Tableau de Bord</h1>
-              <p>Système de gestion des stocks et finances</p>
             </div>
           </div>
 

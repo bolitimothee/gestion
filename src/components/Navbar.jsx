@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import logger from '../utils/logger';
-import { useAuth } from '../context/AuthContext';
 import { useSidebar } from '../context/SidebarContext';
-import { LogOut, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useIOSLayout } from '../hooks/useIOSLayout';
 import './Navbar.css';
 
 export default function Navbar() {
-  const { signOut } = useAuth();
   const { isSidebarOpen, toggleSidebar } = useSidebar();
   const { isIOS, isStandalone, deviceType } = useIOSLayout();
   // Ensure class presence for legacy iOS detection when running as PWA
@@ -62,17 +60,6 @@ export default function Navbar() {
     setIsInstallAvailable(false);
   }
 
-  async function handleLogout() {
-    try {
-      await signOut();
-      window.location.href = '/login';
-    } catch (error) {
-      logger.error('Erreur lors de la déconnexion:', error);
-      // En cas d'erreur, quand même rediriger vers login
-      window.location.href = '/login';
-    }
-  }
-
   return (
     <nav className={`navbar ${isIOS && isStandalone ? 'ios-pwa' : ''} ${deviceType}`}>
       <div className="navbar-safe-top" />
@@ -91,12 +78,6 @@ export default function Navbar() {
               {isAndroidDevice ? 'Télécharger l’application' : 'Installer l’app'}
             </button>
           )}
-
-          <div className="navbar-user-desktop">
-            <button onClick={handleLogout} className="btn-logout-desktop">
-              <LogOut size={20} />
-            </button>
-          </div>
         </div>
       </div>
     </nav>

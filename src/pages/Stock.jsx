@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import logger from '../utils/logger';
 import { useAuth } from '../context/AuthContext';
 import { stockService } from '../services/stockService';
@@ -18,6 +18,7 @@ export default function Stock() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState('');
+  const formRef = useRef(null);
   const [maxStockThreshold] = useState(100); // Seuil configurable pour le statut de stock
   const [deleteConfirm, setDeleteConfirm] = useState({ show: false, productId: null, productName: '' });
   const [formData, setFormData] = useState({
@@ -167,6 +168,12 @@ export default function Stock() {
     setShowForm(true);
   }
 
+  useEffect(() => {
+    if (showForm && editingId !== null) {
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [showForm, editingId]);
+
   function handleCancel() {
     setFormData({
       name: '',
@@ -199,7 +206,7 @@ export default function Stock() {
                 className="stock-search-bar"
               />
             </div>
-            <button onClick={() => setShowForm(!showForm)} className="btn btn-primary">
+            <button onClick={() => setShowForm(!showForm)} className="btn btn-add">
               <Plus size={20} />
               Ajouter un produit
             </button>
@@ -213,7 +220,7 @@ export default function Stock() {
           )}
 
           {showForm && (
-            <div className="form-card">
+            <div className="form-card" ref={formRef}>
               <h2>{editingId ? 'Modifier le produit' : 'Ajouter un nouveau produit'}</h2>
               <form onSubmit={handleSubmit}>
                 <div className="form-grid">
@@ -383,7 +390,9 @@ export default function Stock() {
                       ></div>
                     </div>
                     <div className="stock-gauge-info">
-                      <span className="stock-quantity">{Math.round(Number(product.quantity))} unités</span>
+                      <span className="stock-quantity" style={{ color: stockStatus.color }}>
+                        {Math.round(Number(product.quantity))} unités
+                      </span>
                       <span className="stock-status" style={{ color: stockStatus.color }}>
                         {stockStatus.label}
                       </span>
