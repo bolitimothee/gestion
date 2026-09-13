@@ -407,6 +407,11 @@
   animation: slideInUp var(--transition-normal) ease-out var(--transition-slow) backwards;
 }
 
+.page-header-content .stock-search-bar {
+  width: 100%;
+  max-width: 100%;
+}
+
 .page-header .btn-primary,
 .page-header .btn-add {
   margin-top: 0;
@@ -978,7 +983,8 @@
 .stock-gauge {
   width: 100%;
   height: 8px;
-  background: rgba(0, 49, 82, 0.08);
+  background: var(--dashboard-table-bg);
+  border: 1px solid var(--dashboard-border);
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 8px;

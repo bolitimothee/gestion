@@ -58,6 +58,11 @@
   animation: slideInUp var(--transition-normal) ease-out var(--transition-slow) backwards;
 }
 
+.page-header-content .finances-search-bar {
+  width: 100%;
+  max-width: 100%;
+}
+
 .page-header .btn-primary {
   margin-top: 0;
   margin-left: auto;

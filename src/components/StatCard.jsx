@@ -6,11 +6,13 @@ export default function StatCard({ title, value, icon, color, trend }) {
 
   return (
     <div className={`stat-card stat-card-${color}`}>
-      <div className="stat-icon">
-        <Icon size={24} />
+      <div className="stat-header">
+        <div className="stat-icon">
+          <Icon size={24} />
+        </div>
+        <p className="stat-title">{title}</p>
       </div>
       <div className="stat-content">
-        <p className="stat-title">{title}</p>
         <h3 className="stat-value">{value}</h3>
         {trend && (
           <span className={`stat-trend ${trend.startsWith('-') ? 'negative' : trend.startsWith('+') ? 'positive' : ''}`}>

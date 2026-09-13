@@ -1,86 +1,115 @@
 .stat-card {
-  background: var(--card-bg);
-  border-radius: 12px;
-  padding: var(--spacing-6);
-  border-left: 4px solid var(--highlight-text);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  --stat-accent: var(--dashboard-accent);
+  width: 100%;
+  min-width: 0;
+  background: var(--dashboard-card-bg);
+  border: 1px solid var(--dashboard-border);
+  border-radius: 16px;
+  padding: 22px 26px 24px;
   display: flex;
-  align-items: flex-start;
-  gap: var(--spacing-5);
-  transition: all 0.3s ease;
+  flex-direction: column;
+  gap: 18px;
+  overflow: hidden;
+  min-height: 178px;
+  transition: border-color var(--transition-normal), background var(--transition-normal), transform var(--transition-normal);
 }
 
 .stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.22);
+  transform: translateY(-2px);
+  background: var(--dashboard-table-hover);
+  border-color: var(--dashboard-accent);
 }
 
 .stat-card-blue {
-  border-left-color: var(--color-secondary);
+  --stat-accent: var(--dashboard-accent);
 }
 
 .stat-card-blue .stat-icon {
-  background: rgba(0, 49, 82, 0.08);
-  color: var(--color-secondary);
+  background: var(--dashboard-accent);
+  color: var(--primary-dark);
 }
 
 .stat-card-green {
-  border-left-color: #2dce89;
+  --stat-accent: var(--success-color);
 }
 
 .stat-card-green .stat-icon {
-  background: rgba(45, 206, 137, 0.1);
-  color: #2dce89;
+  background: var(--success-color);
+  color: var(--primary-dark);
 }
 
 .stat-card-orange {
-  border-left-color: #fb6340;
+  --stat-accent: var(--warning-color);
 }
 
 .stat-card-orange .stat-icon {
-  background: rgba(251, 99, 64, 0.1);
-  color: #fb6340;
+  background: var(--warning-color);
+  color: var(--primary-dark);
 }
 
 .stat-card-purple {
-  border-left-color: #825ee4;
+  --stat-accent: var(--info-color);
 }
 
 .stat-card-purple .stat-icon {
-  background: rgba(130, 94, 228, 0.1);
-  color: #825ee4;
+  background: var(--info-color);
+  color: var(--primary-dark);
+}
+
+.stat-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
 }
 
 .stat-icon {
-  width: 50px;
-  height: 50px;
+  width: 48px;
+  height: 48px;
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  background: rgba(245, 245, 245, 0.08);
-  color: var(--label-text);
+  box-shadow: 0 0 0 6px var(--dashboard-border);
+}
+
+.stat-icon svg {
+  width: 70%;
+  height: 70%;
 }
 
 .stat-content {
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  width: 100%;
+  align-items: flex-start;
+  margin-top: 2px;
 }
 
 .stat-title {
-  font-size: var(--font-size-sm);
-  color: var(--label-text);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: var(--spacing-2);
-  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.12;
+  color: var(--dashboard-text-muted);
+  letter-spacing: 0.8px;
+  margin: 0;
+  font-weight: 700;
+  overflow-wrap: anywhere;
 }
 
 .stat-value {
-  font-size: var(--font-size-3xl);
+  width: 100%;
+  font-size: clamp(24px, 2.4vw, 34px);
+  line-height: 1.15;
   font-weight: 700;
-  color: var(--highlight-text);
-  margin-bottom: var(--spacing-2);
+  color: var(--dashboard-text-light);
+  letter-spacing: 0;
+  margin: 0;
+  min-width: 0;
+  text-align: left;
+  overflow-wrap: break-word;
 }
 
 .stat-trend {
@@ -92,13 +121,60 @@
 }
 
 .stat-trend.positive {
-  color: #2dce89;
+  color: var(--success-color);
 }
 
 .stat-trend.negative {
-  color: #f5365c;
+  color: var(--danger-color);
 }
 
 .stat-trend:not(.positive):not(.negative) {
-  color: #6b7280;
+  color: var(--text-muted);
+}
+
+@media (max-width: 767px) {
+  .stat-card {
+    padding: 18px 20px 20px;
+    gap: 16px;
+    min-height: 156px;
+  }
+
+  .stat-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .stat-title {
+    font-size: 17px;
+    letter-spacing: 0.4px;
+  }
+
+  .stat-value {
+    font-size: clamp(22px, 7vw, 30px);
+  }
+}
+
+@media (max-width: 380px) {
+  .stat-card {
+    padding: 16px;
+    gap: 14px;
+    min-height: 140px;
+  }
+
+  .stat-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .stat-title {
+    font-size: 15px;
+  }
+
+  .stat-header {
+    gap: 12px;
+  }
+
+  .stat-value {
+    font-size: clamp(20px, 7.5vw, 27px);
+  }
 }
