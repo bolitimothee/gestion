@@ -72,7 +72,7 @@
   flex-wrap: wrap;
 }
 
-.export-actions button {
+.export-actions > .export-menu > button {
   padding: var(--spacing-3) var(--spacing-4);
   border: none;
   border-radius: var(--radius-lg);
@@ -84,28 +84,6 @@
   align-items: center;
   gap: var(--spacing-2);
 }
-
-  .btn-edit {
-    background: var(--warning-color);
-    color: var(--text-secondary);
-    border: none;
-  }
-
-  .btn-edit:hover {
-    background: #d97706;
-  }
-
-  .btn-delete {
-    background: var(--danger-color);
-    color: white;
-    border: none;
-  }
-
-  .btn-delete:hover {
-    background: rgba(245, 54, 92, 0.12);
-    border-color: var(--danger-color);
-  }
-
 
 .btn-export-pdf:hover {
   background: #00243f;
@@ -175,13 +153,21 @@
 .empty-message {
   text-align: center;
   padding: 40px;
-  color: #999;
+  color: var(--dashboard-text-light);
+}
+
+.sales-page .page-header h1 {
+  color: var(--dashboard-text-light);
+}
+
+.sales-page .page-header p {
+  color: var(--dashboard-text-muted);
 }
 
 select {
   padding: 12px;
   border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 8px;
+  border-radius: 4px;
   font-size: 14px;
   font-family: inherit;
   background-color: rgba(255, 255, 255, 0.08);
@@ -207,7 +193,7 @@ select:focus {
 .form-card h2 {
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-bold);
-  color: var(--text-primary);
+  color: var(--dashboard-text-light);
   margin-bottom: var(--spacing-5);
   line-height: var(--line-height-tight);
 }
@@ -222,7 +208,7 @@ select:focus {
 
 .form-hint {
   font-size: var(--font-size-xs);
-  color: var(--text-muted);
+  color: var(--dashboard-text-muted);
   font-weight: var(--font-weight-medium);
   font-style: italic;
   display: flex;
@@ -451,7 +437,7 @@ select:focus {
     gap: 10px;
   }
 
-  .export-actions button {
+  .export-actions > .export-menu > button {
     width: 100%;
     justify-content: center;
   }
@@ -648,7 +634,7 @@ select:focus {
       gap: var(--spacing-3);
     }
 
-    .export-actions button {
+    .export-actions > .export-menu > button {
       width: 100%;
       justify-content: center;
     }
@@ -813,7 +799,7 @@ select:focus {
   }
 }
 
-@media (orientation: portrait) {
+@media (orientation: portrait) and (max-width: 1023px) {
   .page-header.sales-page-header,
   .page-header {
     gap: var(--spacing-2) !important;
@@ -855,7 +841,7 @@ select:focus {
   .sales-container {
     padding: 16px;
     margin-top: var(--spacing-2);
-    border-radius: 8px;
+    border-radius: 4px;
     background: var(--card-bg);
   }
 
@@ -866,7 +852,7 @@ select:focus {
     margin-bottom: 16px;
   }
 
-  .export-actions button {
+  .export-actions > .export-menu > button {
     width: 100%;
     padding: 12px 16px;
     font-size: 14px;
@@ -879,7 +865,7 @@ select:focus {
   .form-card {
     padding: 16px;
     background: var(--card-bg);
-    border-radius: 8px;
+    border-radius: 4px;
     margin-bottom: 16px;
     position: static;
     top: auto;
@@ -951,7 +937,7 @@ select:focus {
     padding: 14px 16px;
     font-size: 15px;
     border: none;
-    border-radius: 6px;
+    border-radius: 4px;
     font-weight: 600;
     cursor: pointer;
   }
@@ -977,27 +963,6 @@ select:focus {
     padding-top: 8px;
     margin-top: 8px;
     border-top: 1px solid var(--border-color);
-  }
-
-  .btn-edit {
-    background: var(--warning-color);
-    color: var(--text-secondary);
-    border: none;
-  }
-
-  .btn-edit:hover {
-    background: #d97706;
-  }
-
-  .btn-delete {
-    background: var(--danger-color);
-    color: white;
-    border: none;
-  }
-
-  .btn-delete:hover {
-    background: rgba(245, 54, 92, 0.12);
-    border-color: var(--danger-color);
   }
 
   .actions-cell::before {
@@ -1028,21 +993,21 @@ select:focus {
     padding: 12px;
     font-size: 16px;
     border: 1px solid var(--border-color);
-    border-radius: 6px;
+    border-radius: 4px;
     width: 100%;
   }
 
   .empty-message {
     text-align: center;
     padding: 30px 16px;
-    color: #999;
+    color: var(--dashboard-text-light);
     font-size: 14px;
   }
 
   .alert {
     padding: 12px;
     margin-bottom: 16px;
-    border-radius: 6px;
+    border-radius: 4px;
     font-size: 13px;
   }
 }
@@ -1096,7 +1061,7 @@ select:focus {
     width: 100%;
   }
 
-  .export-actions button {
+  .export-actions > .export-menu > button {
     width: 100%;
     justify-content: center;
   }
@@ -1159,7 +1124,7 @@ select:focus {
     min-width: auto;
     margin-bottom: var(--spacing-1);
     font-weight: 600;
-    color: var(--text-secondary);
+    color: var(--dashboard-text-muted);
     font-size: var(--font-size-xs);
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -1240,7 +1205,7 @@ select:focus {
     font-size: 11px;
   }
 
-  .export-actions button {
+  .export-actions > .export-menu > button {
     padding: 12px 14px;
     font-size: var(--font-size-sm);
   }

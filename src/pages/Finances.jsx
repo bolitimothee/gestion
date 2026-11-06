@@ -6,9 +6,10 @@ import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import StatCard from '../components/StatCard';
 import SearchBar from '../components/SearchBar';
-import { Plus, Trash2, AlertCircle, TrendingUp, TrendingDown, DollarSign, Download, Mail, Share2, Edit2 } from 'lucide-react';
+import { Plus, Trash2, AlertCircle, TrendingDown, Edit2 } from 'lucide-react';
 import { formatCurrency, formatDate } from '../services/formatService';
 import { showToast } from '../utils/toastService';
+import ExportMenu from '../components/ExportMenu';
 import './Finances.css';
 
 export default function Finances() {
@@ -31,17 +32,45 @@ export default function Finances() {
 
   const loadData = useCallback(async () => {
     setLoading(true);
-    const [expensesRes, summaryRes] = await Promise.all([
-      financeService.getExpenses(user.id),
-      financeService.getFinancialSummary(user.id),
-    ]);
+    setError('');
 
-    if (expensesRes.data) {
-      setExpenses(expensesRes.data);
-      setFilteredExpenses(expensesRes.data);
+    try {
+      const [expensesRes, summaryRes] = await Promise.allSettled([
+        financeService.getExpenses(user.id),
+        financeService.getFinancialSummary(user.id),
+      ]);
+      const expensesResult = expensesRes.status === 'fulfilled' ? expensesRes.value : null;
+      const summaryResult = summaryRes.status === 'fulfilled' ? summaryRes.value : null;
+
+      if (expensesResult?.data) {
+        setExpenses(expensesResult.data);
+        setFilteredExpenses(expensesResult.data);
+      } else {
+        setExpenses([]);
+        setFilteredExpenses([]);
+        if (expensesResult?.error) {
+          logger.error('Erreur financeService.getExpenses:', expensesResult.error);
+        }
+      }
+
+      if (summaryResult?.data) {
+        setSummary(summaryResult.data);
+      } else if (summaryResult?.error) {
+        logger.error('Erreur financeService.getFinancialSummary:', summaryResult.error);
+      }
+
+      if (!expensesResult?.data && !summaryResult?.data) {
+        setError('Erreur lors du chargement des données financières.');
+      }
+    } catch (error) {
+      logger.error('Erreur chargement données Finances:', error);
+      setError(error.message || 'Erreur lors du chargement des données financières.');
+      setExpenses([]);
+      setFilteredExpenses([]);
+      setSummary(null);
+    } finally {
+      setLoading(false);
     }
-    if (summaryRes.data) setSummary(summaryRes.data);
-    setLoading(false);
   }, [user]);
 
   // Get unique categories for filter
@@ -58,8 +87,8 @@ export default function Finances() {
     if (search.trim()) {
       const searchLower = search.toLowerCase();
       filtered = filtered.filter(expense => 
-        expense.description.toLowerCase().includes(searchLower) ||
-        expense.category.toLowerCase().includes(searchLower) ||
+        expense.description?.toLowerCase().includes(searchLower) ||
+        expense.category?.toLowerCase().includes(searchLower) ||
         expense.notes?.toLowerCase().includes(searchLower) ||
         formatDate(expense.date).includes(search) ||
         formatCurrency(expense.amount).includes(search)
@@ -94,10 +123,18 @@ export default function Finances() {
 
     try {
       if (editingId) {
-        await financeService.updateExpense(editingId, formData);
+        const result = await financeService.updateExpense(editingId, formData);
+        if (result.error) {
+          setError(result.error.message || 'Impossible de modifier la dépense.');
+          return;
+        }
         showToast('Dépense mise à jour avec succès', 'success');
       } else {
-        await financeService.addExpense(user.id, formData);
+        const result = await financeService.addExpense(user.id, formData);
+        if (result.error) {
+          setError(result.error.message || 'Impossible d’ajouter la dépense.');
+          return;
+        }
         showToast('Dépense ajoutée avec succès', 'success');
       }
       
@@ -155,59 +192,19 @@ export default function Finances() {
     setShowForm(true);
   }
 
-  function downloadHistorique() {
-    const content = generateHistoriqueText();
-    const element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
-    element.setAttribute('download', `historique_depenses_${new Date().toISOString().split('T')[0]}.txt`);
-    element.style.display = 'none';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-  }
-
-  function generateHistoriqueText() {
-    let text = `HISTORIQUE DES DÉPENSES\n`;
-    text += `Entreprise: ${account?.account_name || 'Commerce'}\n`;
-    text += `Date d'export: ${new Date().toLocaleString('fr-FR')}\n`;
-    text += `${'='.repeat(80)}\n\n`;
-
-    expenses.forEach((expense) => {
-      text += `Date: ${formatDate(expense.date)}\n`;
-      text += `Description: ${expense.description}\n`;
-      text += `Catégorie: ${expense.category}\n`;
-      text += `Montant: ${formatCurrency(expense.amount)}\n`;
-      text += `Notes: ${expense.notes || 'Aucune'}\n`;
-      text += `${'-'.repeat(40)}\n`;
-    });
-
-    const total = expenses.reduce((sum, expense) => sum + expense.amount, 0);
-    text += `\nTOTAL DES DÉPENSES: ${formatCurrency(total)}\n`;
-    text += `Nombre de dépenses: ${expenses.length}\n`;
-
-    return text;
-  }
-
-  function shareViaWhatsApp() {
-    const content = generateHistoriqueText();
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(content)}`;
-    window.open(whatsappUrl, '_blank');
-  }
-
-  function shareViaMail() {
-    const content = generateHistoriqueText();
-    const subject = `Historique des dépenses - ${new Date().toISOString().split('T')[0]}`;
-    const body = content;
-    const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = mailtoUrl;
-  }
+  const exportRows = filteredExpenses.map((expense) => ({
+    date: formatDate(expense.date),
+    description: expense.description,
+    category: expense.category,
+    amount: expense.amount,
+  }));
 
   return (
     <div className="layout">
       <Navbar />
       <div className="layout-container">
         <Sidebar active="/finances" />
-        <main className="main-content">
+        <main className="main-content finances-page">
           <div className="page-header">
             <div className="page-header-content">
               <h1>Rapports Financiers</h1>
@@ -228,22 +225,10 @@ export default function Finances() {
           {!loading && summary && (
             <div className="stats-grid">
               <StatCard
-                title="Chiffre d'Affaires"
-                value={formatCurrency(summary.totalRevenue)}
-                icon={TrendingUp}
-                color="blue"
-              />
-              <StatCard
                 title="Dépenses Totales"
                 value={formatCurrency(summary.totalExpenses)}
                 icon={TrendingDown}
                 color="orange"
-              />
-              <StatCard
-                title="Bénéfice Net"
-                value={formatCurrency(summary.netProfit)}
-                icon={DollarSign}
-                color={summary.netProfit >= 0 ? 'green' : 'purple'}
               />
             </div>
           )}
@@ -256,7 +241,7 @@ export default function Finances() {
           )}
 
           {showForm && (
-            <div className="form-card">
+            <div className="form-card app-form-card">
               <h2>{editingId ? 'Modifier la dépense' : 'Enregistrer une nouvelle dépense'}</h2>
               <form onSubmit={handleSubmit}>
                 <div className="form-grid">
@@ -366,23 +351,25 @@ export default function Finances() {
           ) : (
             <div className="expenses-container">
               <h2>Historique des Dépenses</h2>
+              {filteredExpenses.length > 0 && (
+                <div className="export-actions">
+                  <ExportMenu
+                    data={exportRows}
+                    columns={[
+                      { key: 'date', label: 'Date' },
+                      { key: 'description', label: 'Description' },
+                      { key: 'category', label: 'Catégorie' },
+                      { key: 'amount', label: 'Montant' },
+                    ]}
+                    filename="historique_depenses"
+                    title="Historique des dépenses"
+                    whatsappPhone=""
+                    email=""
+                    accountName={account?.account_name || 'Commerce'}
+                  />
+                </div>
+              )}
               <div className="expenses-table">
-                {filteredExpenses.length > 0 && (
-                  <div className="export-actions">
-                    <button onClick={downloadHistorique} className="btn btn-secondary btn-sm" title="Télécharger l'historique">
-                      <Download size={20} />
-                      Télécharger
-                    </button>
-                    <button onClick={shareViaWhatsApp} className="btn btn-secondary btn-sm" title="Partager via WhatsApp">
-                      <Share2 size={20} />
-                      WhatsApp
-                    </button>
-                    <button onClick={shareViaMail} className="btn btn-secondary btn-sm" title="Envoyer par e-mail">
-                      <Mail size={20} />
-                      Email
-                    </button>
-                  </div>
-                )}
                 {filteredExpenses.length > 0 ? (
                   <div className="table-responsive">
                     <table>

@@ -54,8 +54,8 @@ export const authService = {
     try {
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       const supabaseAnonKeyPresent = Boolean(import.meta.env.VITE_SUPABASE_ANON_KEY);
-      logger.debug('[authService] signIn request for', email, {
-        supabaseUrl,
+      logger.debug('[authService] signIn request', {
+        supabaseUrlConfigured: Boolean(supabaseUrl),
         supabaseAnonKeyPresent,
       });
 
@@ -67,8 +67,6 @@ export const authService = {
         30000,
         'Connexion trop longue — vérifiez votre réseau et réessayez.'
       );
-
-      logger.debug('[authService] signIn response', { data, error });
 
       if (error) {
         const message = error.status === 400 || error.status === 401
@@ -83,43 +81,21 @@ export const authService = {
 
       // Support response shape where user may be under data.user or data.session.user
       const user = data.user || data.session?.user;
-      logger.debug('[authService] user extracted', { userId: user?.id });
 
-      // Vérifier si le compte est actif et valide
       if (user) {
-        const { data: accountData, error: accountError } = await withTimeout(
-          supabase
-            .from('accounts')
-            .select('*')
-            .eq('user_id', user.id)
-              .maybeSingle(),
-          10000,
-          'Vérification du compte trop longue — réessayez.'
-        );
-
-        if (accountError) {
-          await supabase.auth.signOut();
-          throw new Error('Impossible de vérifier la validité de ce compte. Veuillez contacter l\'administrateur.');
-        }
-
-        if (!accountData) {
-          await supabase.auth.signOut();
-          throw new Error('Compte introuvable ou invalide. Veuillez contacter l\'administrateur.');
-        }
-
-        // Vérifier la date de validité
-        if (accountData.validity_date) {
-          const validityDate = new Date(accountData.validity_date);
-          const today = new Date();
-          if (today > validityDate) {
-            await supabase.auth.signOut();
-            throw new Error('Votre compte a expiré. Veuillez contacter l\'administrateur.');
+        const validityCheck = await this.checkAccountValidity(user.id);
+        if (!validityCheck.isValid) {
+          const error = isTransientAuthError(validityCheck.error)
+            ? new Error('Impossible de vérifier l’état du compte. Réessayez lorsque votre connexion sera rétablie.')
+            : validityCheck.error || new Error('Compte introuvable ou invalide.');
+          const signOutResult = await this.signOut();
+          if (signOutResult.error) {
+            logger.error('Impossible de terminer la session après le refus de validation du compte:', signOutResult.error);
           }
-        }
-
-        if (!accountData.is_active) {
-          await supabase.auth.signOut();
-          throw new Error('Votre compte est désactivé.');
+          if (isTransientAuthError(validityCheck.error)) {
+            logger.warn('Accès refusé : vérification temporaire du compte impossible.');
+          }
+          return { data: null, error, sessionInvalid: true };
         }
       }
 
@@ -133,7 +109,6 @@ export const authService = {
       logger.error('[authService] signIn caught error:', {
         message: error?.message,
         status: error?.status,
-        fullError: error
       });
       return { data: null, error };
     }
@@ -234,8 +209,8 @@ export const authService = {
 
       // Vérifier la date de validité
       if (data.validity_date) {
-        const validityDate = new Date(data.validity_date);
-        const today = new Date();
+        const validityDate = new Date(data.validity_date).toISOString().slice(0, 10);
+        const today = new Date().toISOString().slice(0, 10);
         if (today > validityDate) {
           return { 
             isValid: false, 
@@ -260,4 +235,13 @@ export const authService = {
     }
   },
 };
+
+export function isTransientAuthError(error) {
+  if (!error) return false;
+  const status = Number(error.status);
+  const message = String(error.message || '').toLowerCase();
+  return status === 0 || status >= 500 ||
+    /timeout|network|fetch|temporair|connection|trop longue|failed to fetch|networkerror|load failed/.test(message);
+}
+
 export default authService;

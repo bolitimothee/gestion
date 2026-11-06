@@ -235,7 +235,7 @@
 @media (min-width: 1280px) and (max-width: 1535px) {
   :root {
     --navbar-height: var(--navbar-height-lg);
-    --sidebar-width: 300px;
+    --sidebar-width: 280px;
   }
 
   body {
@@ -261,12 +261,12 @@
   }
 
   .products-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
     gap: var(--spacing-5);
   }
 
   .sidebar {
-    width: 300px;
+    width: 72px;
   }
 
   .navbar-container {
@@ -280,7 +280,7 @@
 @media (min-width: 1536px) and (max-width: 1919px) {
   :root {
     --navbar-height: var(--navbar-height-2xl);
-    --sidebar-width: 340px;
+    --sidebar-width: 280px;
   }
 
   body {
@@ -302,12 +302,12 @@
   }
 
   .products-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
     gap: var(--spacing-6);
   }
 
   .sidebar {
-    width: 340px;
+    width: 72px;
   }
 
   .navbar-container {
@@ -321,7 +321,7 @@
 @media (min-width: 1920px) {
   :root {
     --navbar-height: var(--navbar-height-2xl);
-    --sidebar-width: 380px;
+    --sidebar-width: 280px;
   }
 
   body {
@@ -343,12 +343,12 @@
   }
 
   .products-grid {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
     gap: var(--spacing-6);
   }
 
   .sidebar {
-    width: 380px;
+    width: 72px;
   }
 
   .navbar-container {
@@ -848,6 +848,40 @@
 /* ============================================ */
 /* PRINT STYLES                                 */
 /* ============================================ */
+@media (orientation: landscape) and (min-width: 768px) and (max-width: 1366px) and (hover: none) and (pointer: coarse) {
+  .navbar .navbar-toggle {
+    display: flex;
+  }
+
+  .layout .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--sidebar-width-tablet, 240px);
+    height: 100vh;
+    height: 100dvh;
+    padding-top: calc(var(--navbar-height, 80px) + env(safe-area-inset-top, 0px));
+    transform: translateX(-100%);
+    z-index: var(--z-sidebar-mobile);
+  }
+
+  .layout .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .layout .sidebar-overlay.active {
+    display: block !important;
+    z-index: var(--z-sidebar-overlay-mobile);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .layout .main-content {
+    width: 100%;
+    margin-left: 0 !important;
+  }
+}
+
 @media print {
   .navbar,
   .sidebar,

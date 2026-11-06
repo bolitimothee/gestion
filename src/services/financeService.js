@@ -1,6 +1,35 @@
 import { supabase } from './supabaseClient';
 
+const toLocalDateKey = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 export const financeService = {
+  async getDailySummary(userId) {
+    try {
+      const todayDate = new Date();
+      todayDate.setHours(0, 0, 0, 0);
+      const tomorrowDate = new Date(todayDate);
+      tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+      const today = toLocalDateKey(todayDate);
+      const tomorrow = toLocalDateKey(tomorrowDate);
+      const [{ data: sales, error: salesError }, { data: expenses, error: expensesError }] = await Promise.all([
+        supabase.from('sales').select('total_amount').eq('user_id', userId).gte('sale_date', today).lt('sale_date', tomorrow),
+        supabase.from('expenses').select('amount').eq('user_id', userId).gte('date', today).lt('date', tomorrow),
+      ]);
+      if (salesError) throw salesError;
+      if (expensesError) throw expensesError;
+      const revenue = (sales || []).reduce((sum, sale) => sum + Number(sale.total_amount || 0), 0);
+      const totalExpenses = (expenses || []).reduce((sum, expense) => sum + Number(expense.amount || 0), 0);
+      return { data: { revenue, salesCount: sales?.length || 0, expenses: totalExpenses, profit: revenue - totalExpenses }, error: null };
+    } catch (error) {
+      return { data: null, error };
+    }
+  },
+
   async getExpenses(userId) {
     try {
       const { data, error } = await supabase
@@ -59,34 +88,42 @@ export const financeService = {
   async getFinancialSummary(userId) {
     try {
       // Récupérer les ventes avec détails des produits
-      const { data: salesData } = await supabase
+      const { data: salesData, error: salesError } = await supabase
         .from('sales')
-        .select('total_amount, quantity, unit_price, product_id')
+        .select('total_amount, quantity, unit_price, product_id, sale_items(quantity, unit_cost)')
         .eq('user_id', userId);
+      if (salesError) throw salesError;
 
       const totalRevenue = salesData?.reduce((sum, sale) => sum + Math.round(Number(sale.total_amount) * 100) / 100, 0) || 0;
 
       // Récupérer les dépenses
-      const { data: expensesData } = await supabase
+      const { data: expensesData, error: expensesError } = await supabase
         .from('expenses')
         .select('amount')
         .eq('user_id', userId);
+      if (expensesError) throw expensesError;
 
       const totalExpensesFromTable = expensesData?.reduce((sum, expense) => sum + Math.round(Number(expense.amount) * 100) / 100, 0) || 0;
 
       // Récupérer les produits pour calculer le COGS (Coût des Marchandises Vendues)
-      const { data: productsData } = await supabase
+      const { data: productsData, error: productsError } = await supabase
         .from('products')
         .select('id, quantity, purchase_price, selling_price')
         .eq('user_id', userId);
+      if (productsError) throw productsError;
 
       // Calculer le COGS basé sur les ventes réelles
       let costOfGoodsSold = 0;
       if (salesData && productsData) {
-        const productMap = new Map(productsData.map(p => [p.id, p]));
+        const productMap = new Map(productsData.map((product) => [String(product.id), product]));
         
         costOfGoodsSold = salesData.reduce((sum, sale) => {
-          const product = productMap.get(sale.product_id);
+          if (sale.sale_items?.length) {
+            return sum + sale.sale_items.reduce((itemSum, item) => (
+              itemSum + Number(item.quantity || 0) * Number(item.unit_cost || 0)
+            ), 0);
+          }
+          const product = productMap.get(String(sale.product_id));
           if (product) {
             const unitCost = Math.round(Number(product.purchase_price));
             const quantitySold = Math.round(Number(sale.quantity));
@@ -144,6 +181,7 @@ export const financeService = {
         .select();
 
       if (error) throw error;
+      if (!data?.length) throw new Error('Dépense introuvable ou modification refusée.');
       return { data, error: null };
     } catch (error) {
       return { data: null, error };
@@ -152,12 +190,15 @@ export const financeService = {
 
   async deleteExpense(expenseId) {
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('expenses')
         .delete()
-        .eq('id', expenseId);
+        .eq('id', expenseId)
+        .select('id')
+        .maybeSingle();
 
       if (error) throw error;
+      if (!data) throw new Error('Dépense introuvable ou suppression refusée.');
       return { error: null };
     } catch (error) {
       return { error };

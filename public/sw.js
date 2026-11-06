@@ -1,6 +1,7 @@
-const CACHE_NAME = 'gestion-commerce-v4';
-const STATIC_CACHE = 'static-v4';
-const DYNAMIC_CACHE = 'dynamic-v4';
+const CACHE_PREFIX = 'gestion-commerce-';
+const STATIC_CACHE = `${CACHE_PREFIX}static-v5`;
+const DYNAMIC_CACHE = `${CACHE_PREFIX}dynamic-v5`;
+const LEGACY_CACHE_NAMES = ['static-v4', 'dynamic-v4', 'gestion-commerce-v4'];
 
 // Simple logger pour le service worker. Active les debug seulement si self.__DEV__ est vrai.
 const swLogger = {
@@ -15,8 +16,8 @@ const urlsToCache = [
   '/',
   '/manifest.json',
   '/index.html',
-  '/icon-192.png?v=2',
-  '/icon-512.png?v=2'
+  '/icons/icon-192.png?v=2',
+  '/icons/icon-512.png?v=2'
 ];
 
 // Installation du service worker
@@ -34,6 +35,7 @@ self.addEventListener('install', (event) => {
       })
       .catch((error) => {
         swLogger.error('Service Worker: Erreur lors de l\'installation:', error);
+        throw error;
       })
   );
 });
@@ -45,7 +47,8 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
+          const isOwnedCache = cacheName.startsWith(CACHE_PREFIX) || LEGACY_CACHE_NAMES.includes(cacheName);
+          if (isOwnedCache && cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
             swLogger.debug('Service Worker: Suppression de l\'ancien cache:', cacheName);
             return caches.delete(cacheName);
           }

@@ -35,15 +35,15 @@ export default function Login() {
 
     try {
       if (import.meta.env.MODE === 'development') {
-        logger.debug('Login submit', { email });
+        logger.debug('Login submit');
       }
       // Appel direct à signIn; les timeouts internes sont gérés dans le service
       const result = await signIn(email, password);
       if (import.meta.env.MODE === 'development') {
-        logger.debug('Login result', result);
-        logger.debug('Login result data/error', {
-          data: result?.data,
-          error: result?.error,
+        logger.debug('Login result', {
+          success: !result?.error,
+          hasUser: Boolean(result?.data?.user || result?.data?.session?.user),
+          error: result?.error?.message,
         });
       }
       if (result?.error) {

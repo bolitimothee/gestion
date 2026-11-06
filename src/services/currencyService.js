@@ -1,5 +1,7 @@
 import logger from '../utils/logger';
 
+// NOTE: This service is kept for future multi-currency use but is not yet wired into the main business flow.
+
 // Taux de change par rapport à USD (mis à jour manuellement)
 const EXCHANGE_RATES = {
   USD: 1,

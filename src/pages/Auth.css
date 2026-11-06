@@ -61,9 +61,9 @@
   gap: var(--spacing-2);
 }
 
-.form-group label {
+.auth-card .form-group label {
   font-size: 0.95rem;
-  color: var(--text-secondary);
+  color: var(--dashboard-text-light);
   font-weight: var(--font-weight-semibold);
 }
 
@@ -77,8 +77,14 @@
   padding: 0 var(--spacing-3);
 }
 
+.input-wrapper:focus-within {
+  border-color: var(--dashboard-accent);
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 0 3px rgba(0, 164, 228, 0.2);
+}
+
 .input-icon {
-  color: var(--text-muted);
+  color: var(--dashboard-text-muted);
   flex-shrink: 0;
 }
 
@@ -89,13 +95,40 @@
   background: transparent;
   padding: var(--spacing-3) 0;
   font-size: var(--font-size-base);
-  color: var(--text-primary);
+  color: var(--dashboard-text-light);
+  caret-color: var(--dashboard-text-light);
   width: 100%;
+}
+
+.auth-card .input-wrapper input {
+  border: 0;
+  box-shadow: none;
+  padding: var(--spacing-3) 0;
+  font-size: 16px;
+}
+
+.auth-card .input-wrapper input:invalid:placeholder-shown {
+  border: 0;
+}
+
+.auth-card .input-wrapper input:invalid:not(:placeholder-shown) {
+  border-bottom: 2px solid #ffb6c1;
 }
 
 .input-wrapper input::placeholder,
 .input-wrapper select::placeholder {
-  color: var(--text-muted);
+  color: rgba(234, 248, 255, 0.82);
+  opacity: 1;
+}
+
+.input-wrapper input:-webkit-autofill,
+.input-wrapper input:-webkit-autofill:hover,
+.input-wrapper input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--dashboard-text-light) !important;
+  caret-color: var(--dashboard-text-light);
+  background-color: #356b8b !important;
+  box-shadow: 0 0 0 1000px #356b8b inset !important;
+  transition: background-color 9999s ease-out;
 }
 
 .input-wrapper input:focus,

@@ -1,0 +1,15 @@
+.orders-table { background: var(--card-bg); border: 1px solid var(--dashboard-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); }
+.orders-table table { width: 100%; }
+.orders-table td strong, .orders-table td small { display: block; }
+.orders-table td small { margin-top: var(--spacing-1); color: var(--dashboard-text-muted); }
+.order-status { min-width: 130px; padding: var(--spacing-2) var(--spacing-3); color: var(--dashboard-text-light); background: var(--dashboard-card-strong); border: 1px solid var(--dashboard-border); border-radius: var(--radius-md); }
+.order-status-pending { border-color: var(--warning-color); }
+.order-status-delivered { border-color: var(--success-color); }
+.order-status-cancelled { border-color: var(--danger-color); }
+.delivery-card { margin-bottom: var(--spacing-5); }
+.order-status-label { display: none; }
+.order-items-editor { display: grid; gap: var(--spacing-3); margin: var(--spacing-4) 0; }
+.order-item-row { display: grid; grid-template-columns: minmax(0, 1fr) 100px 130px; gap: var(--spacing-3); align-items: center; }
+.order-item-row select, .order-item-row input { min-height: 44px; }
+@media (max-width: 600px) { .order-item-row { grid-template-columns: 1fr; } }
+@media (max-width: 700px) { .order-status { width: 100%; } }

@@ -100,6 +100,11 @@ export const formatDateTime = (date) => {
   });
 };
 
+export const formatTime = (time) => {
+  if (!time) return '';
+  return String(time).slice(0, 5);
+};
+
 /**
  * Calcule le montant total (quantité × prix unitaire)
  * @param {number} quantity - La quantité

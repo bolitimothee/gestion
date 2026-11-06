@@ -1,0 +1,40 @@
+.export-menu {
+  position: relative;
+}
+
+.export-menu-dropdown {
+  position: absolute;
+  top: calc(100% + var(--spacing-2));
+  left: 0;
+  right: auto;
+  z-index: var(--z-dropdown);
+  min-width: 180px;
+  width: max-content;
+  max-width: min(240px, calc(100vw - 32px));
+  overflow: hidden;
+  background: var(--dashboard-card-strong);
+  border: 1px solid var(--dashboard-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.export-menu-action {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  width: 100%;
+  padding: var(--spacing-3) var(--spacing-4);
+  color: var(--dashboard-text-light);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.export-menu-action:hover,
+.export-menu-action:focus-visible {
+  color: var(--white);
+  background: var(--dashboard-table-hover);
+  outline: none;
+}

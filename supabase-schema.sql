@@ -16,12 +16,13 @@ CREATE TABLE accounts (
 
 -- Table des produits (stock)
 CREATE TABLE products (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id BIGSERIAL PRIMARY KEY,
   user_id UUID NOT NULL REFERENCES auth.users ON DELETE CASCADE,
   name VARCHAR(255) NOT NULL,
   description TEXT,
   quantity INTEGER NOT NULL DEFAULT 0,
-  unit_price DECIMAL(10, 2) NOT NULL,
+  purchase_price DECIMAL(10, 2) NOT NULL DEFAULT 0,
+  selling_price DECIMAL(10, 2) NOT NULL DEFAULT 0,
   category VARCHAR(100),
   sku VARCHAR(100),
   created_at TIMESTAMP DEFAULT now(),
@@ -30,9 +31,10 @@ CREATE TABLE products (
 
 -- Table des ventes
 CREATE TABLE sales (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id BIGSERIAL PRIMARY KEY,
   user_id UUID NOT NULL REFERENCES auth.users ON DELETE CASCADE,
-  product_id UUID REFERENCES products ON DELETE SET NULL,
+  product_id BIGINT REFERENCES products(id) ON DELETE SET NULL,
+  request_id UUID,
   quantity INTEGER NOT NULL,
   unit_price DECIMAL(10, 2) NOT NULL,
   total_amount DECIMAL(12, 2) NOT NULL,

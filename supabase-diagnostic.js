@@ -51,8 +51,7 @@ async function runDiagnostics() {
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-      logger.debug(`✅ Authentifié: ${user.email}`);
-      logger.debug(`   User ID: ${user.id}`);
+      logger.debug('✅ Authentifié');
     } else {
       logger.debug('⚠️  Non authentifié');
     }

@@ -31,7 +31,7 @@ if (SUPABASE_URL && SUPABASE_ANON_KEY) {
         logger.error('❌ Session check error:', error.message);
       } else if (data?.session) {
         if (isDev) {
-          logger.debug('✅ Active session found:', data.session.user.email);
+          logger.debug('✅ Active session found');
         }
       } else {
         if (isDev) {

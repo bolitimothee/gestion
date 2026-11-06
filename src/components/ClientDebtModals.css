@@ -1,0 +1,67 @@
+.client-debt-overlay { z-index: calc(var(--z-modal-backdrop) + 1); }
+.modal-overlay .client-debt-modal { box-sizing: border-box; width: min(900px, 100%); max-width: 900px; max-height: min(88dvh, 900px); overflow-x: hidden; overflow-y: auto; color: var(--dashboard-text-light); }
+.modal-overlay .client-debt-modal.payment-modal { width: min(620px, 100%); max-width: 620px; }
+.client-debt-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--spacing-4); margin-bottom: var(--spacing-4); }
+.client-debt-heading h2 { margin: 0 0 var(--spacing-2); color: var(--dashboard-text-light); font-size: var(--font-size-xl); }
+.client-debt-total { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-3); padding: var(--spacing-4); margin: 0 0 var(--spacing-5); border: 1px solid var(--dashboard-border); border-radius: var(--radius-lg); background: var(--dashboard-card-bg); }
+.client-debt-total strong { color: var(--dashboard-accent); font-size: var(--font-size-xl); }
+.client-debt-total.has-debt strong { color: var(--danger-color); }
+.client-debt-total.no-debt strong { color: var(--success-color); }
+.client-detail-content { display: grid; gap: var(--spacing-5); }
+.client-detail-content h3, .allocation-preview h3 { margin: 0 0 var(--spacing-3); color: var(--dashboard-text-light); font-size: var(--font-size-lg); }
+.payment-modal .form-group label { color: var(--dashboard-text-light); font-weight: var(--font-weight-semibold); }
+.payment-modal .form-hint { color: var(--dashboard-text-muted); font-size: var(--font-size-sm); font-style: normal; }
+.payment-modal .form-group input,
+.payment-modal .form-group textarea {
+  color: var(--dashboard-text-light);
+  background: rgba(0, 49, 82, 0.48);
+  border: 1px solid rgba(173, 223, 241, 0.35);
+}
+.payment-modal .form-group input[type="date"] { color-scheme: dark; }
+.payment-modal .form-group input::placeholder,
+.payment-modal .form-group textarea::placeholder { color: rgba(217, 241, 255, 0.68); }
+.payment-modal .form-group input:hover,
+.payment-modal .form-group textarea:hover { border-color: rgba(173, 223, 241, 0.6); }
+.payment-modal .form-group input:focus,
+.payment-modal .form-group textarea:focus,
+.payment-modal .form-group select:focus {
+  border-color: var(--dashboard-accent);
+  box-shadow: 0 0 0 3px rgba(0, 164, 228, 0.22);
+}
+.payment-modal .form-group select { border-color: rgba(173, 223, 241, 0.42); }
+.payment-modal .payment-shortcuts .btn:focus-visible { outline-color: var(--dashboard-accent); }
+.debt-table-wrap { overflow-x: auto; border: 1px solid var(--dashboard-border); border-radius: var(--radius-md); }
+.debt-table { width: 100%; border-collapse: collapse; min-width: 580px; }
+.debt-table th, .debt-table td { padding: var(--spacing-3); text-align: left; border-bottom: 1px solid var(--dashboard-border); font-size: var(--font-size-sm); white-space: nowrap; }
+.debt-table th { color: var(--dashboard-text-muted); background: var(--dashboard-card-bg); }
+.debt-table td { color: var(--dashboard-text-light); }
+.debt-empty { margin: 0; color: var(--dashboard-text-muted); }
+.debt-badge { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); }
+.debt-badge-due { color: var(--danger-color); background: rgba(245, 54, 92, 0.12); }
+.debt-badge-clear { color: var(--success-color); background: rgba(45, 206, 137, 0.12); }
+.payment-status-badge { display: inline-flex; padding: 3px 8px; border-radius: 999px; font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); }
+.payment-status-badge.partial { color: var(--warning-color); background: rgba(251, 99, 64, 0.14); }
+.payment-status-badge.unpaid { color: var(--danger-color); background: rgba(245, 54, 92, 0.14); }
+.client-debt-actions { display: flex; flex-wrap: wrap; gap: var(--spacing-3); margin-top: var(--spacing-5); }
+.client-debt-actions .btn { min-height: 42px; height: auto; }
+.payment-shortcuts { display: flex; gap: var(--spacing-2); margin-top: var(--spacing-2); }
+.allocation-preview { margin-top: var(--spacing-5); padding: var(--spacing-4); border: 1px solid var(--dashboard-border); border-radius: var(--radius-lg); background: var(--dashboard-card-bg); }
+.allocation-row, .allocation-new-balance { display: flex; justify-content: space-between; gap: var(--spacing-3); padding: var(--spacing-2) 0; color: var(--dashboard-text-muted); }
+.allocation-new-balance { margin-top: var(--spacing-2); padding-top: var(--spacing-3); border-top: 1px solid var(--dashboard-border); color: var(--dashboard-text-light); }
+.allocation-new-balance strong { color: var(--dashboard-accent); }
+@media (max-width: 767px) {
+  .debt-table-wrap { overflow: visible; border: 0; }
+  .debt-table { display: block; min-width: 0; }
+  .debt-table tbody { display: grid; gap: var(--spacing-3); }
+  .debt-table tbody tr { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--spacing-2); margin: 0; padding: var(--spacing-3); border: 1px solid var(--dashboard-border); border-radius: var(--radius-md); background: var(--dashboard-card-bg); }
+  .debt-table tbody tr td { display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; min-width: 0; gap: 2px; padding: var(--spacing-1); white-space: normal; overflow-wrap: anywhere; font-size: var(--font-size-sm); }
+  .debt-table tbody tr td::before { content: attr(data-label); flex: none; color: var(--dashboard-text-muted); font-size: var(--font-size-xs); }
+  .debt-table tbody tr td:first-child { grid-column: 1 / -1; }
+  .client-debt-actions { display: grid; grid-template-columns: 1fr; }
+  .client-debt-actions .btn { width: 100%; }
+}
+@media (max-width: 640px) {
+  .client-debt-overlay { align-items: flex-end; padding: 0; }
+  .modal-overlay .client-debt-modal { width: 100%; max-width: none; max-height: calc(100dvh - max(0px, env(safe-area-inset-top))); padding: var(--spacing-5) var(--spacing-4) max(var(--spacing-5), env(safe-area-inset-bottom)); border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+  .client-debt-heading h2 { font-size: var(--font-size-lg); }
+}

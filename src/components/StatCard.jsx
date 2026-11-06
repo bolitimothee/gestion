@@ -7,9 +7,11 @@ export default function StatCard({ title, value, icon, color, trend }) {
   return (
     <div className={`stat-card stat-card-${color}`}>
       <div className="stat-header">
-        <div className="stat-icon">
-          <Icon size={24} />
-        </div>
+        {Icon && (
+          <div className="stat-icon" aria-hidden="true">
+            <Icon size={18} />
+          </div>
+        )}
         <p className="stat-title">{title}</p>
       </div>
       <div className="stat-content">

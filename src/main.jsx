@@ -11,30 +11,30 @@ if (import.meta.env.DEV) {
 
 // Import optimisations PWA après les styles
 import { iOSPWAHelper } from './utils/iosPWAHelper.js'
-import { androidInstallPrompt } from './utils/androidInstallPrompt.js'
 import logger from './utils/logger.js'
+import { registerOfflineSync } from './utils/offlineQueue.js'
+import { syncPendingSale } from './services/salesService.js'
 
 // Enregistrement du Service Worker pour PWA (protection contre SSR/contexts non-navigateur)
 if (typeof navigator !== 'undefined' && typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+  registerOfflineSync(syncPendingSale)
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
       .then((registration) => {
         logger.debug('Service Worker enregistré avec succès:', registration);
         // Initialiser les optimisations PWA après l'enregistrement
         iOSPWAHelper.init()
-        androidInstallPrompt.init()
       })
       .catch((error) => {
         logger.error('Erreur lors de l\'enregistrement du Service Worker:', error);
         // Même si le SW échoue, essayer d'optimiser PWA
         iOSPWAHelper.init()
-        androidInstallPrompt.init()
       })
   })
 } else if (typeof window !== 'undefined') {
+  registerOfflineSync(syncPendingSale)
   // Si pas de service worker, quand même optimiser PWA
   iOSPWAHelper.init()
-  androidInstallPrompt.init()
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(

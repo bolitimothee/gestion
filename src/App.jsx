@@ -12,6 +12,8 @@ import Dashboard from './pages/Dashboard';
 import Stock from './pages/Stock';
 import Sales from './pages/Sales';
 import Finances from './pages/Finances';
+import Orders from './pages/Orders';
+import Clients from './pages/Clients';
 
 function AppContent() {
   const { loading, isAuthReady } = useAuth();
@@ -54,6 +56,22 @@ function AppContent() {
           element={
             <ProtectedRoute>
               <Finances />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute>
+              <Orders />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/clients"
+          element={
+            <ProtectedRoute>
+              <Clients />
             </ProtectedRoute>
           }
         />

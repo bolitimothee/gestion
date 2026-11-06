@@ -43,12 +43,12 @@ export default function Toast() {
   };
 
   return (
-    <div className="toast-container">
+    <div className="toast-container" aria-live="polite" aria-relevant="additions">
       {toasts.map((toast) => (
-        <div key={toast.id} className={`toast toast-${toast.type}`}>
+        <div key={toast.id} className={`toast toast-${toast.type}`} role={toast.type === 'error' ? 'alert' : 'status'}>
           <span className="toast-icon">{getIcon(toast.type)}</span>
           <span className="toast-message">{toast.message}</span>
-          <button className="toast-close" onClick={() => removeToast(toast.id)}>
+          <button type="button" className="toast-close" onClick={() => removeToast(toast.id)} aria-label="Fermer la notification">
             <X size={16} />
           </button>
         </div>

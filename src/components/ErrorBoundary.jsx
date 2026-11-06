@@ -157,55 +157,19 @@ export class ErrorBoundary extends React.Component {
             )}
 
             {/* Boutons d'action */}
-            <div style={{
-              display: 'flex',
-              gap: '12px',
-              justifyContent: 'center',
-              flexWrap: 'wrap'
-            }}>
+            <div className="error-boundary-actions">
               <button
+                type="button"
+                className="btn btn-primary"
                 onClick={this.handleReset}
-                style={{
-                  padding: '12px 24px',
-                  background: '#5e72e4',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  transition: 'background 0.3s'
-                }}
-                onMouseOver={(e) => e.target.style.background = '#4c63d2'}
-                onMouseOut={(e) => e.target.style.background = '#5e72e4'}
               >
                 <RefreshCw size={16} />
                 Réessayer
               </button>
               <button
+                type="button"
+                className="btn btn-secondary"
                 onClick={this.handleReload}
-                style={{
-                  padding: '12px 24px',
-                  background: '#f5f5f5',
-                  color: '#333',
-                  border: '2px solid #5e72e4',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  transition: 'all 0.3s'
-                }}
-                onMouseOver={(e) => {
-                  e.target.style.background = '#5e72e4';
-                  e.target.style.color = 'white';
-                }}
-                onMouseOut={(e) => {
-                  e.target.style.background = '#f5f5f5';
-                  e.target.style.color = '#333';
-                }}
               >
                 Recharger la page
               </button>

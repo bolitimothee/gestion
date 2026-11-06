@@ -5,6 +5,9 @@
  */
 import logger from './logger';
 
+let orientationListenersBound = false;
+let inputFocusListenersBound = false;
+
 export const iOSPWAHelper = {
   // ===== DÉTECTION MODERNE =====
 
@@ -270,8 +273,11 @@ export const iOSPWAHelper = {
       }
     };
 
-    window.addEventListener('orientationchange', updateLayout);
-    window.addEventListener('resize', updateLayout);
+    if (!orientationListenersBound) {
+      orientationListenersBound = true;
+      window.addEventListener('orientationchange', updateLayout);
+      window.addEventListener('resize', updateLayout);
+    }
 
     // Exécuter une première fois
     updateLayout();
@@ -282,27 +288,24 @@ export const iOSPWAHelper = {
    */
   handleInputFocus() {
     if (!this.isPWA()) return;
+    if (inputFocusListenersBound) return;
+    inputFocusListenersBound = true;
 
-    const inputs = document.querySelectorAll('input, textarea, select');
+    document.addEventListener('focusin', (event) => {
+      const input = event.target.closest('input, textarea, select');
+      if (!input) return;
 
-    inputs.forEach(input => {
-      input.addEventListener('focus', () => {
-        setTimeout(() => {
-          const rect = input.getBoundingClientRect();
-          const navbar = document.querySelector('.navbar');
-          const navbarHeight = navbar ? navbar.offsetHeight : 80;
+      setTimeout(() => {
+        const rect = input.getBoundingClientRect();
+        const navbar = document.querySelector('.navbar');
+        const navbarHeight = navbar ? navbar.offsetHeight : 80;
+        if (rect.top < navbarHeight) input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+    });
 
-          if (rect.top < navbarHeight) {
-            input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
-        }, 100);
-      });
-
-      input.addEventListener('blur', () => {
-        setTimeout(() => {
-          this.hideSafariNavbar();
-        }, 100);
-      });
+    document.addEventListener('focusout', (event) => {
+      if (!event.target.closest('input, textarea, select')) return;
+      setTimeout(() => this.hideSafariNavbar(), 100);
     });
   },
 

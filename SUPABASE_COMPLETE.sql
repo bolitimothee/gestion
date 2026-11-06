@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS accounts (
 
 -- ===== TABLE: products (Produits/Stock) =====
 CREATE TABLE IF NOT EXISTS products (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id BIGSERIAL PRIMARY KEY,
   user_id UUID NOT NULL,
   name VARCHAR(255) NOT NULL,
   category VARCHAR(100),
@@ -44,9 +44,10 @@ CREATE TABLE IF NOT EXISTS products (
 
 -- ===== TABLE: sales (Ventes) =====
 CREATE TABLE IF NOT EXISTS sales (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id BIGSERIAL PRIMARY KEY,
   user_id UUID NOT NULL,
-  product_id UUID REFERENCES products(id) ON DELETE SET NULL,
+  product_id BIGINT REFERENCES products(id) ON DELETE SET NULL,
+  request_id UUID,
   quantity INTEGER NOT NULL DEFAULT 1,
   unit_price NUMERIC(12, 2) NOT NULL,
   total_amount NUMERIC(12, 2) NOT NULL DEFAULT 0,

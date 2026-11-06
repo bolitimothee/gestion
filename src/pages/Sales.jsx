@@ -2,14 +2,17 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import logger from '../utils/logger';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { salesService } from '../services/salesService';
+import { createSaleRequestId, salesService } from '../services/salesService';
 import { stockService } from '../services/stockService';
+import { customerService } from '../services/customerService';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import SearchBar from '../components/SearchBar';
-import { Plus, Edit2, Trash2, AlertCircle, Download, Mail, Share2 } from 'lucide-react';
-import { formatCurrency, formatDate } from '../services/formatService';
+import ExportMenu from '../components/ExportMenu';
+import { Plus, Edit2, Trash2, AlertCircle, FileText } from 'lucide-react';
+import { formatCurrency, formatDate, formatTime } from '../services/formatService';
 import { showToast } from '../utils/toastService';
+import NoteViewer from '../components/NoteViewer';
 import './Sales.css';
 
 export default function Sales() {
@@ -18,11 +21,14 @@ export default function Sales() {
   const [sales, setSales] = useState([]);
   const [filteredSales, setFilteredSales] = useState([]);
   const [products, setProducts] = useState([]);
+  const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState('');
+  const [noteToRead, setNoteToRead] = useState('');
   const formRef = useRef(null);
+  const saleRequestRef = useRef(null);
   const [deleteConfirm, setDeleteConfirm] = useState({ show: false, saleId: null, customerName: '' });
   const [formData, setFormData] = useState({
     product_id: '',
@@ -31,22 +37,60 @@ export default function Sales() {
     customer_name: '',
     sale_date: new Date().toISOString().split('T')[0],
     sale_time: new Date().toTimeString().slice(0, 5),
+    payment_method: 'cash',
+    paid_amount: 0,
     notes: '',
   });
 
   const loadData = useCallback(async () => {
     setLoading(true);
-    const [salesRes, productsRes] = await Promise.all([
-      salesService.getSales(user.id),
-      stockService.getProducts(user.id),
-    ]);
+    setError('');
 
-    if (salesRes.data) {
-      setSales(salesRes.data);
-      setFilteredSales(salesRes.data);
+    try {
+      const [salesRes, productsRes, customersRes] = await Promise.allSettled([
+        salesService.getSales(user.id),
+        stockService.getProducts(user.id),
+        customerService.getCustomers(user.id),
+      ]);
+
+      const salesResult = salesRes.status === 'fulfilled' ? salesRes.value : null;
+      const productsResult = productsRes.status === 'fulfilled' ? productsRes.value : null;
+      const customersResult = customersRes.status === 'fulfilled' ? customersRes.value : null;
+
+      if (salesResult?.data) {
+        setSales(salesResult.data);
+        setFilteredSales(salesResult.data);
+      } else if (salesResult?.error) {
+        logger.error('Erreur salesService.getSales:', salesResult.error);
+        setError(salesResult.error.message || 'Erreur lors du chargement des ventes.');
+      }
+
+      if (productsResult?.data) {
+        setProducts(productsResult.data);
+      } else if (productsResult?.error) {
+        logger.error('Erreur stockService.getProducts:', productsResult.error);
+      }
+
+      if (customersResult?.data) {
+        setClients(customersResult.data);
+      } else if (customersResult?.error) {
+        logger.warn('Erreur customerService.getCustomers:', customersResult.error);
+      }
+
+      if (!salesResult?.data && !productsResult?.data) {
+        setSales([]);
+        setFilteredSales([]);
+        setProducts([]);
+      }
+    } catch (error) {
+      logger.error('Erreur chargement données Ventes:', error);
+      setError(error.message || 'Erreur lors du chargement des données de vente.');
+      setSales([]);
+      setFilteredSales([]);
+      setProducts([]);
+    } finally {
+      setLoading(false);
     }
-    if (productsRes.data) setProducts(productsRes.data);
-    setLoading(false);
   }, [user]);
 
   // Get date filter options
@@ -60,6 +104,12 @@ export default function Sales() {
     return filters;
   }, []);
 
+  const getSaleProductLabel = useCallback((sale) => {
+    const itemNames = [...new Set((sale.sale_items || []).map((item) => item.product_name).filter(Boolean))];
+    if (itemNames.length) return itemNames.join(', ');
+    return products.find((product) => String(product.id) === String(sale.product_id))?.name || 'Produit supprimé';
+  }, [products]);
+
   // Handle search and filter
   const handleSearch = useCallback((search, dateFilter) => {
     let filtered = sales;
@@ -68,10 +118,9 @@ export default function Sales() {
     if (search.trim()) {
       const searchLower = search.toLowerCase();
       filtered = filtered.filter(sale => {
-          const product = products.find(p => String(p.id) === String(sale.product_id));
         return (
-          sale.customer_name.toLowerCase().includes(searchLower) ||
-          (product?.name && product.name.toLowerCase().includes(searchLower)) ||
+          sale.customer_name?.toLowerCase().includes(searchLower) ||
+          getSaleProductLabel(sale).toLowerCase().includes(searchLower) ||
           sale.notes?.toLowerCase().includes(searchLower) ||
           formatDate(sale.sale_date).includes(search)
         );
@@ -107,7 +156,7 @@ export default function Sales() {
     }
     
     setFilteredSales(filtered);
-  }, [sales, products]);
+  }, [sales, getSaleProductLabel]);
 
   useEffect(() => {
     if (!user) return undefined;
@@ -146,6 +195,11 @@ export default function Sales() {
       setError('Le nom du client est obligatoire');
       return;
     }
+    const selectedClient = clients.find((client) => client.name === formData.customer_name);
+    if (formData.payment_method === 'credit' && !selectedClient) {
+      setError('Le crédit nécessite un client enregistré. Sélectionnez un client existant.');
+      return;
+    }
     if (formData.quantity <= 0) {
       setError('La quantité doit être supérieure à 0');
       return;
@@ -165,20 +219,53 @@ export default function Sales() {
         return;
       }
 
+      const totalAmount = Number(formData.quantity) * Number(product.selling_price);
+      const paidAmount = formData.payment_method === 'credit' ? 0 : Number(formData.paid_amount || totalAmount);
       const saleData = {
         ...formData,
         product_id: Number(formData.product_id),
+        product_name: product.name,
         unit_price: product.selling_price,
         quantity: Number(formData.quantity),
+        client_id: selectedClient?.id || null,
+        paid_amount: paidAmount,
+        total_amount: totalAmount,
       };
 
       let result;
       if (editingId) {
-        result = await salesService.updateSale(editingId, saleData);
-        showToast('Vente mise à jour avec succès', 'success');
+        result = await salesService.updateSale(user.id, editingId, saleData);
       } else {
-        result = await salesService.addSale(user.id, saleData);
-        showToast('Vente enregistrée avec succès', 'success');
+        const requestFingerprint = JSON.stringify({
+          userId: user.id,
+          items: [{
+            product_id: saleData.product_id,
+            product_name: saleData.product_name,
+            quantity: saleData.quantity,
+            unit_price: saleData.unit_price,
+            unit_cost: Number(saleData.unit_cost || 0),
+            discount: Number(saleData.discount || 0),
+            subtotal: saleData.total_amount,
+          }],
+          client_id: saleData.client_id,
+          client_name: saleData.customer_name,
+          client_phone: saleData.client_phone || null,
+          payment_method: saleData.payment_method || 'cash',
+          total_amount: saleData.total_amount,
+          paid_amount: saleData.paid_amount,
+          total_discount: Number(saleData.total_discount || saleData.discount || 0),
+          notes: saleData.notes || null,
+        });
+        if (saleRequestRef.current?.fingerprint !== requestFingerprint) {
+          saleRequestRef.current = {
+            fingerprint: requestFingerprint,
+            requestId: createSaleRequestId(),
+          };
+        }
+        result = await salesService.createSale(user.id, {
+          ...saleData,
+          request_id: saleRequestRef.current.requestId,
+        });
       }
 
       if (result.error) {
@@ -187,6 +274,13 @@ export default function Sales() {
         return;
       }
 
+      showToast(
+        result.queued
+          ? 'Vente enregistrée hors ligne, synchronisation en attente'
+          : (editingId ? 'Vente mise à jour avec succès' : 'Vente enregistrée avec succès'),
+        'success'
+      );
+
       setFormData({
         product_id: '',
         quantity: 1,
@@ -194,8 +288,11 @@ export default function Sales() {
         customer_name: '',
         sale_date: new Date().toISOString().split('T')[0],
         sale_time: new Date().toTimeString().slice(0, 5),
+        payment_method: 'cash',
+        paid_amount: 0,
         notes: '',
       });
+      saleRequestRef.current = null;
       setEditingId(null);
       setShowForm(false);
       await loadData();
@@ -212,7 +309,9 @@ export default function Sales() {
       unit_price: sale.unit_price,
       customer_name: sale.customer_name,
       sale_date: sale.sale_date,
-      sale_time: sale.sale_time || '',
+      sale_time: formatTime(sale.sale_time),
+      payment_method: sale.payment_method || 'cash',
+      paid_amount: sale.paid_amount ?? sale.total_amount ?? 0,
       notes: sale.notes,
     });
     setEditingId(sale.id);
@@ -226,7 +325,16 @@ export default function Sales() {
 
   async function confirmDelete() {
     if (deleteConfirm.saleId) {
-      await salesService.deleteSale(deleteConfirm.saleId);
+      const deletedSaleId = deleteConfirm.saleId;
+      const result = await salesService.deleteSale(deletedSaleId);
+      if (result.error) {
+        logger.error('Erreur suppression vente:', result.error);
+        showToast(result.error.message || 'Impossible de supprimer cette vente.', 'error');
+        return;
+      }
+
+      setSales((currentSales) => currentSales.filter((sale) => sale.id !== deletedSaleId));
+      setFilteredSales((currentSales) => currentSales.filter((sale) => sale.id !== deletedSaleId));
       showToast('Vente supprimée avec succès', 'success');
       setDeleteConfirm({ show: false, saleId: null, customerName: '' });
       await loadData();
@@ -237,60 +345,23 @@ export default function Sales() {
     setDeleteConfirm({ show: false, saleId: null, customerName: '' });
   }
 
-  function downloadHistorique() {
-    const content = generateHistoriqueText();
-    const element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
-    element.setAttribute('download', `historique_ventes_${new Date().toISOString().split('T')[0]}.txt`);
-    element.style.display = 'none';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-  }
-
-  function generateHistoriqueText() {
-    let text = `HISTORIQUE DES VENTES\n`;
-    text += `Entreprise: ${account?.account_name || 'Commerce'}\n`;
-    text += `Date d'export: ${new Date().toLocaleString('fr-FR')}\n`;
-    text += `${'='.repeat(80)}\n\n`;
-
-    filteredSales.forEach((sale) => {
-      const product = products.find(p => String(p.id) === String(sale.product_id));
-      text += `Date: ${formatDate(sale.sale_date)}\n`;
-      text += `Client: ${sale.customer_name}\n`;
-      text += `Produit: ${product?.name || 'Produit supprimé'}\n`;
-      text += `Quantité: ${sale.quantity}\n`;
-      text += `Montant: ${formatCurrency(sale.total_amount || (sale.quantity * sale.unit_price))}\n`;
-      text += `Notes: ${sale.notes || 'Aucune'}\n`;
-      text += `${'-'.repeat(80)}\n\n`;
-    });
-
-    text += `${'='.repeat(80)}\n`;
-    text += `Total ventes: ${filteredSales.length}\n`;
-    text += `Montant total: ${formatCurrency(filteredSales.reduce((sum, s) => sum + (s.total_amount || (s.quantity * s.unit_price)), 0))}\n`;
-
-    return text;
-  }
-
-  function shareViaWhatsApp() {
-    const text = generateHistoriqueText();
-    const encodedText = encodeURIComponent(text);
-    window.open(`https://wa.me/?text=${encodedText}`, '_blank');
-  }
-
-  function shareViaMail() {
-    const text = generateHistoriqueText();
-    const subject = `Historique des ventes - ${new Date().toISOString().split('T')[0]}`;
-    const body = encodeURIComponent(text);
-    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${body}`;
-  }
+  const exportRows = filteredSales.map((sale) => {
+    return {
+      sale_date: formatDate(sale.sale_date),
+      sale_time: formatTime(sale.sale_time) || '--',
+      customer_name: sale.customer_name || 'Client de passage',
+      product_name: getSaleProductLabel(sale),
+      quantity: sale.quantity,
+      total_amount: sale.total_amount || (sale.quantity * sale.unit_price),
+    };
+  });
 
   return (
     <div className="layout">
       <Navbar />
       <div className="layout-container">
         <Sidebar active="/sales" />
-        <main className="main-content">
+        <main className="main-content sales-page">
           <div className="page-header sales-page-header">
             <div className="page-header-content">
               <h1>Gestion des Ventes</h1>
@@ -332,7 +403,7 @@ export default function Sales() {
             <>
               {showForm && (
                 <div className="sales-form-section" ref={formRef}>
-                  <div className="form-card">
+                  <div className="form-card app-form-card">
                     <h2>{editingId ? 'Modifier la vente' : 'Nouvelle Vente'}</h2>
                     <form onSubmit={handleSubmit}>
                       <div className="form-grid">
@@ -404,9 +475,15 @@ export default function Sales() {
                             placeholder="Ex: Jean Dupont"
                             value={formData.customer_name}
                             onChange={(e) => setFormData({ ...formData, customer_name: e.target.value })}
+                            list="customer-suggestions"
                             required
                           />
-                          <span className="form-hint">Nom ou identifier du client</span>
+                          <datalist id="customer-suggestions">
+                            {clients.map((client) => (
+                              <option key={client.id} value={client.name} />
+                            ))}
+                          </datalist>
+                          <span className="form-hint">Nom ou identifiant du client.</span>
                         </div>
 
                         <div className="form-group">
@@ -418,7 +495,7 @@ export default function Sales() {
                             onChange={(e) => setFormData({ ...formData, sale_date: e.target.value })}
                             required
                           />
-                          <span className="form-hint">Quand la vente s'est effectuée</span>
+                          <span className="form-hint">Date à laquelle la vente a eu lieu.</span>
                         </div>
 
                         <div className="form-group">
@@ -429,7 +506,37 @@ export default function Sales() {
                             value={formData.sale_time}
                             onChange={(e) => setFormData({ ...formData, sale_time: e.target.value })}
                           />
-                          <span className="form-hint">À quelle heure la vente s'est effectuée</span>
+                          <span className="form-hint">Heure à laquelle la vente a eu lieu.</span>
+                        </div>
+
+                        <div className="form-group">
+                          <label htmlFor="paymentMethod">Mode de paiement *</label>
+                          <select
+                            id="paymentMethod"
+                            value={formData.payment_method}
+                            onChange={(e) => setFormData({ ...formData, payment_method: e.target.value, paid_amount: e.target.value === 'credit' ? 0 : formData.paid_amount })}
+                            required
+                          >
+                            <option value="cash">Espèces</option>
+                            <option value="mobile_money">Mobile Money</option>
+                            <option value="card">Carte</option>
+                            <option value="credit">Crédit</option>
+                          </select>
+                          <span className="form-hint">Choisissez comment le client règle la vente.</span>
+                        </div>
+
+                        <div className="form-group">
+                          <label htmlFor="paidAmount">Montant payé *</label>
+                          <input
+                            id="paidAmount"
+                            type="number"
+                            min="0"
+                            value={formData.payment_method === 'credit' ? 0 : formData.paid_amount}
+                            disabled={formData.payment_method === 'credit'}
+                            onChange={(e) => setFormData({ ...formData, paid_amount: Number(e.target.value) })}
+                            required
+                          />
+                          <span className="form-hint">Le montant restant sera enregistré comme créance.</span>
                         </div>
                       </div>
 
@@ -461,6 +568,8 @@ export default function Sales() {
                               customer_name: '',
                               sale_date: new Date().toISOString().split('T')[0],
                               sale_time: new Date().toTimeString().slice(0, 5),
+                              payment_method: 'cash',
+                              paid_amount: 0,
                               notes: '',
                             });
                           }}
@@ -479,18 +588,22 @@ export default function Sales() {
                   <div className="sales-container">
                     {sales.length > 0 && (
                       <div className="export-actions">
-                        <button onClick={downloadHistorique} className="btn btn-secondary btn-sm" title="Télécharger l'historique">
-                          <Download size={20} />
-                          Télécharger
-                        </button>
-                        <button onClick={shareViaWhatsApp} className="btn btn-secondary btn-sm" title="Partager via WhatsApp">
-                          <Share2 size={20} />
-                          WhatsApp
-                        </button>
-                        <button onClick={shareViaMail} className="btn btn-secondary btn-sm" title="Envoyer par e-mail">
-                          <Mail size={20} />
-                          Email
-                        </button>
+                        <ExportMenu
+                          data={exportRows}
+                          columns={[
+                            { key: 'sale_date', label: 'Date' },
+                            { key: 'sale_time', label: 'Heure' },
+                            { key: 'customer_name', label: 'Client' },
+                            { key: 'product_name', label: 'Produit' },
+                            { key: 'quantity', label: 'Quantité' },
+                            { key: 'total_amount', label: 'Montant' },
+                          ]}
+                          filename="historique_ventes"
+                          title="Historique des ventes"
+                          whatsappPhone=""
+                          email=""
+                          accountName={account?.account_name || 'Commerce'}
+                        />
                       </div>
                     )}
 
@@ -511,20 +624,20 @@ export default function Sales() {
                             </thead>
                             <tbody>
                               {filteredSales.map((sale) => {
-                                const product = products.find(p => String(p.id) === String(sale.product_id));
                                 return (
                                   <tr key={sale.id}>
                                     <td data-label="Date">{formatDate(sale.sale_date)}</td>
-                                    <td data-label="Heure">{sale.sale_time || '--'}</td>
+                                    <td data-label="Heure">{formatTime(sale.sale_time) || '--'}</td>
                                     <td data-label="Client">{sale.customer_name}</td>
-                                    <td data-label="Produit">{product?.name || 'Produit supprimé'}</td>
+                                    <td data-label="Produit">{getSaleProductLabel(sale)}</td>
                                     <td data-label="Quantité" className="quantity">{sale.quantity}</td>
                                     <td data-label="Montant" className="amount">{formatCurrency(sale.total_amount || (sale.quantity * sale.unit_price))}</td>
                                     <td className="actions-cell" data-label="Actions">
                                       <button
                                         onClick={() => handleEdit(sale)}
                                         className="btn btn-sm btn-edit"
-                                        title="Modifier"
+                                        title={sale.sale_items?.length > 1 ? 'Modification indisponible pour les ventes multi-produits' : 'Modifier'}
+                                        disabled={sale.sale_items?.length > 1}
                                       >
                                         <Edit2 size={16} />
                                       </button>
@@ -535,6 +648,17 @@ export default function Sales() {
                                       >
                                         <Trash2 size={16} />
                                       </button>
+                                      {sale.notes?.trim() && (
+                                        <button
+                                          type="button"
+                                          onClick={() => setNoteToRead(sale.notes)}
+                                          className="btn btn-sm btn-secondary"
+                                          title="Lire les notes"
+                                          aria-label="Lire les notes de la vente"
+                                        >
+                                          <FileText size={16} />
+                                        </button>
+                                      )}
                                     </td>
                                   </tr>
                                 );
@@ -565,6 +689,11 @@ export default function Sales() {
               </div>
             </div>
           )}
+          <NoteViewer
+            title="Notes de la vente"
+            note={noteToRead}
+            onClose={() => setNoteToRead('')}
+          />
         </main>
       </div>
     </div>

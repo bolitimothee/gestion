@@ -78,7 +78,7 @@
   background: transparent !important;
   outline: none;
   font-size: var(--font-size-base);
-  color: var(--text-primary) !important;
+  color: var(--dashboard-text-light) !important;
   /* Reserve space on the right for the custom clear button to avoid overlap
      with native browser clear controls (notably iOS standalone PWA). */
   padding: 0 calc(var(--spacing-2) + 36px);
@@ -106,11 +106,12 @@
 }
 
 .search-input::placeholder {
-  color: rgba(74, 124, 157, 0.75);
+  color: rgba(234, 248, 255, 0.82);
+  opacity: 1;
 }
 
 .search-input:focus::placeholder {
-  color: rgba(74, 124, 157, 0.6);
+  color: rgba(234, 248, 255, 0.68);
 }
 
 .search-input:-webkit-autofill,
@@ -118,7 +119,7 @@
 .search-input:-webkit-autofill:focus,
 .search-input:-internal-autofill-selected {
   -webkit-text-fill-color: var(--text-primary) !important;
-  color: var(--text-primary) !important;
+  color: var(--dashboard-text-light) !important;
   background-color: transparent !important;
   box-shadow: inset 0 0 0 1000px rgba(255, 255, 255, 0.08) !important;
 }
@@ -197,7 +198,7 @@ input[type="search"].search-input::-ms-reveal {
 .search-clear-btn {
   background: none;
   border: none;
-  color: var(--text-muted);
+  color: var(--dashboard-text-muted);
   cursor: pointer;
   padding: 4px;
   border-radius: var(--radius-full);
@@ -217,8 +218,8 @@ input[type="search"].search-input::-ms-reveal {
 }
 
 .search-clear-btn:hover {
-  background: rgba(255, 255, 255, 0.16);
-  color: var(--white);
+  background: rgba(173, 223, 241, 0.2);
+  color: var(--dashboard-text-light);
 }
 
 .search-clear-btn:active {

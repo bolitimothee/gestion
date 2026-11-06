@@ -29,25 +29,36 @@ export default function Stock() {
     selling_price: 0,
     category: '',
     sku: '',
+    min_stock: 5,
   });
 
   const loadProducts = useCallback(async () => {
     setLoading(true);
     setError('');
-    const { data, error } = await stockService.getProducts(user.id);
-    if (error) {
-      logger.error('Erreur stockService:', error);
-      setError('Erreur lors du chargement des produits. Vérifiez que la table "products" existe dans Supabase.');
+
+    try {
+      const { data, error } = await stockService.getProducts(user.id);
+
+      if (error) {
+        logger.error('Erreur stockService:', error);
+        setError(error.message || 'Erreur lors du chargement des produits. Vérifiez que la table "products" existe dans Supabase.');
+        setProducts([]);
+        setFilteredProducts([]);
+      } else if (data) {
+        setProducts(data || []);
+        setFilteredProducts(data || []);
+      } else {
+        setProducts([]);
+        setFilteredProducts([]);
+      }
+    } catch (error) {
+      logger.error('Erreur chargement produits:', error);
+      setError(error.message || 'Erreur lors du chargement des produits.');
       setProducts([]);
       setFilteredProducts([]);
-    } else if (data) {
-      setProducts(data || []);
-      setFilteredProducts(data || []);
-    } else {
-      setProducts([]);
-      setFilteredProducts([]);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, [user]);
 
   // Get unique categories for filter
@@ -64,9 +75,9 @@ export default function Stock() {
     if (search.trim()) {
       const searchLower = search.toLowerCase();
       filtered = filtered.filter(product => 
-        product.name.toLowerCase().includes(searchLower) ||
+        product.name?.toLowerCase().includes(searchLower) ||
         product.description?.toLowerCase().includes(searchLower) ||
-        product.category.toLowerCase().includes(searchLower) ||
+        product.category?.toLowerCase().includes(searchLower) ||
         product.sku?.toLowerCase().includes(searchLower)
       );
     }
@@ -120,10 +131,18 @@ export default function Stock() {
 
     try {
       if (editingId) {
-        await stockService.updateProduct(editingId, formData);
+        const result = await stockService.updateProduct(editingId, formData);
+        if (result.error) {
+          setError(result.error.message || 'Impossible de modifier le produit.');
+          return;
+        }
         showToast('Produit mis à jour avec succès', 'success');
       } else {
-        await stockService.addProduct(user.id, formData);
+        const result = await stockService.addProduct(user.id, formData);
+        if (result.error) {
+          setError(result.error.message || 'Impossible d’ajouter le produit.');
+          return;
+        }
         showToast('Produit ajouté avec succès', 'success');
       }
 
@@ -135,6 +154,7 @@ export default function Stock() {
         selling_price: 0,
         category: '',
         sku: '',
+        min_stock: 5,
       });
       setEditingId(null);
       setShowForm(false);
@@ -151,7 +171,11 @@ export default function Stock() {
 
   async function confirmDelete() {
     if (deleteConfirm.productId) {
-      await stockService.deleteProduct(deleteConfirm.productId);
+      const result = await stockService.deleteProduct(deleteConfirm.productId);
+      if (result.error) {
+        setError(result.error.message || 'Impossible de supprimer le produit.');
+        return;
+      }
       showToast('Produit supprimé avec succès', 'success');
       setDeleteConfirm({ show: false, productId: null, productName: '' });
       await loadProducts();
@@ -183,6 +207,7 @@ export default function Stock() {
       selling_price: 0,
       category: '',
       sku: '',
+      min_stock: 5,
     });
     setEditingId(null);
     setShowForm(false);
@@ -194,7 +219,7 @@ export default function Stock() {
       <Navbar />
       <div className="layout-container">
         <Sidebar active="/stock" />
-        <main className="main-content">
+        <main className="main-content stock-page">
           <div className="page-header">
             <div className="page-header-content">
               <h1>Gestion des Stocks</h1>
@@ -220,7 +245,7 @@ export default function Stock() {
           )}
 
           {showForm && (
-            <div className="form-card" ref={formRef}>
+            <div className="form-card app-form-card" ref={formRef}>
               <h2>{editingId ? 'Modifier le produit' : 'Ajouter un nouveau produit'}</h2>
               <form onSubmit={handleSubmit}>
                 <div className="form-grid">
@@ -322,6 +347,19 @@ export default function Stock() {
                   </div>
 
                   <div className="form-group">
+                    <label htmlFor="min-stock">Seuil d'alerte *</label>
+                    <input
+                      id="min-stock"
+                      type="number"
+                      min="0"
+                      value={formData.min_stock ?? 5}
+                      onChange={(e) => setFormData({ ...formData, min_stock: Math.max(0, Number(e.target.value)) })}
+                      required
+                    />
+                    <span className="form-hint">Le stock est considéré bas sous ce seuil.</span>
+                  </div>
+
+                  <div className="form-group">
                     <label htmlFor="sku">Code SKU (optionnel)</label>
                     <input
                       id="sku"
@@ -390,10 +428,10 @@ export default function Stock() {
                       ></div>
                     </div>
                     <div className="stock-gauge-info">
-                      <span className="stock-quantity" style={{ color: stockStatus.color }}>
+                      <span className="stock-quantity">
                         {Math.round(Number(product.quantity))} unités
                       </span>
-                      <span className="stock-status" style={{ color: stockStatus.color }}>
+                      <span className="stock-status">
                         {stockStatus.label}
                       </span>
                     </div>
