@@ -85,15 +85,17 @@ export const authService = {
       if (user) {
         const validityCheck = await this.checkAccountValidity(user.id);
         if (!validityCheck.isValid) {
-          const error = isTransientAuthError(validityCheck.error)
+          const transientError = isTransientAuthError(validityCheck.error);
+          const error = transientError
             ? new Error('Impossible de vérifier l’état du compte. Réessayez lorsque votre connexion sera rétablie.')
             : validityCheck.error || new Error('Compte introuvable ou invalide.');
-          const signOutResult = await this.signOut();
-          if (signOutResult.error) {
-            logger.error('Impossible de terminer la session après le refus de validation du compte:', signOutResult.error);
-          }
-          if (isTransientAuthError(validityCheck.error)) {
+          if (transientError) {
             logger.warn('Accès refusé : vérification temporaire du compte impossible.');
+          } else {
+            const signOutResult = await this.signOut();
+            if (signOutResult.error) {
+              logger.error('Impossible de terminer la session après le refus de validation du compte:', signOutResult.error);
+            }
           }
           return { data: null, error, sessionInvalid: true };
         }

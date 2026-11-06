@@ -114,8 +114,10 @@ export function AuthProvider({ children }) {
 
       if (isSessionExpired(session)) {
         logger.warn(`Session expirée détectée via ${source}, déconnexion en cours.`);
-        await authService.signOut();
         clearAuthState();
+        authService.signOut().then((result) => {
+          if (result.error) logger.error('Impossible de terminer la session expirée:', result.error);
+        });
         return;
       }
 
@@ -127,8 +129,13 @@ export function AuthProvider({ children }) {
           logger.warn('Accès refusé : compte invalide ou expiré.');
         }
 
-        await authService.signOut();
         clearAuthState();
+        if (!isTransientAuthError(validityCheck.error)) {
+          const signOutResult = await authService.signOut();
+          if (signOutResult.error) {
+            logger.error('Impossible de terminer la session après le refus de validation du compte:', signOutResult.error);
+          }
+        }
         return;
       }
 
@@ -216,18 +223,22 @@ export function AuthProvider({ children }) {
     initializeAuth();
 
     // Écouter les changements d'authentification (défensif)
-    const res = supabase.auth.onAuthStateChange(async (_event, session) => {
+    const res = supabase.auth.onAuthStateChange((_event, session) => {
       lastKnownSessionRef.current = session || null;
-      if (session?.user) {
-        await finalizeSession(session, 'auth-state-change');
-        return;
-      }
+      setTimeout(() => {
+        if (session?.user) {
+          if (lastKnownSessionRef.current?.access_token !== session.access_token) return;
+          finalizeSession(session, 'auth-state-change').catch((error) => {
+            logger.error('Erreur lors de la validation de la session:', error);
+            clearAuthState();
+          });
+          return;
+        }
 
-      setUser(null);
-      setAccount(null);
-      setIsAccountExpired(false);
-      setLoading(false);
-      setIsAuthReady(true);
+        if (!lastKnownSessionRef.current) {
+          clearAuthState();
+        }
+      }, 0);
     });
     const subscription = res?.data?.subscription;
 
