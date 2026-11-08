@@ -29,15 +29,22 @@ export default function Clients() {
   const loadClients = useCallback(async () => {
     setLoading(true);
     setError('');
-    const result = await customerService.getCustomers(user.id);
-    if (result.error) {
-      logger.error('Erreur chargement clients:', result.error);
-      setError(result.error.message || 'Impossible de charger les clients.');
+    try {
+      const result = await customerService.getCustomers(user.id);
+      if (result.error) {
+        logger.error('Erreur chargement clients:', result.error);
+        setError(result.error.message || 'Impossible de charger les clients.');
+        setClients([]);
+      } else {
+        setClients(result.data || []);
+      }
+    } catch (error) {
+      logger.error('Erreur inattendue chargement clients:', error);
+      setError(error.message || 'Impossible de charger les clients.');
       setClients([]);
-    } else {
-      setClients(result.data || []);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, [user]);
 
   useEffect(() => {

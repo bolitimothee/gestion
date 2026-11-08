@@ -158,13 +158,13 @@ export const salesService = {
 
   async getSalesCount(userId) {
     try {
-      const { data, error } = await supabase
+      const { count, error } = await supabase
         .from('sales')
-        .select('id')
+        .select('id', { count: 'exact', head: true })
         .eq('user_id', userId);
 
       if (error) throw error;
-      return { data: data.length, error: null };
+      return { data: count || 0, error: null };
     } catch (error) {
       return { data: null, error };
     }

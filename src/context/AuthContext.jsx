@@ -43,6 +43,7 @@ export function AuthProvider({ children }) {
   const sessionCheckRef = useRef(false);
   const authRecoveryAttemptedRef = useRef(false);
   const lastKnownSessionRef = useRef(null);
+  const sessionFinalizationRef = useRef(new Map());
 
   const loadAccountDetails = useCallback(async (userId) => {
     if (!userId) {
@@ -88,6 +89,7 @@ export function AuthProvider({ children }) {
     sessionCheckRef.current = true;
 
     const clearAuthState = () => {
+      lastKnownSessionRef.current = null;
       setUser(null);
       setAccount(null);
       setIsAccountExpired(false);
@@ -106,44 +108,64 @@ export function AuthProvider({ children }) {
       await recoverSession();
     };
 
-    const finalizeSession = async (session, source = 'initial') => {
+    const finalizeSession = (session, source = 'initial') => {
       if (!session) {
         clearAuthState();
-        return;
+        return Promise.resolve();
       }
 
-      if (isSessionExpired(session)) {
-        logger.warn(`Session expirée détectée via ${source}, déconnexion en cours.`);
-        clearAuthState();
-        authService.signOut().then((result) => {
-          if (result.error) logger.error('Impossible de terminer la session expirée:', result.error);
-        });
-        return;
-      }
+      const sessionKey = session.access_token || session.user.id;
+      const existingFinalization = sessionFinalizationRef.current.get(sessionKey);
+      if (existingFinalization) return existingFinalization;
 
-      const validityCheck = await authService.checkAccountValidity(session.user.id);
-      if (!validityCheck.isValid) {
-        if (isTransientAuthError(validityCheck.error)) {
-          logger.warn('Accès refusé : vérification temporaire du compte impossible.');
-        } else {
-          logger.warn('Accès refusé : compte invalide ou expiré.');
+      const finalization = (async () => {
+        if (isSessionExpired(session)) {
+          logger.warn(`Session expirée détectée via ${source}, déconnexion en cours.`);
+          clearAuthState();
+          authService.signOut().then((result) => {
+            if (result.error) logger.error('Impossible de terminer la session expirée:', result.error);
+          });
+          return;
         }
 
-        clearAuthState();
-        if (!isTransientAuthError(validityCheck.error)) {
-          const signOutResult = await authService.signOut();
-          if (signOutResult.error) {
-            logger.error('Impossible de terminer la session après le refus de validation du compte:', signOutResult.error);
+        const validityCheck = await authService.checkAccountValidity(session.user.id);
+        if (!validityCheck.isValid) {
+          if (isTransientAuthError(validityCheck.error)) {
+            logger.warn('Accès refusé : vérification temporaire du compte impossible.');
+          } else {
+            logger.warn('Accès refusé : compte invalide ou expiré.');
+          }
+
+          clearAuthState();
+          if (!isTransientAuthError(validityCheck.error)) {
+            const signOutResult = await authService.signOut();
+            if (signOutResult.error) {
+              logger.error('Impossible de terminer la session après le refus de validation du compte:', signOutResult.error);
+            }
+          }
+          return;
+        }
+
+        setUser(session.user);
+        setIsAccountExpired(false);
+        setLoading(false);
+        setIsAuthReady(true);
+        loadAccountDetails(session.user.id).catch((err) => logger.warn('Erreur chargement compte asynchrone:', err));
+      })();
+      sessionFinalizationRef.current.set(sessionKey, finalization);
+      finalization.then(
+        () => {
+          if (sessionFinalizationRef.current.get(sessionKey) === finalization) {
+            sessionFinalizationRef.current.delete(sessionKey);
+          }
+        },
+        () => {
+          if (sessionFinalizationRef.current.get(sessionKey) === finalization) {
+            sessionFinalizationRef.current.delete(sessionKey);
           }
         }
-        return;
-      }
-
-      setUser(session.user);
-      setIsAccountExpired(false);
-      setLoading(false);
-      setIsAuthReady(true);
-      loadAccountDetails(session.user.id).catch((err) => logger.warn('Erreur chargement compte asynchrone:', err));
+      );
+      return finalization;
     };
 
     const recoverSession = async () => {

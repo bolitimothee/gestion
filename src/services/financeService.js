@@ -87,29 +87,32 @@ export const financeService = {
 
   async getFinancialSummary(userId) {
     try {
-      // Récupérer les ventes avec détails des produits
-      const { data: salesData, error: salesError } = await supabase
-        .from('sales')
-        .select('total_amount, quantity, unit_price, product_id, sale_items(quantity, unit_cost)')
-        .eq('user_id', userId);
+      const [salesResult, expensesResult, productsResult] = await Promise.all([
+        supabase
+          .from('sales')
+          .select('total_amount, quantity, unit_price, product_id, sale_items(quantity, unit_cost)')
+          .eq('user_id', userId),
+        supabase
+          .from('expenses')
+          .select('amount')
+          .eq('user_id', userId),
+        supabase
+          .from('products')
+          .select('id, quantity, purchase_price, selling_price')
+          .eq('user_id', userId),
+      ]);
+
+      const { data: salesData, error: salesError } = salesResult;
       if (salesError) throw salesError;
 
       const totalRevenue = salesData?.reduce((sum, sale) => sum + Math.round(Number(sale.total_amount) * 100) / 100, 0) || 0;
 
-      // Récupérer les dépenses
-      const { data: expensesData, error: expensesError } = await supabase
-        .from('expenses')
-        .select('amount')
-        .eq('user_id', userId);
+      const { data: expensesData, error: expensesError } = expensesResult;
       if (expensesError) throw expensesError;
 
       const totalExpensesFromTable = expensesData?.reduce((sum, expense) => sum + Math.round(Number(expense.amount) * 100) / 100, 0) || 0;
 
-      // Récupérer les produits pour calculer le COGS (Coût des Marchandises Vendues)
-      const { data: productsData, error: productsError } = await supabase
-        .from('products')
-        .select('id, quantity, purchase_price, selling_price')
-        .eq('user_id', userId);
+      const { data: productsData, error: productsError } = productsResult;
       if (productsError) throw productsError;
 
       // Calculer le COGS basé sur les ventes réelles

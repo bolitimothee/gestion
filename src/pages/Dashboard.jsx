@@ -32,11 +32,7 @@ export default function Dashboard() {
     setError(null);
 
     try {
-      const [financeRes, salesRes, stockRes, recentSalesRes, dailyRes, alertsRes, pendingOrdersRes, debtorsRes, trendRes, topProductsRes] = await Promise.allSettled([
-        financeService.getFinancialSummary(user.id),
-        salesService.getSalesCount(user.id),
-        stockService.getStockValue(user.id),
-        salesService.getRecentSales(user.id, 5),
+      const additionalDataPromise = Promise.allSettled([
         financeService.getDailySummary(user.id),
         stockService.getStockAlerts(user.id),
         orderService.getPendingCount(user.id),
@@ -44,27 +40,17 @@ export default function Dashboard() {
         salesService.getLast7DaysRevenue(user.id),
         salesService.getTopProducts(user.id),
       ]);
+      const [financeRes, salesRes, stockRes, recentSalesRes] = await Promise.allSettled([
+        financeService.getFinancialSummary(user.id),
+        salesService.getSalesCount(user.id),
+        stockService.getStockValue(user.id),
+        salesService.getRecentSales(user.id, 5),
+      ]);
 
       const financeResult = financeRes.status === 'fulfilled' ? financeRes.value : null;
       const salesResult = salesRes.status === 'fulfilled' ? salesRes.value : null;
       const stockResult = stockRes.status === 'fulfilled' ? stockRes.value : null;
       const recentSalesResult = recentSalesRes.status === 'fulfilled' ? recentSalesRes.value : null;
-      const dailyResult = dailyRes.status === 'fulfilled' ? dailyRes.value : null;
-      const alertsResult = alertsRes.status === 'fulfilled' ? alertsRes.value : null;
-      const pendingOrdersResult = pendingOrdersRes.status === 'fulfilled' ? pendingOrdersRes.value : null;
-      const debtorsResult = debtorsRes.status === 'fulfilled' ? debtorsRes.value : null;
-      const trendResult = trendRes.status === 'fulfilled' ? trendRes.value : null;
-      const topProductsResult = topProductsRes.status === 'fulfilled' ? topProductsRes.value : null;
-
-      if (dailyResult?.data) setToday(dailyResult.data);
-      setAlerts({
-        out: alertsResult?.data?.out || [],
-        low: alertsResult?.data?.low || [],
-        pendingOrders: pendingOrdersResult?.data || 0,
-        debtors: debtorsResult?.data || [],
-      });
-      setRevenueTrend(trendResult?.data || []);
-      setTopProducts(topProductsResult?.data || []);
 
       if (financeResult?.error || salesResult?.error || stockResult?.error) {
         logger.error('Erreurs des services:', {
@@ -89,9 +75,29 @@ export default function Dashboard() {
         logger.warn('Erreur getRecentSales:', recentSalesResult.error);
       }
 
+      setLoading(false);
+
       if (!financeResult?.data && !salesResult?.data && !stockResult?.data) {
         setError('Erreur lors du chargement des données. Vérifiez que les tables Supabase sont créées.');
       }
+
+      const [dailyRes, alertsRes, pendingOrdersRes, debtorsRes, trendRes, topProductsRes] = await additionalDataPromise;
+      const dailyResult = dailyRes.status === 'fulfilled' ? dailyRes.value : null;
+      const alertsResult = alertsRes.status === 'fulfilled' ? alertsRes.value : null;
+      const pendingOrdersResult = pendingOrdersRes.status === 'fulfilled' ? pendingOrdersRes.value : null;
+      const debtorsResult = debtorsRes.status === 'fulfilled' ? debtorsRes.value : null;
+      const trendResult = trendRes.status === 'fulfilled' ? trendRes.value : null;
+      const topProductsResult = topProductsRes.status === 'fulfilled' ? topProductsRes.value : null;
+
+      if (dailyResult?.data) setToday(dailyResult.data);
+      setAlerts({
+        out: alertsResult?.data?.out || [],
+        low: alertsResult?.data?.low || [],
+        pendingOrders: pendingOrdersResult?.data || 0,
+        debtors: debtorsResult?.data || [],
+      });
+      setRevenueTrend(trendResult?.data || []);
+      setTopProducts(topProductsResult?.data || []);
     } catch (error) {
       logger.error('Error loading dashboard:', error);
       setError('Erreur système lors du chargement des données.');

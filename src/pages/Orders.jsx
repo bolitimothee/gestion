@@ -30,18 +30,26 @@ export default function Orders() {
 
   const loadOrders = useCallback(async () => {
     setLoading(true);
-    const result = await orderService.getOrders(user.id);
-    if (result.error) {
-      logger.error('Erreur chargement commandes:', result.error);
-      setError('La table des commandes n’est pas disponible. Exécutez la migration Supabase additive pour activer cette page.');
+    try {
+      const result = await orderService.getOrders(user.id);
+      if (result.error) {
+        logger.error('Erreur chargement commandes:', result.error);
+        setError('La table des commandes n’est pas disponible. Exécutez la migration Supabase additive pour activer cette page.');
+        setOrders([]);
+        setFilteredOrders([]);
+      } else {
+        setError('');
+        setOrders(result.data || []);
+        setFilteredOrders(result.data || []);
+      }
+    } catch (error) {
+      logger.error('Erreur inattendue chargement commandes:', error);
+      setError(error.message || 'Impossible de charger les commandes.');
       setOrders([]);
       setFilteredOrders([]);
-    } else {
-      setError('');
-      setOrders(result.data || []);
-      setFilteredOrders(result.data || []);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, [user]);
 
   useEffect(() => {
@@ -54,12 +62,26 @@ export default function Orders() {
 
   useEffect(() => {
     if (!user) return undefined;
-    (async () => {
-      const [productsResult, clientsResult] = await Promise.all([stockService.getProducts(user.id), customerService.getCustomers(user.id)]);
-      setProducts(productsResult.data || []);
-      setClients(clientsResult.data || []);
-    })();
-    return undefined;
+    let active = true;
+    Promise.allSettled([stockService.getProducts(user.id), customerService.getCustomers(user.id)])
+      .then(([productsResult, clientsResult]) => {
+        if (!active) return;
+        if (productsResult.status === 'fulfilled') {
+          setProducts(productsResult.value.data || []);
+          if (productsResult.value.error) logger.error('Erreur chargement produits de commande:', productsResult.value.error);
+        } else {
+          logger.error('Erreur inattendue chargement produits de commande:', productsResult.reason);
+        }
+        if (clientsResult.status === 'fulfilled') {
+          setClients(clientsResult.value.data || []);
+          if (clientsResult.value.error) logger.error('Erreur chargement clients de commande:', clientsResult.value.error);
+        } else {
+          logger.error('Erreur inattendue chargement clients de commande:', clientsResult.reason);
+        }
+      });
+    return () => {
+      active = false;
+    };
   }, [user]);
 
   const handleSearch = useCallback((search, status) => {
