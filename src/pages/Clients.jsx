@@ -171,19 +171,22 @@ export default function Clients() {
 
           {loading ? <div className="loading">Chargement des clients...</div> : filteredClients.length === 0 ? <div className="empty-state"><h3>Aucun client</h3><p>Ajoutez votre premier client pour retrouver rapidement ses informations.</p></div> : (
             <div className="clients-grid">
-              {filteredClients.map((client) => (
-                <article className="client-card" key={client.id}>
-                  <div className="client-card-heading"><div><h2>{client.name}</h2><p>{client.company_name || 'Client particulier'}</p></div><div className="client-card-actions">{client.notes?.trim() && <button type="button" className="btn btn-sm btn-secondary" onClick={() => setNoteToRead(client.notes)} title="Lire les notes" aria-label={`Lire les notes de ${client.name}`}><FileText size={16} /></button>}<button type="button" className="btn btn-sm btn-edit" onClick={() => editClient(client)} title="Modifier"><Edit2 size={16} /></button></div></div>
-                  <div className="client-card-details">
-                    <span>{client.phone || 'Téléphone non renseigné'}</span>
-                    <span>{client.email || 'E-mail non renseigné'}</span>
-                    <span className={`client-balance-badge ${getClientBalance(client) <= 0 ? 'clear' : getClientBalance(client) < 10000 ? 'low' : 'high'}`}>
-                      {getClientBalance(client) <= 0 ? 'À jour' : `Doit ${formatCurrency(getClientBalance(client))}`}
-                    </span>
-                    <button type="button" className="btn btn-secondary btn-sm client-detail-button" onClick={() => setSelectedClient(client)}>Voir la fiche</button>
-                  </div>
-                </article>
-              ))}
+              {filteredClients.map((client) => {
+                const balance = getClientBalance(client);
+                return (
+                  <article className="client-card" key={client.id}>
+                    <div className="client-card-heading"><div><h2>{client.name}</h2><p>{client.company_name || 'Client particulier'}</p></div><div className="client-card-actions">{client.notes?.trim() && <button type="button" className="btn btn-sm btn-secondary" onClick={() => setNoteToRead(client.notes)} title="Lire les notes" aria-label={`Lire les notes de ${client.name}`}><FileText size={16} /></button>}<button type="button" className="btn btn-sm btn-edit" onClick={() => editClient(client)} title="Modifier"><Edit2 size={16} /></button></div></div>
+                    <div className="client-card-details">
+                      <span>{client.phone || 'Téléphone non renseigné'}</span>
+                      <span>{client.email || 'E-mail non renseigné'}</span>
+                      <span className={`client-balance-badge ${balance <= 0 ? 'clear' : balance < 10000 ? 'low' : 'high'}`}>
+                        {balance <= 0 ? 'À jour' : `Doit ${formatCurrency(balance)}`}
+                      </span>
+                      <button type="button" className="btn btn-secondary btn-sm client-detail-button" onClick={() => setSelectedClient(client)}>Voir la fiche</button>
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           )}
 

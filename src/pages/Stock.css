@@ -737,7 +737,8 @@
 
   .product-margin .margin {
     color: #2dce89;
-    font-weight: 600;
+    font-size: 15px;
+    font-weight: 700;
 }
 
 .form-actions {
@@ -882,7 +883,8 @@
 
   .product-margin .value {
     color: #86efac;
-    font-weight: 600;
+    font-size: 15px;
+    font-weight: 700;
   }
 
   .product-description {

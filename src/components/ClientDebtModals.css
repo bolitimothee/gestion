@@ -5,8 +5,11 @@
 .client-debt-heading h2 { margin: 0 0 var(--spacing-2); color: var(--dashboard-text-light); font-size: var(--font-size-xl); }
 .client-debt-total { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-3); padding: var(--spacing-4); margin: 0 0 var(--spacing-5); border: 1px solid var(--dashboard-border); border-radius: var(--radius-lg); background: var(--dashboard-card-bg); }
 .client-debt-total strong { color: var(--dashboard-accent); font-size: var(--font-size-xl); }
+.client-debt-total.has-debt strong,
+.client-debt-total.no-debt strong { font-size: 20px; font-weight: var(--font-weight-bold); }
 .client-debt-total.has-debt strong { color: var(--danger-color); }
 .client-debt-total.no-debt strong { color: var(--success-color); }
+.debt-table td[data-label="Montant"] strong { color: #bbf7d0; font-size: 13px; font-weight: var(--font-weight-bold); }
 .client-detail-content { display: grid; gap: var(--spacing-5); }
 .client-detail-content h3, .allocation-preview h3 { margin: 0 0 var(--spacing-3); color: var(--dashboard-text-light); font-size: var(--font-size-lg); }
 .payment-modal .form-group label { color: var(--dashboard-text-light); font-weight: var(--font-weight-semibold); }

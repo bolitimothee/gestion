@@ -491,7 +491,8 @@
 
   .expenses-table .amount {
     color: var(--danger-color);
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 700;
   }
 
   .actions-cell {
@@ -559,8 +560,9 @@
 }
 
 .expenses-table .amount {
-  font-weight: 600;
   color: var(--highlight-text);
+  font-size: 15px;
+  font-weight: 700;
 }
 
 .empty-message {
@@ -774,7 +776,8 @@
 
   .expenses-table .amount {
     color: var(--danger-color);
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 700;
   }
 
   .actions-cell {

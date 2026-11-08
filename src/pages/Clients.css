@@ -7,9 +7,12 @@
 }
 
 .client-form-heading { margin-bottom: var(--spacing-5); }
-.clients-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--spacing-4); }
-.client-card { padding: var(--spacing-5); background: var(--card-bg); border: 1px solid var(--dashboard-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); }
+.clients-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: var(--spacing-4); }
+.client-card { min-width: 0; padding: var(--spacing-5); background: var(--card-bg); border: 1px solid var(--dashboard-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); }
+.client-card-heading > div:first-child { min-width: 0; }
 .client-card h2 { color: var(--dashboard-text-light); font-size: var(--font-size-lg); }
+.client-card h2,
+.client-card-details > span:not(.client-balance-badge) { overflow-wrap: anywhere; }
 .client-card p, .client-card-details { color: var(--dashboard-text-muted); }
 .client-card-details { display: flex; flex-direction: column; gap: var(--spacing-2); margin-top: var(--spacing-4); font-size: var(--font-size-sm); }
 .client-card-details strong { color: var(--dashboard-accent); }
@@ -19,11 +22,11 @@
 .clients-debt-summary { display: flex; align-items: center; gap: var(--spacing-3); padding: var(--spacing-5); color: var(--dashboard-text-light); background: var(--dashboard-card-bg); border: 1px solid var(--dashboard-border); border-radius: var(--radius-lg); }
 .clients-debt-summary strong { color: var(--dashboard-accent); font-size: var(--font-size-2xl); }
 .clients-debt-summary span { color: var(--dashboard-text-muted); }
-.client-balance-badge { display: inline-flex; align-self: flex-start; padding: 6px 12px; border: 1px solid transparent; border-radius: 999px; font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); }
+.client-balance-badge { display: inline-flex; align-self: flex-start; padding: 6px 12px; border: 1px solid transparent; border-radius: 999px; font-size: 13px; font-weight: var(--font-weight-bold); }
 .client-balance-badge.clear { color: #86efac; background: rgba(22, 163, 74, 0.18); border-color: rgba(134, 239, 172, 0.36); }
 .client-balance-badge.low { color: #fde68a; background: rgba(180, 83, 9, 0.32); border-color: rgba(253, 230, 138, 0.48); }
 .client-balance-badge.high { color: #fecaca; background: rgba(185, 28, 28, 0.32); border-color: rgba(254, 202, 202, 0.48); }
-.client-detail-button { align-self: flex-start; }
+.client-detail-button { align-self: stretch; justify-content: center; width: 100%; min-height: 48px; padding: 10px 12px; white-space: normal; line-height: 1.35; }
 .client-delete-confirm { position: fixed; right: var(--spacing-5); bottom: var(--spacing-5); z-index: var(--z-popover); display: flex; align-items: center; gap: var(--spacing-3); padding: var(--spacing-4); color: var(--dashboard-text-light); background: var(--dashboard-card-strong); border: 1px solid var(--dashboard-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-xl); }
 .client-delete-confirm p { margin-right: var(--spacing-2); }
 

@@ -140,7 +140,8 @@
 }
 
 .sales-table .amount {
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
   color: var(--highlight-text);
 }
 
@@ -953,7 +954,8 @@ select:focus {
 
   .sales-table .amount {
     color: var(--success-color);
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 700;
   }
 
   .actions-cell {
