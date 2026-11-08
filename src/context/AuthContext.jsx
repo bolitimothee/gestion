@@ -131,7 +131,7 @@ export function AuthProvider({ children }) {
         const validityCheck = await authService.checkAccountValidity(session.user.id);
         if (!validityCheck.isValid) {
           if (isTransientAuthError(validityCheck.error)) {
-            logger.warn('Accès refusé : vérification temporaire du compte impossible.');
+            logger.warn('Connexion non finalisée : vérification temporaire du compte impossible.');
           } else {
             logger.warn('Accès refusé : compte invalide ou expiré.');
           }
@@ -294,7 +294,7 @@ export function AuthProvider({ children }) {
             return {
               data: null,
               error: isTransientAuthError(validityCheck.error)
-                ? new Error('Impossible de vérifier l’état du compte. Réessayez lorsque votre connexion sera rétablie.')
+                ? new Error('Connexion temporairement indisponible. Le compte n’a pas pu être vérifié. Réessayez lorsque votre connexion sera rétablie.')
                 : validityCheck.error || new Error('Compte introuvable ou invalide.'),
             };
           }

@@ -71,7 +71,9 @@ export const authService = {
       if (error) {
         const message = error.status === 400 || error.status === 401
           ? 'Email ou mot de passe incorrect. Si le problème persiste, contactez l\'administrateur.'
-          : 'Impossible de se connecter. Veuillez contacter l\'administrateur.';
+          : isTransientAuthError(error)
+            ? 'Connexion temporairement indisponible. Vérifiez votre connexion Internet et réessayez.'
+            : 'Impossible de se connecter. Veuillez contacter l\'administrateur.';
         throw new Error(message);
       }
 
@@ -87,10 +89,10 @@ export const authService = {
         if (!validityCheck.isValid) {
           const transientError = isTransientAuthError(validityCheck.error);
           const error = transientError
-            ? new Error('Impossible de vérifier l’état du compte. Réessayez lorsque votre connexion sera rétablie.')
+            ? new Error('Connexion temporairement indisponible. Le compte n’a pas pu être vérifié. Réessayez lorsque votre connexion sera rétablie.')
             : validityCheck.error || new Error('Compte introuvable ou invalide.');
           if (transientError) {
-            logger.warn('Accès refusé : vérification temporaire du compte impossible.');
+            logger.warn('Connexion non finalisée : vérification temporaire du compte impossible.');
           } else {
             const signOutResult = await this.signOut();
             if (signOutResult.error) {
