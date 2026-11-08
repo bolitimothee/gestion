@@ -15,6 +15,8 @@ const withTimeout = async (promise, ms, errorMessage) => {
   }
 };
 
+const accountValidityChecks = new Map();
+
 export const authService = {
   async signUp(email, password, accountName, validityDate) {
     try {
@@ -192,50 +194,61 @@ export const authService = {
   },
 
   async checkAccountValidity(userId) {
-    try {
-      const { data, error } = await withTimeout(
-        supabase
-          .from('accounts')
-          .select('*')
-          .eq('user_id', userId)
-          .maybeSingle(),
-        10000,
-        'Vérification du compte trop longue.'
-      );
-      if (error) {
-        // Remonter l'erreur pour décision côté appelant
-        return { isValid: false, error, account: null };
-      }
+    const pendingCheck = accountValidityChecks.get(userId);
+    if (pendingCheck) return pendingCheck;
 
-      if (!data) {
-        return { isValid: false, error: new Error('Compte introuvable ou invalide.'), account: null };
-      }
+    const check = (async () => {
+      try {
+        const { data, error } = await withTimeout(
+          supabase
+            .from('accounts')
+            .select('is_active, validity_date')
+            .eq('user_id', userId)
+            .maybeSingle(),
+          10000,
+          'Vérification du compte trop longue.'
+        );
+        if (error) {
+          return { isValid: false, error, account: null };
+        }
 
-      // Vérifier la date de validité
-      if (data.validity_date) {
-        const validityDate = new Date(data.validity_date).toISOString().slice(0, 10);
-        const today = new Date().toISOString().slice(0, 10);
-        if (today > validityDate) {
-          return { 
-            isValid: false, 
-            error: new Error('Votre compte a expiré. Veuillez contacter l\'administrateur.'),
+        if (!data) {
+          return { isValid: false, error: new Error('Compte introuvable ou invalide.'), account: null };
+        }
+
+        if (data.validity_date) {
+          const validityDate = new Date(data.validity_date).toISOString().slice(0, 10);
+          const today = new Date().toISOString().slice(0, 10);
+          if (today > validityDate) {
+            return {
+              isValid: false,
+              error: new Error('Votre compte a expiré. Veuillez contacter l\'administrateur.'),
+              account: data
+            };
+          }
+        }
+
+        if (!data.is_active) {
+          return {
+            isValid: false,
+            error: new Error('Votre compte est désactivé.'),
             account: data
           };
         }
-      }
 
-      // Vérifier si le compte est actif
-      if (!data.is_active) {
-        return { 
-          isValid: false, 
-          error: new Error('Votre compte est désactivé.'),
-          account: data
-        };
+        return { isValid: true, error: null, account: data };
+      } catch (error) {
+        return { isValid: false, error, account: null };
       }
+    })();
 
-      return { isValid: true, error: null, account: data };
-    } catch (err) {
-      return { isValid: false, error: err, account: null };
+    accountValidityChecks.set(userId, check);
+    try {
+      return await check;
+    } finally {
+      if (accountValidityChecks.get(userId) === check) {
+        accountValidityChecks.delete(userId);
+      }
     }
   },
 };

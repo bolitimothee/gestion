@@ -44,30 +44,44 @@ export function AuthProvider({ children }) {
   const authRecoveryAttemptedRef = useRef(false);
   const lastKnownSessionRef = useRef(null);
   const sessionFinalizationRef = useRef(new Map());
+  const accountDetailsRequestsRef = useRef(new Map());
 
   const loadAccountDetails = useCallback(async (userId) => {
     if (!userId) {
       setAccount(null);
       return null;
     }
-    try {
-      // Ajouter un timeout pour éviter le blocage
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Timeout chargement compte')), 10000)
-      );
-      const accountPromise = authService.getAccountDetails(userId);
-      const { data } = await Promise.race([accountPromise, timeoutPromise]);
+
+    const pendingRequest = accountDetailsRequestsRef.current.get(userId);
+    if (pendingRequest) return pendingRequest;
+
+    const request = (async () => {
+      const { data, error } = await authService.getAccountDetails(userId);
+      if (error) {
+        logger.warn('Erreur chargement compte:', error);
+        setAccount({ user_id: userId, account_name: 'Utilisateur', email: '' });
+        return null;
+      }
 
       if (data) {
         setAccount(data);
         return data;
       }
-    } catch (err) {
-      logger.warn('Erreur chargement compte:', err);
-      // Définir un compte par défaut pour éviter les blocages
+      return null;
+    })();
+    accountDetailsRequestsRef.current.set(userId, request);
+
+    try {
+      return await request;
+    } catch (error) {
+      logger.warn('Erreur chargement compte:', error);
       setAccount({ user_id: userId, account_name: 'Utilisateur', email: '' });
+      return null;
+    } finally {
+      if (accountDetailsRequestsRef.current.get(userId) === request) {
+        accountDetailsRequestsRef.current.delete(userId);
+      }
     }
-    return null;
   }, []);
 
   const isSessionExpired = (session) => {
